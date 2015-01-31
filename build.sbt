@@ -10,5 +10,6 @@ libraryDependencies ++= Seq(
   jdbc,
   anorm,
   cache,
-  ws
+  ws,
+  "org.webjars" % "bootstrap" % "3.3.2"
 )
