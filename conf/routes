@@ -1,9 +1,7 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
+GET     /                           AppLoader.appController.index
+GET     /*path/                     AppLoader.appController.untrail(path: String)
+GET     /tech                       AppLoader.techController.all
 
-# Home page
-GET     /                           controllers.Application.index
-
-# Map static resources from the /public folder to the /assets URL path
+GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
+GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
