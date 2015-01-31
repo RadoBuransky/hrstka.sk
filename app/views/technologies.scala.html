@@ -1,6 +1,12 @@
-@(lang: Lang)
+@(lang: Lang, msg: String)
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <h2>Technológie</h2>
-    <h3>Pridať</h3>
+    <h3>@msg</h3>
+    <form action="@AppLoader.routes.techController.add" method="post" class="form-inline">
+        <div class="form-group">
+            <input type="text" class="form-control" id="techName" name="techName">
+        </div>
+        <button type="submit" class="btn btn-default">Pridať</button>
+    </form>
 }
