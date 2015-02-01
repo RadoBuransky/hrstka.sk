@@ -1,10 +1,11 @@
 package repositories
 
+import models.db.Identifiable.Id
 import models.db.Tech
 
 import scala.concurrent.Future
 
 trait TechRepository {
-  def insert(tech: Tech): Future[Unit]
+  def insert(name: String, author: Id): Future[Unit]
   def all(): Future[Seq[Tech]]
 }

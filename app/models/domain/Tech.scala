@@ -10,7 +10,7 @@ import models.domain.Identifiable.Id
  * @param name Tech name.
  * @param rating Overall rating.
  */
-case class Tech(id: Option[Id],
+case class Tech(id: Id,
                 author: Id,
                 name: String,
                 rating: Option[TechRating]) extends Identifiable with Authorable

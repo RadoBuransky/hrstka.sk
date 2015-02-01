@@ -3,7 +3,7 @@ package models.domain
 import models.domain.Identifiable.Id
 
 trait Identifiable {
-  def id: Option[Id]
+  def id: Id
 }
 
 object Identifiable {

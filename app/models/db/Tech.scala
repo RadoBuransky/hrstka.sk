@@ -1,8 +1,8 @@
 package models.db
 
-import reactivemongo.bson.BSONObjectID
+import models.db.Identifiable.Id
 
-case class Tech(_id: Option[BSONObjectID],
-                author: BSONObjectID,
+case class Tech(_id: Option[Id],
+                author: Id,
                 name: String,
                 rating: Option[Double]) extends Identifiable with Authorable

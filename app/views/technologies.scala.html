@@ -1,12 +1,20 @@
-@(lang: Lang, msg: String)
+@(lang: Lang, msg: Option[String], techs: Seq[models.domain.Tech])
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <h2>Technológie</h2>
+    @if(msg.isDefined) {
     <h3>@msg</h3>
-    <form action="@AppLoader.routes.techController.add" method="post" class="form-inline">
+    }
+    <form action="@AppLoader.routes.techController.insert" method="post" class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" id="techName" name="techName">
         </div>
         <button type="submit" class="btn btn-default">Pridať</button>
     </form>
+
+    <div>
+    @for(tech <- techs) {
+        <div>@tech.name</div>
+    }
+    </div>
 }
