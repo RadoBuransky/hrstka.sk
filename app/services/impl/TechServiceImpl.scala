@@ -1,7 +1,8 @@
 package services.impl
 
 import models.domain
-import models.domain.{TechRating, User}
+import models.domain.Identifiable.Id
+import models.domain.TechRating
 import reactivemongo.bson.BSONObjectID
 import repositories.TechRepository
 import services.TechService
@@ -21,6 +22,10 @@ class TechServiceImpl(techRepository: TechRepository) extends TechService {
         id = tech._id.get.stringify,
         author = tech.author.stringify,
         name = tech.name,
-        rating = tech.rating.map(TechRating))
+        rating = TechRating(tech.upVotes,tech.downVotes))
     })
+
+  override def voteUp(id: Id, userId: Id) = vote(id, userId, 1)
+  override def voteDown(id: Id, userId: Id) =  vote(id, userId, -1)
+  private def vote(id: Id, userId: Id, delta: Int) = techRepository.updateRating(BSONObjectID(id), delta)
 }

@@ -5,4 +5,5 @@ import models.db.Identifiable.Id
 case class Tech(_id: Option[Id],
                 author: Id,
                 name: String,
-                rating: Option[Double]) extends Identifiable with Authorable
+                upVotes: Int,
+                downVotes: Int) extends Identifiable with Authorable

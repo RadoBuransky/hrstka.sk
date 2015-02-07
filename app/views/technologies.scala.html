@@ -1,4 +1,4 @@
-@(lang: Lang, msg: Option[String], techs: Seq[models.domain.Tech])
+@(lang: Lang, msg: Option[String], techs: Seq[models.ui.Tech])
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <h2>Technológie</h2>
@@ -14,7 +14,12 @@
 
     <div>
     @for(tech <- techs) {
-        <div>@tech.name</div>
+        <div>
+            @tech.rating%
+            @tech.name
+            <a href="@AppLoader.routes.techController.voteUp(tech.id)">Up</a>
+            <a href="@AppLoader.routes.techController.voteDown(tech.id)">Down</a>
+        </div>
     }
     </div>
 }
