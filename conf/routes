@@ -6,6 +6,9 @@ POST    /tech                       AppLoader.techController.insert
 GET     /tech/:id/voteUp            AppLoader.techController.voteUp(id: String)
 GET     /tech/:id/voteDown          AppLoader.techController.voteDown(id: String)
 
+GET     /comp                       AppLoader.compController.all
+POST    /comp                       AppLoader.compController.insert
+
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

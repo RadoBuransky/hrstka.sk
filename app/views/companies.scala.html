@@ -1,5 +1,25 @@
-@(lang: Lang)
+@(lang: Lang, comps: Seq[models.ui.Comp])
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <h2>Firmy</h2>
+
+    <form action="@AppLoader.routes.compController.insert" method="post" class="form-inline">
+        <div class="form-group">
+            <label for="compName">Názov</label>
+            <input type="text" class="form-control" id="compName" name="compName">
+        </div>
+        <div class="form-group">
+            <label for="website">Web</label>
+            <input type="url" class="form-control" id="website" name="website">
+        </div>
+        <button type="submit" class="btn btn-default">Pridať</button>
+    </form>
+
+    <div>
+        @for(comp <- comps) {
+        <div>
+            <a href="@comp.website" target="_blank">@comp.name</a>
+        </div>
+        }
+    </div>
 }

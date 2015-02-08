@@ -4,5 +4,5 @@ import models.domain.Identifiable.Id
 
 trait Authorable {
   self: Identifiable =>
-  def author: Id
+  def authorId: Id
 }

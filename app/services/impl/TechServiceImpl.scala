@@ -17,7 +17,7 @@ class TechServiceImpl(techRepository: TechRepository,
 
   override def insert(name: String, userId: domain.Identifiable.Id) =
     techRepository.insert(
-      name = name,
+      name = name.toLowerCase,
       authorId = BSONObjectID(userId)
     ).map(_.stringify)
 
@@ -25,7 +25,7 @@ class TechServiceImpl(techRepository: TechRepository,
     techRepository.all().map(_.map { tech =>
       domain.Tech(
         id = tech._id.stringify,
-        author = tech.authorId.stringify,
+        authorId = tech.authorId.stringify,
         name = tech.name,
         rating = TechRating(tech.upVotes,tech.downVotes))
     }.sortBy( _.rating.map(-1 * _.value).getOrElse(0.0)))

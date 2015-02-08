@@ -32,8 +32,7 @@ object TechController {
 private class TechControllerImpl(techService: TechService) extends BaseController with TechController {
   import controllers.TechController._
 
-  override def insert: Action[AnyContent] = Action.async { implicit request =>
-    val form = insertTechForm.bindFromRequest().get
+  override def insert: Action[AnyContent] = withForm(insertTechForm) { form =>
     techService.insert(form.techName, userId).map { Unit =>
       Redirect(AppLoader.routes.techController.all())
     }
