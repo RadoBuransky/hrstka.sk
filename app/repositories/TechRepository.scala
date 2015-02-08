@@ -6,7 +6,7 @@ import models.db.Tech
 import scala.concurrent.Future
 
 trait TechRepository {
-  def insert(name: String, author: Id): Future[Unit]
+  def insert(name: String, authorId: Id): Future[Id]
   def all(): Future[Seq[Tech]]
-  def updateRating(id: Id, delta: Int): Future[Unit]
+  def updateRating(techId: Id, delta: Int): Future[Unit]
 }

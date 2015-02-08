@@ -5,4 +5,5 @@ object JsonFormats {
   import play.modules.reactivemongo.json.BSONFormats._
 
   implicit val techFormat = Json.format[Tech]
+  implicit val techVoteLogFormat = Json.format[TechVoteLog]
 }

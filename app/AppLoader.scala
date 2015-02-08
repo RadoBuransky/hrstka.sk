@@ -1,6 +1,6 @@
 import controllers.{AppController, TechController}
-import repositories.TechRepository
-import repositories.mongoDb.MongoTechRepository
+import repositories.mongoDb.{MongoTechRepository, MongoTechVoteLogRepository}
+import repositories.{TechRepository, TechVoteLogRepository}
 import services.TechService
 import services.impl.TechServiceImpl
 
@@ -10,8 +10,9 @@ package object AppLoader {
   lazy val techController = TechController(techService)
 
   // Services
-  lazy val techService: TechService = new TechServiceImpl(techRepository)
+  lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteLogRepository)
 
   // Repositories
   lazy val techRepository: TechRepository = new MongoTechRepository
+  lazy val techVoteLogRepository: TechVoteLogRepository = new MongoTechVoteLogRepository
 }

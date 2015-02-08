@@ -4,7 +4,7 @@ import models.db.Identifiable.Id
 import reactivemongo.bson.BSONObjectID
 
 trait Identifiable {
-  def _id: Option[Id]
+  def _id: Id
 }
 
 object Identifiable {

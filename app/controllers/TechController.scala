@@ -40,9 +40,15 @@ private class TechControllerImpl(techService: TechService) extends BaseControlle
   }
 
   override def all: Action[AnyContent] = Action.async { implicit request =>
-    techService.all().map { techs =>
-      val uiTechs = techs.map(ui.Tech(_))
-      Ok(views.html.technologies(SupportedLang.defaultLang, None, uiTechs))
+    techService.all().flatMap { techs =>
+      Future.sequence(techs.map { tech =>
+        for  {
+          canVoteUp <- techService.canVoteUp(tech.id, userId)
+          canVoteDown <- techService.canVoteDown(tech.id, userId)
+        } yield ui.Tech(tech, canVoteUp, canVoteDown)
+      }).map { uiTechs =>
+        Ok(views.html.technologies(SupportedLang.defaultLang, None, uiTechs))
+      }
     }
   }
 

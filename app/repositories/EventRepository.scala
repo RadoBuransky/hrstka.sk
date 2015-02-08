@@ -1,9 +1,9 @@
 package repositories
 
-import models.db.Event
+import models.db.Log
 
 import scala.concurrent.Future
 
 trait EventRepository {
-  def insert(event: Event): Future[Unit]
+  def insert(event: Log): Future[Unit]
 }

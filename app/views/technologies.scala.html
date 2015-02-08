@@ -17,8 +17,12 @@
         <div>
             @tech.rating%
             @tech.name
-            <a href="@AppLoader.routes.techController.voteUp(tech.id)">Up</a>
-            <a href="@AppLoader.routes.techController.voteDown(tech.id)">Down</a>
+            @if(tech.canVoteUp) {
+                <a href="@AppLoader.routes.techController.voteUp(tech.id)">Up</a>
+            }
+            @if(tech.canVoteDown) {
+                <a href="@AppLoader.routes.techController.voteDown(tech.id)">Down</a>
+            }
         </div>
     }
     </div>
