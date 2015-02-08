@@ -20,7 +20,7 @@ class MongoTechRepository extends BaseMongoRepository(TechCollection) with TechR
       upVotes = 0,
       downVotes = 0)).map(_._id)
 
-  override def all() = all[Tech]()
+  override def all() = find[Tech](Json.obj())
 
   override def updateRating(techId: Id, delta: Int) = {
     val field = if (delta < 0) "downVotes" else "upVotes"

@@ -26,7 +26,7 @@ class TechServiceImpl(techRepository: TechRepository,
         author = tech.authorId.stringify,
         name = tech.name,
         rating = TechRating(tech.upVotes,tech.downVotes))
-    })
+    }.sortBy( _.rating.map(-1 * _.value).getOrElse(0.0)))
 
   override def voteUp(id: Id, userId: Id) =  vote(id, userId, 1).map { Unit =>
     techVoteLogRepository.logUpVote(BSONObjectID(id), BSONObjectID(userId))

@@ -17,8 +17,6 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
   protected def update(id: Id, value: JsValue): Future[Unit] =
     collection.update(Json.obj("_id" -> id), value).map(lastError => ())
 
-  protected def all[T]()(implicit reads: Reads[T]) = find[T](Json.obj())
-
   protected def find[T](selector: JsValue, sort: JsValue = JsNull)(implicit reads: Reads[T]): Future[Seq[T]] = {
     val findResult = collection.find(selector)
     val sortResult = sort match {
