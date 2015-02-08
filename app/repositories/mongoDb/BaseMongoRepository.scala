@@ -1,11 +1,13 @@
 package repositories.mongoDb
 
+import common.HEException
 import models.db.Identifiable.Id
 import play.api.Play.current
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoPlugin
 import play.modules.reactivemongo.json.collection.JSONCollection
 import play.modules.reactivemongo.json.BSONFormats._
+import reactivemongo.core.commands.{CollStatsResult, CollStats}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -26,7 +28,14 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
     sortResult.cursor[T].collect[Seq]()
   }
 
-  protected def collection = db.collection[JSONCollection](coll.name)
+  protected def collCount(): Future[Int] = {
+    val collStats = new CollStats(CompTechCollection.name)
+    db.connection.ask(collStats(db.name).maker).map(CollStatsResult(_)).map {
+      case Right(collStatsResult) => collStatsResult.count
+      case Left(error) => throw new HEException(s"Collection stats error! [$error]")
+    }
+  }
 
-  private def db = ReactiveMongoPlugin.db
+  protected def collection = db.collection[JSONCollection](coll.name)
+  protected def db = ReactiveMongoPlugin.db
 }

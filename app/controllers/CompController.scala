@@ -3,11 +3,11 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.ui.Comp
+import models.ui.{Tech, Comp}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent}
-import services.CompService
+import services.{TechService, CompService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -26,10 +26,12 @@ object CompController {
     )(InsertCompForm.apply)(InsertCompForm.unapply)
   )
 
-  def apply(compService: CompService): CompController = new CompControllerImpl(compService)
+  def apply(compService: CompService,techService: TechService): CompController =
+    new CompControllerImpl(compService, techService)
 }
 
-private class CompControllerImpl(compService: CompService) extends BaseController with CompController {
+private class CompControllerImpl(compService: CompService,
+                                 techService: TechService) extends BaseController with CompController {
   import controllers.CompController._
 
   override def insert = withForm(insertCompForm) { form =>
@@ -39,11 +41,21 @@ private class CompControllerImpl(compService: CompService) extends BaseControlle
   }
 
   override def all =  Action.async { implicit request =>
-    compService.all().map { comps =>
-      val uiComps = comps.map { comp =>
-        Comp(comp, canVoteUp =  true, canVoteDown = true)
-      }
-      Ok(views.html.companies(SupportedLang.defaultLang, uiComps))
+    val compsTechs = for {
+      comps <- compService.all()
+      techs <- techService.all()
+    } yield (comps, techs)
+
+    compsTechs.map { case (comps, techs) =>
+      val uiComps = for {
+        comp <- comps
+      } yield Comp(comp, canVoteUp =  true, canVoteDown = true)
+
+      val uiTechs = for {
+        tech <- techs
+      } yield Tech(tech, canVoteUp = false, canVoteDown = false)
+
+      Ok(views.html.companies(SupportedLang.defaultLang, uiComps, uiTechs))
     }
   }
 }
