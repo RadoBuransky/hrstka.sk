@@ -2,12 +2,13 @@ GET     /                           AppLoader.appController.index
 GET     /*path/                     AppLoader.appController.untrail(path: String)
 
 GET     /tech                       AppLoader.techController.all
-POST    /tech                       AppLoader.techController.insert
+POST    /tech                       AppLoader.techController.add
 GET     /tech/:id/voteUp            AppLoader.techController.voteUp(id: String)
 GET     /tech/:id/voteDown          AppLoader.techController.voteDown(id: String)
 
 GET     /comp                       AppLoader.compController.all
-POST    /comp                       AppLoader.compController.insert
+POST    /comp                       AppLoader.compController.add
+POST    /comp/:id/addTech           AppLoader.compController.addTech(id: String)
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")

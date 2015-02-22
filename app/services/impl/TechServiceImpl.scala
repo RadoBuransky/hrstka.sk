@@ -4,7 +4,7 @@ import common.HEException
 import models._
 import models.db.TechVote
 import models.domain.Identifiable.{Id, _}
-import models.domain.TechRating
+import models.domain.{Tech, TechRating}
 import repositories.{TechRepository, TechVoteRepository}
 import services.TechService
 
@@ -21,13 +21,7 @@ class TechServiceImpl(techRepository: TechRepository,
     ).map(_.stringify)
 
   override def all() =
-    techRepository.all().map(_.map { tech =>
-      domain.Tech(
-        id = tech._id.stringify,
-        authorId = tech.authorId.stringify,
-        name = tech.name,
-        rating = TechRating(tech.upVotes,tech.downVotes))
-    }.sortBy( _.rating.map(-1 * _.value).getOrElse(0.0)))
+    techRepository.all().map(_.map(Tech(_)).sortBy(_.rating.map(-1 * _.value).getOrElse(0.0)))
 
   override def voteUp(id: Id, userId: Id) = vote(id, userId, 1, techVoteRepository.upVote, canVoteUp)
   override def voteDown(id: Id, userId: Id) = vote(id, userId, -1, techVoteRepository.downVote, canVoteDown)

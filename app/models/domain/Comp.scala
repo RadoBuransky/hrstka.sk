@@ -7,4 +7,5 @@ import models.domain.Identifiable.Id
 case class Comp(id: Id,
                 authorId: Id,
                 name: String,
-                website: URL) extends Identifiable with Authorable
+                website: URL,
+                techs: Seq[Tech]) extends Identifiable with Authorable

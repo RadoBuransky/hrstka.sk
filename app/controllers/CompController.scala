@@ -10,20 +10,29 @@ import play.api.mvc.{Action, AnyContent}
 import services.{TechService, CompService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-case class InsertCompForm(compName: String, website: String)
+case class AddCompForm(compName: String, website: String)
+case class AddTechToCompForm(techName: String)
 
 trait CompController {
-  def insert: Action[AnyContent]
+  def add: Action[AnyContent]
   def all: Action[AnyContent]
+  def addTech(compId: String): Action[AnyContent]
 }
 
 object CompController {
-  val insertCompForm = Form(
+  val addCompForm = Form(
     mapping(
       "compName" -> text,
       "website" -> text
-    )(InsertCompForm.apply)(InsertCompForm.unapply)
+    )(AddCompForm.apply)(AddCompForm.unapply)
+  )
+
+  val addTechToCompForm = Form(
+    mapping(
+      "techName" -> text
+    )(AddTechToCompForm.apply)(AddTechToCompForm.unapply)
   )
 
   def apply(compService: CompService,techService: TechService): CompController =
@@ -34,7 +43,7 @@ private class CompControllerImpl(compService: CompService,
                                  techService: TechService) extends BaseController with CompController {
   import controllers.CompController._
 
-  override def insert = withForm(insertCompForm) { form =>
+  override def add = withForm(addCompForm) { form =>
     compService.insert(form.compName, new URL(form.website), userId).map { Unit =>
       Redirect(AppLoader.routes.compController.all())
     }
@@ -49,7 +58,7 @@ private class CompControllerImpl(compService: CompService,
     compsTechs.map { case (comps, techs) =>
       val uiComps = for {
         comp <- comps
-      } yield Comp(comp, canVoteUp =  true, canVoteDown = true)
+      } yield Comp(comp, canVoteUp =  true, canVoteDown = true, comp.techs)
 
       val uiTechs = for {
         tech <- techs
@@ -57,5 +66,18 @@ private class CompControllerImpl(compService: CompService,
 
       Ok(views.html.companies(SupportedLang.defaultLang, uiComps, uiTechs))
     }
+  }
+
+  override def addTech(compId: String): Action[AnyContent] = withForm(addTechToCompForm) { form =>
+    // Find tech ID for the name
+    techService.all().map(_.find(_.name == form.techName)).flatMap {
+      case Some(tech) => {
+        compService.addTech(compId, tech.id, userId).map { Unit =>
+          Redirect(AppLoader.routes.compController.all())
+        }
+      }
+      case None => Future(BadRequest(s"Technology with name ${form.techName} doesn't exist!"))
+    }
+
   }
 }

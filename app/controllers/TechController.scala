@@ -13,14 +13,14 @@ import scala.concurrent.Future
 case class AddTechForm(techName: String)
 
 trait TechController {
-  def insert: Action[AnyContent]
+  def add: Action[AnyContent]
   def all: Action[AnyContent]
   def voteUp(id: String): Action[AnyContent]
   def voteDown(id: String): Action[AnyContent]
 }
 
 object TechController {
-  val insertTechForm = Form(
+  val addTechForm = Form(
     mapping(
       "techName" -> text
     )(AddTechForm.apply)(AddTechForm.unapply)
@@ -32,7 +32,7 @@ object TechController {
 private class TechControllerImpl(techService: TechService) extends BaseController with TechController {
   import controllers.TechController._
 
-  override def insert: Action[AnyContent] = withForm(insertTechForm) { form =>
+  override def add: Action[AnyContent] = withForm(addTechForm) { form =>
     techService.insert(form.techName, userId).map { Unit =>
       Redirect(AppLoader.routes.techController.all())
     }

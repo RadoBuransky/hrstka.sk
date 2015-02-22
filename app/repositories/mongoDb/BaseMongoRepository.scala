@@ -28,6 +28,8 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
     sortResult.cursor[T].collect[Seq]()
   }
 
+  protected def get[T](id: Id)(implicit reads: Reads[T]): Future[T] =  find[T](Json.obj("_id" -> id)).map(_.head)
+
   protected def collCount(): Future[Int] = {
     val collStats = new CollStats(CompTechCollection.name)
     db.connection.ask(collStats(db.name).maker).map(CollStatsResult(_)).map {

@@ -7,14 +7,16 @@ case class Comp(id: String,
                 website: String,
                 rating: String,
                 canVoteUp: Boolean,
-                canVoteDown: Boolean)
+                canVoteDown: Boolean,
+                techs: Seq[Tech])
 
 object Comp {
-  def apply(comp: domain.Comp, canVoteUp: Boolean, canVoteDown: Boolean) = new Comp(
+  def apply(comp: domain.Comp, canVoteUp: Boolean, canVoteDown: Boolean, techs: Seq[domain.Tech]) = new Comp(
     id          = comp.id,
     name        = comp.name,
     website     = comp.website.toString,
     rating      = "0",
     canVoteUp   = canVoteUp,
-    canVoteDown = canVoteDown)
+    canVoteDown = canVoteDown,
+    techs       = techs.map(Tech(_, canVoteUp = false, canVoteDown = false)))
 }

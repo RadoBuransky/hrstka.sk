@@ -12,7 +12,7 @@ package object AppLoader {
 
   // Services
   lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteRepository)
-  lazy val compService: CompService = new CompServiceImpl(compRepository, compTechRepository)
+  lazy val compService: CompService = new CompServiceImpl(compRepository, compTechRepository, techRepository)
 
   // Repositories
   lazy val techRepository: TechRepository = new MongoTechRepository

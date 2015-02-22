@@ -1,0 +1,2 @@
+// MongoDB initialization script
+db.compTech.ensureIndex( { compId: 1, techId: 1 }, { unique: true } )
