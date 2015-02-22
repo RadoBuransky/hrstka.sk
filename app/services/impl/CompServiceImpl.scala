@@ -29,7 +29,7 @@ class CompServiceImpl(compRepository: CompRepository,
   })
 
   override def addTech(compId: Id, techId: Id, userId: Id): Future[Id] = {
-    compTechRepository.insert(
+    compTechRepository.add(
       authorId  = userId,
       compId    = compId,
       techId    = techId

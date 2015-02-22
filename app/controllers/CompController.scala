@@ -10,20 +10,29 @@ import play.api.mvc.{Action, AnyContent}
 import services.{TechService, CompService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-case class InsertCompForm(compName: String, website: String)
+case class AddCompForm(compName: String, website: String)
+case class AddTechToCompForm(techId: String)
 
 trait CompController {
-  def insert: Action[AnyContent]
+  def add: Action[AnyContent]
   def all: Action[AnyContent]
+  def addTech(compId: String): Action[AnyContent]
 }
 
 object CompController {
-  val insertCompForm = Form(
+  val addCompForm = Form(
     mapping(
       "compName" -> text,
       "website" -> text
-    )(InsertCompForm.apply)(InsertCompForm.unapply)
+    )(AddCompForm.apply)(AddCompForm.unapply)
+  )
+
+  val addTechToCompForm = Form(
+    mapping(
+      "techId" -> text
+    )(AddTechToCompForm.apply)(AddTechToCompForm.unapply)
   )
 
   def apply(compService: CompService,techService: TechService): CompController =
@@ -34,7 +43,7 @@ private class CompControllerImpl(compService: CompService,
                                  techService: TechService) extends BaseController with CompController {
   import controllers.CompController._
 
-  override def insert = withForm(insertCompForm) { form =>
+  override def add = withForm(addCompForm) { form =>
     compService.insert(form.compName, new URL(form.website), userId).map { Unit =>
       Redirect(AppLoader.routes.compController.all())
     }
@@ -56,6 +65,12 @@ private class CompControllerImpl(compService: CompService,
       } yield Tech(tech, canVoteUp = false, canVoteDown = false)
 
       Ok(views.html.companies(SupportedLang.defaultLang, uiComps, uiTechs))
+    }
+  }
+
+  override def addTech(compId: String): Action[AnyContent] = withForm(addTechToCompForm) { form =>
+    compService.addTech(compId, form.techId, userId).map { Unit =>
+      Redirect(AppLoader.routes.compController.all())
     }
   }
 }
