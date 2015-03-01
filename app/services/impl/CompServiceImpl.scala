@@ -45,4 +45,7 @@ class CompServiceImpl(compRepository: CompRepository,
       techId    = techId
     ).map(_.stringify)
   }
+
+  override def removeTech(compId: Id, techId: Id, userId: Id): Future[Unit] =
+    compTechRepository.remove(compId, techId, userId)
 }

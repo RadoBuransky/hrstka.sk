@@ -20,7 +20,7 @@
         <div>
             <a href="@comp.website" target="_blank">@comp.name</a>
             @for(compTech <- comp.techs) {
-              <div>@compTech.name</div>
+              <div>@compTech.name <a href="@AppLoader.routes.compController.removeTech(comp.id, compTech.id)">remove</a></div>
             }
             <form action="@AppLoader.routes.compController.addTech(comp.id)" method="post" class="form-inline">
                 <input list="techs" class="form-control" id="techName" name="techName">

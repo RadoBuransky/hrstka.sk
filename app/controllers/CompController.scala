@@ -3,11 +3,11 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.ui.{Tech, Comp}
+import models.ui.{Comp, Tech}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent}
-import services.{TechService, CompService}
+import services.{CompService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -19,6 +19,7 @@ trait CompController {
   def add: Action[AnyContent]
   def all: Action[AnyContent]
   def addTech(compId: String): Action[AnyContent]
+  def removeTech(compId: String, techId: String): Action[AnyContent]
 }
 
 object CompController {
@@ -79,5 +80,11 @@ private class CompControllerImpl(compService: CompService,
       case None => Future(BadRequest(s"Technology with name ${form.techName} doesn't exist!"))
     }
 
+  }
+
+  override def removeTech(compId: String, techId: String): Action[AnyContent] = Action.async { implicit request =>
+    compService.removeTech(compId, techId, userId).map { Unit =>
+      Redirect(AppLoader.routes.compController.all())
+    }
   }
 }

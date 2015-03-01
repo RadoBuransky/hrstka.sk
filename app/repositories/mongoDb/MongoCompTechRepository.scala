@@ -10,6 +10,7 @@ import repositories.CompTechRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 class MongoCompTechRepository extends BaseMongoRepository(CompTechCollection) with CompTechRepository {
   override def add(authorId: Id, compId: Id, techId: Id): Future[Id] = {
     collCount().flatMap { count =>
@@ -24,9 +25,8 @@ class MongoCompTechRepository extends BaseMongoRepository(CompTechCollection) wi
     }
   }
 
-  override def del(compTechId: Id, authorId: Id): Unit = ???
+  override def remove(compId: Id, techId: Id, authorId: Id): Future[Unit] =
+    collection.remove(Json.obj("compId" -> compId, "techId" -> techId)).map(_ => Unit)
 
   override def getTechs(compId: Id): Future[Seq[Id]] = find[CompTech](Json.obj("compId" -> compId)).map(_.map(_.techId))
-
-  override def getUnassignedTechs(compId: Id): Future[Seq[Id]] = ???
 }
