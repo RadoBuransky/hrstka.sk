@@ -69,6 +69,12 @@ private class CompControllerImpl(compService: CompService,
   }
 
   override def addTech(compId: String): Action[AnyContent] = withForm(addTechToCompForm) { form =>
+    compService.addTech(compId, form.techId, userId).map { Unit =>
+      Redirect(AppLoader.routes.compController.all())
+    }
+  }
+
+  override def addTech(compId: String): Action[AnyContent] = withForm(addTechToCompForm) { form =>
     // Find tech ID for the name
     techService.all().map(_.find(_.name == form.techName)).flatMap {
       case Some(tech) => {
