@@ -7,14 +7,13 @@ import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoPlugin
 import play.modules.reactivemongo.json.collection.JSONCollection
 import play.modules.reactivemongo.json.BSONFormats._
-import reactivemongo.core.commands.{CollStatsResult, CollStats}
+import reactivemongo.core.commands.{LastError, CollStatsResult, CollStats}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class BaseMongoRepository(coll: MongoCollection) {
-  protected def insert[T](value: T)(implicit writes: Writes[T]): Future[T] =
-    collection.insert(value).map(lastError => value)
+  protected def insert[T](value: T)(implicit writes: Writes[T]): Future[LastError] = collection.insert(value)
 
   protected def update(id: Id, value: JsValue): Future[Unit] =
     collection.update(Json.obj("_id" -> id), value).map(lastError => ())

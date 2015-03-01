@@ -13,12 +13,14 @@ import scala.concurrent.Future
 
 class MongoTechRepository extends BaseMongoRepository(TechCollection) with TechRepository {
 
-  override def insert(name: String, authorId: Id): Future[Id] =
-    insert(Tech(_id = BSONObjectID.generate,
+  override def insert(name: String, authorId: Id): Future[Id] = {
+    val id = BSONObjectID.generate
+    insert(Tech(_id = id,
       authorId = authorId,
       name = name,
       upVotes = 0,
-      downVotes = 0)).map(_._id)
+      downVotes = 0)).map(_ => id)
+  }
 
   override def all() = find[Tech](Json.obj())
 

@@ -13,13 +13,14 @@ import scala.concurrent.Future
 class MongoCompTechRepository extends BaseMongoRepository(CompTechCollection) with CompTechRepository {
   override def add(authorId: Id, compId: Id, techId: Id): Future[Id] = {
     collCount().flatMap { count =>
+      val id = BSONObjectID.generate
       insert(CompTech(
-        _id       = BSONObjectID.generate,
+        _id       = id,
         authorId  = authorId,
         compId    = compId,
         techId    = techId,
         index     = count,
-        removed   = None)).map(_._id)
+        removed   = None)).map(_ => id)
     }
   }
 
