@@ -61,11 +61,7 @@ private class CompControllerImpl(compService: CompService,
         comp <- comps
       } yield Comp(comp, canVoteUp =  true, canVoteDown = true, comp.techs)
 
-      val uiTechs = for {
-        tech <- techs
-      } yield Tech(tech, canVoteUp = false, canVoteDown = false)
-
-      Ok(views.html.companies(SupportedLang.defaultLang, uiComps, uiTechs))
+      Ok(views.html.companies(SupportedLang.defaultLang, uiComps, techs.map(Tech(_))))
     }
   }
 

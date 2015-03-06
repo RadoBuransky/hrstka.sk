@@ -1,2 +1,7 @@
 // MongoDB initialization script
+
+// Unique indexes
 db.compTech.ensureIndex( { compId: 1, techId: 1 }, { unique: true } )
+db.tech.ensureIndex( { name: 1 }, { unique: true } )
+db.comp.ensureIndex( { name: 1 }, { unique: true } )
+db.comp.ensureIndex( { website: 1 }, { unique: true } )

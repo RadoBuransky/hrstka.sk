@@ -26,7 +26,7 @@ class MongoTechRepository extends BaseMongoRepository(TechCollection) with TechR
 
   override def updateRating(techId: Id, delta: Int) = {
     val field = if (delta < 0) "downVotes" else "upVotes"
-    update(techId, Json.obj(inc -> Json.obj(field -> 1)))
+    update(techId, Json.obj(inc -> Json.obj(field -> Math.abs(delta))))
   }
 
   override def get(techId: Id): Future[Tech] = get[Tech](techId)

@@ -1,7 +1,7 @@
 package controllers
 
 import common.SupportedLang
-import models._
+import models.ui.Tech
 import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -39,15 +39,8 @@ private class TechControllerImpl(techService: TechService) extends BaseControlle
   }
 
   override def all: Action[AnyContent] = Action.async { implicit request =>
-    techService.all().flatMap { techs =>
-      Future.sequence(techs.map { tech =>
-        for  {
-          canVoteUp <- techService.canVoteUp(tech.id, userId)
-          canVoteDown <- techService.canVoteDown(tech.id, userId)
-        } yield ui.Tech(tech, canVoteUp, canVoteDown)
-      }).map { uiTechs =>
-        Ok(views.html.technologies(SupportedLang.defaultLang, None, uiTechs))
-      }
+    techService.all().map { techs =>
+      Ok(views.html.technologies(SupportedLang.defaultLang, None, techs.map(Tech(_))))
     }
   }
 

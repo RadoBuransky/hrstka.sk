@@ -18,5 +18,5 @@ object Comp {
     rating      = "0",
     canVoteUp   = canVoteUp,
     canVoteDown = canVoteDown,
-    techs       = techs.map(Tech(_, canVoteUp = false, canVoteDown = false)))
+    techs       = techs.map(Tech(_)))
 }
