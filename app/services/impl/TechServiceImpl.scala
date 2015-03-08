@@ -2,7 +2,7 @@ package services.impl
 
 import models._
 import models.domain.Identifiable.{Id, _}
-import models.domain.Tech
+import models.domain.{TechVote, Tech}
 import play.api.Logger
 import repositories.{VoteRepository, TechRepository, VoteLogRepository}
 import services.TechService
@@ -43,6 +43,9 @@ class TechServiceImpl(techRepository: TechRepository,
       }
     }
   }
+
+  override def votesFor(userId: Id): Future[Seq[TechVote]] =
+    techVoteRepository.getAll(userId).map(_.map(TechVote(_)))
 }
 
 private object TechServiceImpl {

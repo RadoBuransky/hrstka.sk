@@ -61,7 +61,7 @@ private class CompControllerImpl(compService: CompService,
         comp <- comps
       } yield Comp(comp, canVoteUp =  true, canVoteDown = true, comp.techs)
 
-      Ok(views.html.companies(SupportedLang.defaultLang, uiComps, techs.map(Tech(_))))
+      Ok(views.html.companies(SupportedLang.defaultLang, uiComps, techs.map(Tech(_, None))))
     }
   }
 

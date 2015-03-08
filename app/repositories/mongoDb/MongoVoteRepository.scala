@@ -34,6 +34,9 @@ class MongoVoteRepository(coll: MongoCollection) extends BaseMongoRepository(col
 
   override def getValue(id: Id, authorId: Id): Future[Option[Int]] =
     find[Vote](Json.obj("id" -> id, "authorId" -> authorId)).map(_.headOption.map(_.value))
+
+  override def getAll(authorId: Id): Future[Seq[Vote]] =
+    find[Vote](Json.obj("authorId" -> authorId))
 }
 
 object MongoTechVoteRepository extends MongoVoteRepository(TechVoteCollection)

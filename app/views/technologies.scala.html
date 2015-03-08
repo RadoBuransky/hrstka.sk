@@ -15,6 +15,9 @@
         <div>
             @tech.rating%
             @tech.name
+            @if(tech.userVoteValue.isDefined) {
+              @tech.userVoteValue.get
+            }
             <a href="@AppLoader.routes.techController.voteUp(tech.id)">+</a>
             <a href="@AppLoader.routes.techController.voteDown(tech.id)">-</a>
         </div>
