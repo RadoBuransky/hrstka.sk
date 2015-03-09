@@ -9,5 +9,5 @@ trait TechRepository {
   def insert(name: String, authorId: Id): Future[Id]
   def all(): Future[Seq[Tech]]
   def get(techId: Id): Future[Tech]
-  def updateRating(techId: Id, delta: Int): Future[Unit]
+  def updateRating(techId: Id, delta: Int, value: Int): Future[Unit]
 }

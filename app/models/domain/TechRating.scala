@@ -3,9 +3,7 @@ package models.domain
 import common.HEException
 
 /**
- * Technology rating. It is a ratio of pluses and minuses.
- *
- * @param value Percentage of plus votes.
+ * Technology rating.
  */
 case class TechRating(value: Double) {
   if (value > 100.0)
@@ -15,11 +13,12 @@ case class TechRating(value: Double) {
 }
 
 object TechRating {
-  def apply(upVotes: Int, downVotes: Int): Option[TechRating] = {
-    val count = upVotes + downVotes
-    if (count == 0)
-      None
+  val maxVoteValue = 3
+  val minVoteValue = -1
+
+  def apply(upVotesValue: Int, voteCount: Int): TechRating =
+    if (voteCount == 0)
+      TechRating(0)
     else
-      Some(TechRating(upVotes.toDouble / count.toDouble))
-  }
+      TechRating(upVotesValue.toDouble / (voteCount.toDouble * maxVoteValue))
 }
