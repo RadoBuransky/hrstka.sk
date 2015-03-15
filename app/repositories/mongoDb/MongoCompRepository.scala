@@ -11,14 +11,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class MongoCompRepository extends BaseMongoRepository(CompCollection) with CompRepository {
-  override def insert(name: String, website: String, authorId: Id): Future[Id] = {
+  override def insert(name: String, website: String, location: String, codersCount: Option[Int], femaleCodersCount: Option[Int],
+                      note: String): Future[Id] = {
     val id = BSONObjectID.generate
-    insert(Comp(_id = id,
-      authorId = authorId,
-      name = name,
-      website = website,
-      upVotes = 0,
-      downVotes = 0)).map(_ => id)
+    insert(Comp(
+      _id               = id,
+      name              = name,
+      website           = website,
+      location          = location,
+      codersCount       = codersCount,
+      femaleCodersCount = femaleCodersCount,
+      note              = note)).map(_ => id)
   }
 
   override def all(): Future[Seq[Comp]] = find[Comp](Json.obj())

@@ -3,7 +3,7 @@
 @main("Hŕstka Eminencie", "xxx", lang) {
     <h2>Firmy</h2>
 
-    <form action="@AppLoader.routes.compController.add" method="post" class="form-inline">
+    <form action="@AppLoader.routes.compController.add" method="post">
         <div class="form-group">
             <label for="compName">Názov</label>
             <input type="text" class="form-control" id="compName" name="compName">
@@ -12,6 +12,22 @@
             <label for="website">Web</label>
             <input type="url" class="form-control" id="website" name="website">
         </div>
+        <div class="form-group">
+            <label for="location">Sídlo</label>
+            <input type="text" class="form-control" id="location" name="location">
+        </div>
+        <div class="form-group">
+            <label for="codersCount">Počet programátorov</label>
+            <input type="number" class="form-control" id="codersCount" name="codersCount">
+        </div>
+        <div class="form-group">
+            <label for="femaleCodersCount">Z toho žien</label>
+            <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount">
+        </div>
+        <div class="form-group">
+            <label for="note">Čo a ako sa programuje</label>
+            <input type="text" class="form-control" id="note" name="note">
+        </div>
         <button type="submit" class="btn btn-default">Pridať</button>
     </form>
 
@@ -19,9 +35,8 @@
         @for(comp <- comps) {
         <div>
             <a href="@comp.website" target="_blank">@comp.name</a>
-            @for(compTech <- comp.techs) {
-              <div>@compTech.name <a href="@AppLoader.routes.compController.removeTech(comp.id, compTech.id)">remove</a></div>
-            }
+            <div>@comp.location, programátorov / z toho žien: @comp.codersCount / @comp.femaleCodersCount</div>
+            <div>@comp.note</div>
             <form action="@AppLoader.routes.compController.addTech(comp.id)" method="post" class="form-inline">
                 <input list="techs" class="form-control" id="techName" name="techName">
 

@@ -12,7 +12,8 @@ import services.{CompService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-case class AddCompForm(compName: String, website: String)
+case class AddCompForm(name: String, website: String, location: String, codersCount: Option[Int],
+                       femaleCodersCount: Option[Int], note: String)
 case class AddTechToCompForm(techName: String)
 
 trait CompController {
@@ -26,7 +27,11 @@ object CompController {
   val addCompForm = Form(
     mapping(
       "compName" -> text,
-      "website" -> text
+      "website" -> text,
+      "location" -> text,
+      "codersCount" -> optional(number),
+      "femaleCodersCount" -> optional(number),
+      "note" -> text
     )(AddCompForm.apply)(AddCompForm.unapply)
   )
 
@@ -45,7 +50,8 @@ private class CompControllerImpl(compService: CompService,
   import controllers.CompController._
 
   override def add = withForm(addCompForm) { form =>
-    compService.insert(form.compName, new URL(form.website), userId).map { Unit =>
+    compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
+      form.note).map { Unit =>
       Redirect(AppLoader.routes.compController.all())
     }
   }
@@ -57,9 +63,7 @@ private class CompControllerImpl(compService: CompService,
     } yield (comps, techs)
 
     compsTechs.map { case (comps, techs) =>
-      val uiComps = for {
-        comp <- comps
-      } yield Comp(comp, canVoteUp =  true, canVoteDown = true, comp.techs)
+      val uiComps = comps.map(Comp(_))
 
       Ok(views.html.companies(SupportedLang.defaultLang, uiComps, techs.map(Tech(_, None))))
     }

@@ -3,9 +3,9 @@ package services.impl
 import java.net.URL
 
 import models.domain
-import models.domain.{Tech, Comp}
+import models.domain.Comp
 import models.domain.Identifiable.{Id, _}
-import repositories.{TechRepository, CompRepository, CompTechRepository}
+import repositories.{CompRepository, CompTechRepository, TechRepository}
 import services.CompService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,11 +14,15 @@ import scala.concurrent.Future
 class CompServiceImpl(compRepository: CompRepository,
                       compTechRepository: CompTechRepository,
                       techRepository: TechRepository) extends CompService {
-  override def insert(name: String, website: URL, userId: Id): Future[Id] =
+  override def insert(name: String, website: URL, location: String, codersCount: Option[Int], femaleCodersCount: Option[Int],
+                      note: String): Future[Id] =
     compRepository.insert(
-      name      = name.toLowerCase,
-      website   = website.toString,
-      authorId  = userId
+      name              = name,
+      website           = website.toString,
+      location          = location,
+      codersCount       = codersCount,
+      femaleCodersCount = femaleCodersCount,
+      note              = note
     ).map(_.stringify)
 
   override def all(): Future[Seq[Comp]] = {
@@ -27,11 +31,13 @@ class CompServiceImpl(compRepository: CompRepository,
         compTechRepository.getTechs(comp._id).flatMap { techIds =>
           Future.sequence(techIds.map(techRepository.get)).map { techs =>
             domain.Comp(
-              id        = comp._id.stringify,
-              authorId  = comp.authorId.stringify,
-              name      = comp.name,
-              website   = new URL(comp.website),
-              techs     = techs.map(Tech(_)))
+              id                = comp._id.stringify,
+              name              = comp.name,
+              website           = new URL(comp.website),
+              location          = comp.location,
+              codersCount       = comp.codersCount,
+              femaleCodersCount = comp.femaleCodersCount,
+              note              = comp.note)
           }
         }
       })

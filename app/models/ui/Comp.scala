@@ -5,18 +5,18 @@ import models.domain
 case class Comp(id: String,
                 name: String,
                 website: String,
-                rating: String,
-                canVoteUp: Boolean,
-                canVoteDown: Boolean,
-                techs: Seq[Tech])
+                location: String,
+                codersCount: Option[Int],
+                femaleCodersCount: Option[Int],
+                note: String)
 
 object Comp {
-  def apply(comp: domain.Comp, canVoteUp: Boolean, canVoteDown: Boolean, techs: Seq[domain.Tech]) = new Comp(
-    id          = comp.id,
-    name        = comp.name,
-    website     = comp.website.toString,
-    rating      = "0",
-    canVoteUp   = canVoteUp,
-    canVoteDown = canVoteDown,
-    techs       = techs.map(Tech(_, None)))
+  def apply(comp: domain.Comp) = new Comp(
+    id                = comp.id,
+    name              = comp.name,
+    website           = comp.website.toString,
+    location          = comp.location,
+    codersCount       = comp.codersCount,
+    femaleCodersCount = comp.femaleCodersCount,
+    note              = comp.note)
 }
