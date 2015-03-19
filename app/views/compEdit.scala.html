@@ -1,8 +1,6 @@
-@(lang: Lang, comps: Seq[models.ui.Comp], techs: Seq[models.ui.Tech])
+@(lang: Lang, comp: Option[models.ui.Comp])
 
 @main("Hŕstka Eminencie", "xxx", lang) {
-    <h2>Firmy</h2>
-
     <form action="@AppLoader.routes.compController.add" method="post">
         <div class="form-group">
             <label for="compName">Názov</label>
@@ -30,25 +28,4 @@
         </div>
         <button type="submit" class="btn btn-default">Pridať</button>
     </form>
-
-    <div>
-        @for(comp <- comps) {
-        <div>
-            <a href="@comp.website" target="_blank">@comp.name</a>
-            <div>@comp.location, programátorov / z toho žien: @comp.codersCount / @comp.femaleCodersCount</div>
-            <div>@comp.note</div>
-            <form action="@AppLoader.routes.compController.addTech(comp.id)" method="post" class="form-inline">
-                <input list="techs" class="form-control" id="techName" name="techName">
-
-                <datalist id="techs">
-                    @for(tech <- techs) {
-                    <option value="@tech.name">
-                    }
-                </datalist>
-
-                <button type="submit" class="btn btn-default">+</button>
-            </form>
-        </div>
-        }
-    </div>
 }

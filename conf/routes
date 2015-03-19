@@ -7,6 +7,7 @@ GET     /tech/:id/voteUp            AppLoader.techController.voteUp(id: String)
 GET     /tech/:id/voteDown          AppLoader.techController.voteDown(id: String)
 
 GET     /comp                       AppLoader.compController.all
+GET     /comp/new                   AppLoader.compController.addForm
 POST    /comp                       AppLoader.compController.add
 POST    /comp/:id/addTech           AppLoader.compController.addTech(id: String)
 GET     /comp/:id/remove/:techId    AppLoader.compController.removeTech(id: String, techId: String)

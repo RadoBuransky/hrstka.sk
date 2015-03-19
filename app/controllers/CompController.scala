@@ -17,6 +17,7 @@ case class AddCompForm(name: String, website: String, location: String, codersCo
 case class AddTechToCompForm(techName: String)
 
 trait CompController {
+  def addForm: Action[AnyContent]
   def add: Action[AnyContent]
   def all: Action[AnyContent]
   def addTech(compId: String): Action[AnyContent]
@@ -49,6 +50,10 @@ private class CompControllerImpl(compService: CompService,
                                  techService: TechService) extends BaseController with CompController {
   import controllers.CompController._
 
+  override def addForm: Action[AnyContent] = Action {
+    Ok(views.html.compEdit(SupportedLang.defaultLang, None))
+  }
+
   override def add = withForm(addCompForm) { form =>
     compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
       form.note).map { Unit =>
@@ -65,7 +70,7 @@ private class CompControllerImpl(compService: CompService,
     compsTechs.map { case (comps, techs) =>
       val uiComps = comps.map(Comp(_))
 
-      Ok(views.html.companies(SupportedLang.defaultLang, uiComps, techs.map(Tech(_, None))))
+      Ok(views.html.comps(SupportedLang.defaultLang, uiComps, techs.map(Tech(_, None))))
     }
   }
 

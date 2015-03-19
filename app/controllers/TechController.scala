@@ -46,7 +46,7 @@ private class TechControllerImpl(techService: TechService) extends BaseControlle
 
     serviceResult.map {
       case (techs, userVotes) =>
-        Ok(views.html.technologies(SupportedLang.defaultLang, None, techs.map { tech =>
+        Ok(views.html.techs(SupportedLang.defaultLang, None, techs.map { tech =>
           Tech(tech, userVotes.find(_.techId == tech.id).map(_.value))
         }))
     }
