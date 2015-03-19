@@ -9,7 +9,7 @@
             <a href="@comp.website" target="_blank">@comp.name</a>
             <div>@comp.location, programátorov / z toho žien: @comp.codersCount / @comp.femaleCodersCount</div>
             <div>@comp.note</div>
-            <div><a href="">Upraviť</a></div>
+            <div><a href="@AppLoader.routes.compController.editForm(comp.id)">Upraviť</a></div>
             <form action="@AppLoader.routes.compController.addTech(comp.id)" method="post" class="form-inline">
                 <input list="techs" class="form-control" id="techName" name="techName">
 

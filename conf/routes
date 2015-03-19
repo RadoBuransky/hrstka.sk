@@ -8,9 +8,10 @@ GET     /tech/:id/voteDown          AppLoader.techController.voteDown(id: String
 
 GET     /comp                       AppLoader.compController.all
 GET     /comp/new                   AppLoader.compController.addForm
-POST    /comp                       AppLoader.compController.add
+POST    /comp                       AppLoader.compController.save(compId: Option[String])
 POST    /comp/:id/addTech           AppLoader.compController.addTech(id: String)
 GET     /comp/:id/remove/:techId    AppLoader.compController.removeTech(id: String, techId: String)
+GET     /comp/:id/edit              AppLoader.compController.editForm(id: String)
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")

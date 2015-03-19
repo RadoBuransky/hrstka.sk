@@ -1,6 +1,7 @@
 package repositories.mongoDb
 
 import common.HEException
+import models.db.Identifiable
 import models.db.Identifiable.Id
 import play.api.Play.current
 import play.api.libs.json._
@@ -18,6 +19,9 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
 
   protected def update(id: Id, value: JsValue): Future[Unit] =
     collection.update(Json.obj("_id" -> id), value).map(lastError => ())
+
+  protected def update[T <: Identifiable](value: T)(implicit writes: Writes[T]): Future[Unit] =
+    collection.update(Json.obj("_id" -> value._id), value).map(lastError => ())
 
   protected def find[T](selector: JsValue, sort: JsValue = JsNull, first: Boolean = false)(implicit reads: Reads[T]): Future[Seq[T]] = {
     val findResult = collection.find(selector)

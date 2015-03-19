@@ -25,24 +25,7 @@ class CompServiceImpl(compRepository: CompRepository,
       note              = note
     ).map(_.stringify)
 
-  override def all(): Future[Seq[Comp]] = {
-    compRepository.all().flatMap { comps =>
-      Future.sequence(comps.map { comp =>
-        compTechRepository.getTechs(comp._id).flatMap { techIds =>
-          Future.sequence(techIds.map(techRepository.get)).map { techs =>
-            domain.Comp(
-              id                = comp._id.stringify,
-              name              = comp.name,
-              website           = new URL(comp.website),
-              location          = comp.location,
-              codersCount       = comp.codersCount,
-              femaleCodersCount = comp.femaleCodersCount,
-              note              = comp.note)
-          }
-        }
-      })
-    }
-  }
+  override def all(): Future[Seq[Comp]] = compRepository.all().map(_.map(domain.Comp(_)))
 
   override def addTech(compId: Id, techId: Id, userId: Id): Future[Id] = {
     compTechRepository.add(
@@ -54,4 +37,7 @@ class CompServiceImpl(compRepository: CompRepository,
 
   override def removeTech(compId: Id, techId: Id, userId: Id): Future[Unit] =
     compTechRepository.remove(compId, techId, userId)
+
+  override def get(compId: Id): Future[Comp] = compRepository.get(compId).map(Comp(_))
+  override def update(comp: Comp): Future[Unit] = compRepository.update(comp.toDb)
 }

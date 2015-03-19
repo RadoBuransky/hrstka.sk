@@ -9,4 +9,5 @@ trait Identifiable {
 
 object Identifiable {
   type Id = BSONObjectID
+  def apply(value: String) = BSONObjectID.apply(value)
 }

@@ -4,6 +4,7 @@ import java.net.URL
 
 import common.SupportedLang
 import models.ui.{Comp, Tech}
+import models.domain
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent}
@@ -18,7 +19,8 @@ case class AddTechToCompForm(techName: String)
 
 trait CompController {
   def addForm: Action[AnyContent]
-  def add: Action[AnyContent]
+  def editForm(compId: String): Action[AnyContent]
+  def save(compId: Option[String]): Action[AnyContent]
   def all: Action[AnyContent]
   def addTech(compId: String): Action[AnyContent]
   def removeTech(compId: String, techId: String): Action[AnyContent]
@@ -51,12 +53,35 @@ private class CompControllerImpl(compService: CompService,
   import controllers.CompController._
 
   override def addForm: Action[AnyContent] = Action {
-    Ok(views.html.compEdit(SupportedLang.defaultLang, None))
+    val action = AppLoader.routes.compController.save(None)
+    Ok(views.html.compEdit(SupportedLang.defaultLang, None, action))
   }
 
-  override def add = withForm(addCompForm) { form =>
-    compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
-      form.note).map { Unit =>
+  override def editForm(compId: String): Action[AnyContent] = Action.async {
+    compService.get(compId).map { comp =>
+      val action = AppLoader.routes.compController.save(Some(compId))
+      Ok(views.html.compEdit(SupportedLang.defaultLang, Some(Comp(comp)), action))
+    }
+  }
+
+  override def save(compId: Option[String]) = withForm(addCompForm) { form =>
+    val result = if (compId.isEmpty) {
+      compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
+        form.note)
+    }
+    else {
+      compService.update(domain.Comp(
+        id                = compId.get,
+        name              = form.name,
+        website           = new URL(form.website),
+        location          = form.location,
+        codersCount       = form.codersCount,
+        femaleCodersCount = form.femaleCodersCount,
+        note              = form.note
+      ))
+    }
+
+    result.map { Unit =>
       Redirect(AppLoader.routes.compController.all())
     }
   }
