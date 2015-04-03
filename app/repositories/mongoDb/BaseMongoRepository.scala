@@ -3,6 +3,7 @@ package repositories.mongoDb
 import common.HEException
 import models.db.Identifiable
 import models.db.Identifiable.Id
+import play.api.Logger
 import play.api.Play.current
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoPlugin
@@ -46,7 +47,10 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
     val collStats = new CollStats(CompTechCollection.name)
     db.connection.ask(collStats(db.name).maker).map(CollStatsResult(_)).map {
       case Right(collStatsResult) => collStatsResult.count
-      case Left(error) => throw new HEException(s"Collection stats error! [$error]")
+      case Left(error) => {
+        Logger.error(s"Collection stats error! [$coll]", error)
+        0
+      }
     }
   }
 

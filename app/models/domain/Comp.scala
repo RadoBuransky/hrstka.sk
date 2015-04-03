@@ -11,17 +11,7 @@ case class Comp(id: Id,
                 location: String,
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
-                note: String) extends Identifiable {
-  def toDb: db.Comp = db.Comp(
-    _id               = db.Identifiable(id),
-    name              = name,
-    website           = website.toString,
-    location          = location,
-    codersCount       = codersCount,
-    femaleCodersCount = femaleCodersCount,
-    note              = note
-  )
-}
+                note: String) extends Identifiable
 
 object Comp {
   def apply(comp: db.Comp): Comp = Comp(

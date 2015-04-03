@@ -19,6 +19,13 @@ class TechServiceImpl(techRepository: TechRepository,
       authorId  = userId
     ).map(_.stringify)
 
+  override def getOrInsert(name: String, userId: Id): Future[Id] = {
+    techRepository.all().map(_.find(_.name == name)).flatMap {
+      case Some(tech) => Future(tech._id)
+      case None => insert(name, userId)
+    }
+  }
+
   override def all() =
     techRepository.all().map(_.map(Tech(_)).sortBy(-1 * _.rating.value))
 

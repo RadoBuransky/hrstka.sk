@@ -5,6 +5,7 @@ import java.net.URL
 import common.SupportedLang
 import models.ui.{Comp, Tech}
 import models.domain
+import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent}
@@ -67,7 +68,7 @@ private class CompControllerImpl(compService: CompService,
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
       compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
-        form.note)
+        form.note, userId)
     }
     else {
       compService.update(domain.Comp(
@@ -95,21 +96,16 @@ private class CompControllerImpl(compService: CompService,
     compsTechs.map { case (comps, techs) =>
       val uiComps = comps.map(Comp(_))
 
+      Logger.debug(techs.toString)
+
       Ok(views.html.comps(SupportedLang.defaultLang, uiComps, techs.map(Tech(_, None))))
     }
   }
 
   override def addTech(compId: String): Action[AnyContent] = withForm(addTechToCompForm) { form =>
-    // Find tech ID for the name
-    techService.all().map(_.find(_.name == form.techName)).flatMap {
-      case Some(tech) => {
-        compService.addTech(compId, tech.id, userId).map { Unit =>
-          Redirect(AppLoader.routes.compController.all())
-        }
-      }
-      case None => Future(BadRequest(s"Technology with name ${form.techName} doesn't exist!"))
+    compService.addTech(form.techName, compId, userId).map { Unit =>
+      Redirect(AppLoader.routes.compController.all())
     }
-
   }
 
   override def removeTech(compId: String, techId: String): Action[AnyContent] = Action.async { implicit request =>
