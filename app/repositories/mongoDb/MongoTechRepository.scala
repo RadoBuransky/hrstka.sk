@@ -25,7 +25,7 @@ class MongoTechRepository extends BaseMongoRepository(TechCollection) with TechR
       downVotes = 0)).map(_ => id)
   }
 
-  override def all() = find[Tech](Json.obj())
+  override def all() = find[Tech](Json.obj(), sort = Json.obj("name" -> 1))
 
   override def updateRating(techId: Id, delta: Int, value: Int) = {
     if (delta != -1 && delta != 1)

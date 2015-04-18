@@ -3,12 +3,10 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.ui.{Comp, Tech}
-import models.domain
-import play.api.Logger
+import models.{domain, ui}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Call, Result}
 import services.{CompService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -53,17 +51,20 @@ private class CompControllerImpl(compService: CompService,
                                  techService: TechService) extends BaseController with CompController {
   import controllers.CompController._
 
-  override def addForm: Action[AnyContent] = Action {
-    val action = AppLoader.routes.compController.save(None)
-    Ok(views.html.compEdit(SupportedLang.defaultLang, None, action))
+  override def addForm: Action[AnyContent] = Action.async {
+    edit(None, AppLoader.routes.compController.save(None))
   }
 
   override def editForm(compId: String): Action[AnyContent] = Action.async {
-    compService.get(compId).map { comp =>
-      val action = AppLoader.routes.compController.save(Some(compId))
-      Ok(views.html.compEdit(SupportedLang.defaultLang, Some(Comp(comp)), action))
+    compService.get(compId).flatMap { comp =>
+      edit(Some(comp), AppLoader.routes.compController.save(Some(compId)))
     }
   }
+
+  private def edit(comp: Option[domain.Comp], action: Call): Future[Result] =
+    techService.all().map { techs =>
+      Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply),  techs.map(ui.Tech(_, None)), action))
+    }
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
@@ -88,17 +89,8 @@ private class CompControllerImpl(compService: CompService,
   }
 
   override def all =  Action.async { implicit request =>
-    val compsTechs = for {
-      comps <- compService.all()
-      techs <- techService.all()
-    } yield (comps, techs)
-
-    compsTechs.map { case (comps, techs) =>
-      val uiComps = comps.map(Comp(_))
-
-      Logger.debug(techs.toString)
-
-      Ok(views.html.comps(SupportedLang.defaultLang, uiComps, techs.map(Tech(_, None))))
+    compService.all().map { comps =>
+      Ok(views.html.comps(SupportedLang.defaultLang, comps.map(ui.Comp(_))))
     }
   }
 
