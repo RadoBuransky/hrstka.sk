@@ -79,7 +79,8 @@ private class CompControllerImpl(compService: CompService,
         location          = form.location,
         codersCount       = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,
-        note              = form.note
+        note              = form.note,
+        techs             = Nil
       ))
     }
 

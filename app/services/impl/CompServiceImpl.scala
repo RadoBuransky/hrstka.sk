@@ -5,6 +5,7 @@ import java.net.URL
 import models.domain
 import models.domain.Comp
 import models.domain.Identifiable.{Id, _}
+import models.db
 import repositories.{CompRepository, CompTechRepository, TechRepository}
 import services.{TechService, CompService}
 
@@ -26,7 +27,11 @@ class CompServiceImpl(compRepository: CompRepository,
       authorId          = userId
     ).map(_.stringify)
 
-  override def all(): Future[Seq[Comp]] = compRepository.all().map(_.map(domain.Comp(_)))
+  override def all(): Future[Seq[Comp]] = {
+    compRepository.all().flatMap { comps =>
+      Future.sequence(comps.map(dbCompToDomain))
+    }
+  }
 
   override def addTech(techName: String, compId: Id, userId: Id): Future[Id] = {
     techService.getOrInsert(techName, userId).flatMap { techId =>
@@ -41,7 +46,7 @@ class CompServiceImpl(compRepository: CompRepository,
   override def removeTech(compId: Id, techId: Id, userId: Id): Future[Unit] =
     compTechRepository.remove(compId, techId, userId)
 
-  override def get(compId: Id): Future[Comp] = compRepository.get(compId).map(Comp(_))
+  override def get(compId: Id): Future[Comp] = compRepository.get(compId).flatMap(dbCompToDomain)
   override def update(comp: Comp): Future[Unit] = compRepository.update(
     compId            = comp.id,
     name              = comp.name,
@@ -50,4 +55,15 @@ class CompServiceImpl(compRepository: CompRepository,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
     note              = comp.note)
+
+  private def dbCompToDomain(comp: db.Comp): Future[domain.Comp] = {
+    val techs = for {
+      allTechs <- techService.all()
+      techsForComp <- compTechRepository.getTechs(comp._id)
+    } yield (allTechs, techsForComp)
+
+    techs.map {
+      case (allTechs, techsForComp) => domain.Comp(comp, allTechs.filter(t => techsForComp.contains(t.id)))
+    }
+  }
 }
