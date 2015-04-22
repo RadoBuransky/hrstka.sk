@@ -1,4 +1,4 @@
-@(lang: Lang, comp: Option[models.ui.Comp], techs: Seq[models.ui.Tech], action: Call)
+@(lang: Lang, comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], action: Call)
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <form action="@action" method="post">
@@ -29,7 +29,7 @@
         @for(tech <- techs) {
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="@tech.name" value="@tech.name" checked> @tech.name
+                    <input type="checkbox" name="techs[]" value="@tech._1" @if(tech._2) { checked }> @tech._1
                 </label>
             </div>
         }

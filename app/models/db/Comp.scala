@@ -9,4 +9,5 @@ case class Comp(_id: Id,
                 location: String,
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
-                note: String) extends Identifiable with Authorable
+                note: String,
+                techs: Seq[Id]) extends Identifiable with Authorable

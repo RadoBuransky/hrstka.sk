@@ -4,6 +4,7 @@ import java.net.URL
 
 import common.SupportedLang
 import models.{domain, ui}
+import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Call, Result}
@@ -13,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 case class AddCompForm(name: String, website: String, location: String, codersCount: Option[Int],
-                       femaleCodersCount: Option[Int], note: String)
+                       femaleCodersCount: Option[Int], note: String, techs: List[String])
 case class AddTechToCompForm(techName: String)
 
 trait CompController {
@@ -21,8 +22,6 @@ trait CompController {
   def editForm(compId: String): Action[AnyContent]
   def save(compId: Option[String]): Action[AnyContent]
   def all: Action[AnyContent]
-  def addTech(compId: String): Action[AnyContent]
-  def removeTech(compId: String, techId: String): Action[AnyContent]
 }
 
 object CompController {
@@ -33,7 +32,8 @@ object CompController {
       "location" -> text,
       "codersCount" -> optional(number),
       "femaleCodersCount" -> optional(number),
-      "note" -> text
+      "note" -> text,
+      "techs" -> list(text)
     )(AddCompForm.apply)(AddCompForm.unapply)
   )
 
@@ -63,25 +63,30 @@ private class CompControllerImpl(compService: CompService,
 
   private def edit(comp: Option[domain.Comp], action: Call): Future[Result] =
     techService.all().map { techs =>
-      Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply),  techs.map(ui.Tech(_, None)), action))
+      val ts = techs.map(t => (t.name, comp.exists(_.techs.exists(_.name == t.name))))
+      Logger.debug(comp.toString)
+      Logger.debug(ts.mkString(","))
+      Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply), ts, action))
     }
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
       compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
-        form.note, userId)
+        form.note, userId, form.techs)
     }
     else {
       compService.update(domain.Comp(
-        id                = compId.get,
-        name              = form.name,
-        website           = new URL(form.website),
-        location          = form.location,
-        codersCount       = form.codersCount,
+        id = compId.get,
+        name = form.name,
+        website = new URL(form.website),
+        location = form.location,
+        codersCount = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,
-        note              = form.note,
-        techs             = Nil
-      ))
+        note = form.note,
+        techs = Nil
+      ),
+      form.techs,
+      userId)
     }
 
     result.map { Unit =>
@@ -89,21 +94,9 @@ private class CompControllerImpl(compService: CompService,
     }
   }
 
-  override def all =  Action.async { implicit request =>
+  override def all = Action.async { implicit request =>
     compService.all().map { comps =>
       Ok(views.html.comps(SupportedLang.defaultLang, comps.map(ui.Comp(_))))
-    }
-  }
-
-  override def addTech(compId: String): Action[AnyContent] = withForm(addTechToCompForm) { form =>
-    compService.addTech(form.techName, compId, userId).map { Unit =>
-      Redirect(AppLoader.routes.compController.all())
-    }
-  }
-
-  override def removeTech(compId: String, techId: String): Action[AnyContent] = Action.async { implicit request =>
-    compService.removeTech(compId, techId, userId).map { Unit =>
-      Redirect(AppLoader.routes.compController.all())
     }
   }
 }

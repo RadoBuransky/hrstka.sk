@@ -7,9 +7,6 @@ import scala.concurrent.Future
 
 trait CompRepository {
   def get(compId: Id): Future[Comp]
-  def insert(name: String, website: String, location: String, codersCount: Option[Int], femaleCodersCount: Option[Int],
-             note: String, authorId: Id): Future[Id]
-  def update(compId: Id, name: String, website: String, location: String, codersCount: Option[Int], femaleCodersCount: Option[Int],
-             note: String): Future[Unit]
+  def upsert(comp: Comp): Future[Id]
   def all(): Future[Seq[Comp]]
 }
