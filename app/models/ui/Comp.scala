@@ -9,7 +9,8 @@ case class Comp(id: String,
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
                 note: String,
-                techs: Seq[String])
+                techs: Seq[String],
+                joel: Set[Int])
 
 object Comp {
   def apply(comp: domain.Comp) = new Comp(
@@ -20,5 +21,6 @@ object Comp {
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
     note              = comp.note,
-    techs             = comp.techs.map(_.name))
+    techs             = comp.techs.map(_.name),
+    joel              = comp.joel)
 }

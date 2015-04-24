@@ -12,7 +12,8 @@ case class Comp(id: Id,
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
                 note: String,
-                techs: Seq[Tech]) extends Identifiable
+                techs: Seq[Tech],
+                joel: Set[Int]) extends Identifiable
 
 object Comp {
   def apply(comp: db.Comp, techs: Seq[Tech]): Comp = Comp(
@@ -23,6 +24,7 @@ object Comp {
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
     note              = comp.note,
-    techs             = techs
+    techs             = techs,
+    joel              = comp.joel
   )
 }

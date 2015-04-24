@@ -4,7 +4,6 @@ import java.net.URL
 
 import common.SupportedLang
 import models.{domain, ui}
-import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Call, Result}
@@ -14,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 case class AddCompForm(name: String, website: String, location: String, codersCount: Option[Int],
-                       femaleCodersCount: Option[Int], note: String, techs: List[String])
+                       femaleCodersCount: Option[Int], note: String, techs: List[String], joel: List[Int])
 case class AddTechToCompForm(techName: String)
 
 trait CompController {
@@ -33,7 +32,8 @@ object CompController {
       "codersCount" -> optional(number),
       "femaleCodersCount" -> optional(number),
       "note" -> text,
-      "techs" -> list(text)
+      "techs" -> list(text),
+      "joel" -> list(number)
     )(AddCompForm.apply)(AddCompForm.unapply)
   )
 
@@ -41,6 +41,21 @@ object CompController {
     mapping(
       "techName" -> text
     )(AddTechToCompForm.apply)(AddTechToCompForm.unapply)
+  )
+
+  val joelQuestions = List(
+    "Do you use source control?",
+    "Can you make a build in one step?",
+    "Do you make daily builds?",
+    "Do you have a bug database?",
+    "Do you fix bugs before writing new code?",
+    "Do you have an up-to-date schedule?",
+    "Do you have a spec?",
+    "Do programmers have quiet working conditions?",
+    "Do you use the best tools money can buy?",
+    "Do you have testers?",
+    "Do new candidates write code during their interview?",
+    "Do you do hallway usability testing?"
   )
 
   def apply(compService: CompService,techService: TechService): CompController =
@@ -64,15 +79,13 @@ private class CompControllerImpl(compService: CompService,
   private def edit(comp: Option[domain.Comp], action: Call): Future[Result] =
     techService.all().map { techs =>
       val ts = techs.map(t => (t.name, comp.exists(_.techs.exists(_.name == t.name))))
-      Logger.debug(comp.toString)
-      Logger.debug(ts.mkString(","))
-      Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply), ts, action))
+      Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply), ts, joelQuestions, action))
     }
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
       compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
-        form.note, userId, form.techs)
+        form.note, userId, form.techs, form.joel.toSet)
     }
     else {
       compService.update(domain.Comp(
@@ -83,7 +96,8 @@ private class CompControllerImpl(compService: CompService,
         codersCount = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,
         note = form.note,
-        techs = Nil
+        techs = Nil,
+        joel = form.joel.toSet
       ),
       form.techs,
       userId)

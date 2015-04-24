@@ -1,4 +1,4 @@
-@(lang: Lang, comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], action: Call)
+@(lang: Lang, comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <form action="@action" method="post">
@@ -35,90 +35,15 @@
         }
         <h2><a href="http://www.joelonsoftware.com/articles/fog0000000043.html" target="_blank">The Joel Test</a></h2>
         <ol>
+        @for(joelQuestion <- joelQuestions.zipWithIndex) {
             <li>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="joel1" value="joel1" checked> Do you use source control?
+                        <input type="checkbox" name="joel[]" value="@joelQuestion._2" @if(comp.map(_.joel(joelQuestion._2)).getOrElse(false)) { checked } > @joelQuestion._1
                     </label>
                 </div>
             </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel2" value="joel2" checked> Can you make a build in one step?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel3" value="joel3" checked> Do you make daily builds?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel4" value="joel4" checked> Do you have a bug database?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel5" value="joel5" checked> Do you fix bugs before writing new code?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel6" value="joel6" checked> Do you have an up-to-date schedule?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel7" value="joel7" checked> Do you have a spec?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel8" value="joel8" checked> Do programmers have quiet working conditions?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel9" value="joel9" checked> Do you use the best tools money can buy?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel10" value="joel10" checked> Do you have testers?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel11" value="joel11" checked> Do new candidates write code during their interview?
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="joel12" value="joel12" checked> Do you do hallway usability testing?
-                    </label>
-                </div>
-            </li>
+        }
         </ol>
         <button type="submit" class="btn btn-default">Uložiť</button>
     </form>
