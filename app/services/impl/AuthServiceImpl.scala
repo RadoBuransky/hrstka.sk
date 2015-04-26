@@ -10,12 +10,18 @@ import scala.concurrent.Future
 class AuthServiceImpl extends AuthService {
   def findById(id: String): Future[Option[Account]] = Future.successful(Some(Account(id, Eminent)))
   def authenticate(email: String, password: String): Option[Account] = {
-    val result = email match {
-      case "radoburansky@gmail.com" => Some(Account(email, Eminent))
+    val result = getEncryptedPassword(email) match {
+      case Some(encryptedPassword) if check(password, encryptedPassword) => Some(Account(email, Eminent))
       case _ => None
     }
+
     Logger.debug(s"Account.authenticate [$email, ${result.isDefined}]")
     result
+  }
+
+  private def getEncryptedPassword(email: String): Option[String] = email match {
+    case "radoburansky@gmail.com" => Some("xxx") // TODO: Retrieve from Mongo
+    case _ => None
   }
 
   private def encrypt(clear: String): String = clear.bcrypt
