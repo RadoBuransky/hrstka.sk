@@ -1,4 +1,4 @@
-import controllers.{AppController, CompController, TechController}
+import controllers.{AuthController, AppController, CompController, TechController}
 import repositories.mongoDb._
 import repositories._
 import services.impl.{CompServiceImpl, TechServiceImpl}
@@ -9,6 +9,7 @@ package object AppLoader {
   lazy val appController = AppController()
   lazy val techController = TechController(techService)
   lazy val compController = CompController(compService, techService)
+  lazy val authController = AuthController()
 
   // Services
   lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteRepository, techVoteLogRepository)

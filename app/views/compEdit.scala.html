@@ -11,15 +11,19 @@
             <input type="url" class="form-control" id="website" name="website" value="@comp.map(_.website)">
         </div>
         <div class="form-group">
-            <label for="location">Sídlo</label>
+            <label for="location">Mesto</label>
             <input type="text" class="form-control" id="location" name="location" value="@comp.map(_.location)">
         </div>
         <div class="form-group">
-            <label for="codersCount">Počet programátorov</label>
+            <label for="codersCount">Počet zamestnancov</label>
+            <input type="number" class="form-control" id="employeeCount" name="employeeCount" value="@comp.map(_.employeeCount)">
+        </div>
+        <div class="form-group">
+            <label for="codersCount">Z toho programátorov</label>
             <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.codersCount)">
         </div>
         <div class="form-group">
-            <label for="femaleCodersCount">Z toho žien</label>
+            <label for="femaleCodersCount">Z toho žien programátoriek</label>
             <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount" value="@comp.map(_.femaleCodersCount)">
         </div>
         <div class="form-group">

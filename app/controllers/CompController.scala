@@ -12,7 +12,8 @@ import services.{CompService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-case class AddCompForm(name: String, website: String, location: String, codersCount: Option[Int],
+case class AddCompForm(name: String, website: String, location: String, employeeCount: Option[Int],
+                       codersCount: Option[Int],
                        femaleCodersCount: Option[Int], note: String, techs: List[String], joel: List[Int])
 case class AddTechToCompForm(techName: String)
 
@@ -29,6 +30,7 @@ object CompController {
       "compName" -> text,
       "website" -> text,
       "location" -> text,
+      "employeeCount" -> optional(number),
       "codersCount" -> optional(number),
       "femaleCodersCount" -> optional(number),
       "note" -> text,
@@ -84,7 +86,7 @@ private class CompControllerImpl(compService: CompService,
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
-      compService.insert(form.name, new URL(form.website), form.location, form.codersCount, form.femaleCodersCount,
+      compService.insert(form.name, new URL(form.website), form.location, form.employeeCount, form.codersCount, form.femaleCodersCount,
         form.note, userId, form.techs, form.joel.toSet)
     }
     else {
@@ -93,6 +95,7 @@ private class CompControllerImpl(compService: CompService,
         name = form.name,
         website = new URL(form.website),
         location = form.location,
+        employeeCount = form.employeeCount,
         codersCount = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,
         note = form.note,
