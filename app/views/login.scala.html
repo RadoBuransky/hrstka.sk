@@ -1,4 +1,4 @@
-@(lang: Lang, form: Form[Option[auth.Account]])
+@(lang: Lang, form: Form[Option[models.domain.Account]])
 
 @main("Hŕstka Eminencie", "xxx", lang) {
     <form class="form-signin" action="@AppLoader.routes.authController.authenticate()" method="post">

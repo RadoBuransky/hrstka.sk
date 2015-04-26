@@ -2,13 +2,15 @@ package auth
 
 import AppLoader.routes
 import jp.t2v.lab.play2.auth.{CookieTokenAccessor, AuthConfig}
+import models.domain.{Eminent, Role, Account}
 import play.api.mvc.{Result, RequestHeader}
 import play.api.mvc.Results._
+import services.AuthService
 
 import scala.concurrent.{Future, ExecutionContext}
 import scala.reflect._
 
-class AuthConfigImpl extends AuthConfig {
+class AuthConfigImpl(authService: AuthService) extends AuthConfig {
 
   /**
    * A type that is used to identify a user.
@@ -47,7 +49,7 @@ class AuthConfigImpl extends AuthConfig {
    * A function that returns a `User` object from an `Id`.
    * You can alter the procedure to suit your application.
    */
-  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = Account.findById(id)
+  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = authService.findById(id)
 
   /**
    * Where to redirect the user after a successful login.
