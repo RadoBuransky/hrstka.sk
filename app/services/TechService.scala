@@ -1,7 +1,7 @@
 package services
 
 import models.domain.Identifiable.Id
-import models.domain.{TechVote, User, Tech}
+import models.domain.{Tech, TechVote}
 
 import scala.concurrent.Future
 

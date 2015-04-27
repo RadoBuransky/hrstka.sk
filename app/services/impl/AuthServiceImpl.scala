@@ -1,27 +1,41 @@
 package services.impl
 
-import models.domain.{Account, Eminent}
-import play.api.Logger
-import services.AuthService
 import com.github.t3hnar.bcrypt._
+import models.db
+import models.db.Identifiable
+import models.domain.{Eminent, User}
+import play.api.Logger
+import repositories.UserRepository
+import services.AuthService
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class AuthServiceImpl extends AuthService {
-  def findById(id: String): Future[Option[Account]] = Future.successful(Some(Account(id, Eminent)))
-  def authenticate(email: String, password: String): Option[Account] = {
-    val result = getEncryptedPassword(email) match {
-      case Some(encryptedPassword) if check(password, encryptedPassword) => Some(Account(email, Eminent))
-      case _ => None
+class AuthServiceImpl(userRepository: UserRepository) extends AuthService {
+  def createUser(user: User, password: String): Future[User] = {
+    userRepository.insert(db.User(Identifiable.empty, user.email, encrypt(password), Eminent.name)).map { user =>
+      Logger.info(s"User created. [${user.email}]")
+      User(user)
+    }
+  }
+  def findByEmail(email: String): Future[Option[User]] = userRepository.findByEmail(email).map(_.map(User(_)))
+  def authenticate(email: String, password: String): Future[Option[User]] = {
+    val result = userRepository.findByEmail(email).map {
+      case Some(user) if check(password, user.encryptedPassword) => {
+        Logger.debug(s"User authenticated. [$email]")
+        Some(User(email, Eminent))
+      }
+      case Some(user) => {
+        Logger.debug(s"Invalid password. [$email]")
+        None
+      }
+      case _ => {
+        Logger.debug(s"User not found. [$email]")
+        None
+      }
     }
 
-    Logger.debug(s"Account.authenticate [$email, ${result.isDefined}]")
     result
-  }
-
-  private def getEncryptedPassword(email: String): Option[String] = email match {
-    case "radoburansky@gmail.com" => Some("xxx") // TODO: Retrieve from Mongo
-    case _ => None
   }
 
   private def encrypt(clear: String): String = clear.bcrypt

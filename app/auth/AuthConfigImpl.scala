@@ -2,7 +2,7 @@ package auth
 
 import AppLoader.routes
 import jp.t2v.lab.play2.auth.{CookieTokenAccessor, AuthConfig}
-import models.domain.{Eminent, Role, Account}
+import models.domain.{Admin, Eminent, Role, User}
 import play.api.mvc.{Result, RequestHeader}
 import play.api.mvc.Results._
 import services.AuthService
@@ -22,7 +22,7 @@ class AuthConfigImpl(authService: AuthService) extends AuthConfig {
    * A type that represents a user in your application.
    * `User`, `Account` and so on.
    */
-  type User = Account
+  type User = models.domain.User
 
   /**
    * A type that is defined by every action for authorization.
@@ -49,7 +49,7 @@ class AuthConfigImpl(authService: AuthService) extends AuthConfig {
    * A function that returns a `User` object from an `Id`.
    * You can alter the procedure to suit your application.
    */
-  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = authService.findById(id)
+  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = authService.findByEmail(id)
 
   /**
    * Where to redirect the user after a successful login.
@@ -89,7 +89,9 @@ class AuthConfigImpl(authService: AuthService) extends AuthConfig {
    */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
     (user.role, authority) match {
-      case (Eminent, _)       => true
+      case (Admin, _)         => true
+      case (Eminent, Admin)   => false
+      case (Eminent, Eminent) => true
       case _                  => false
     }
   }

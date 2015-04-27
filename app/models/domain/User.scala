@@ -1,6 +1,9 @@
 package models.domain
 
-import models.domain.Identifiable.Id
+import models.db
 
-case class User(id: Id,
-                name: String) extends Identifiable
+case class User(email: String, role: Role)
+
+object User {
+  def apply(user: db.User): User = User(user.email, Role(user.role))
+}

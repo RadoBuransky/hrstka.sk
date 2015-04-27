@@ -14,11 +14,13 @@ package object AppLoader {
   // Services
   lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteRepository, techVoteLogRepository)
   lazy val compService: CompService = new CompServiceImpl(compRepository, techService)
-  lazy val authService: AuthService = new AuthServiceImpl()
+  lazy val authService: AuthService = new AuthServiceImpl(userRepository)
 
   // Repositories
   lazy val techRepository: TechRepository = new MongoTechRepository
   lazy val techVoteRepository: VoteRepository = MongoTechVoteRepository
   lazy val techVoteLogRepository: VoteLogRepository = MongoTechVoteLogRepository
   lazy val compRepository: CompRepository = new MongoCompRepository
+  lazy val userRepository: UserRepository = new MongoUserRepository
+
 }
