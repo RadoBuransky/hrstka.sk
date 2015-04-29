@@ -13,9 +13,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class AuthServiceImpl(userRepository: UserRepository) extends AuthService {
   def createUser(user: User, password: String): Future[User] = {
-    userRepository.insert(db.User(Identifiable.empty, user.email, encrypt(password), Eminent.name)).map { user =>
+    userRepository.insert(db.User(Identifiable.empty, user.email, encrypt(password), Eminent.name)).map { lastError =>
       Logger.info(s"User created. [${user.email}]")
-      User(user)
+      user
     }
   }
   def findByEmail(email: String): Future[Option[User]] = userRepository.findByEmail(email).map(_.map(User(_)))
