@@ -2,13 +2,13 @@ package auth
 
 import AppLoader.routes
 import controllers.BaseController
-import jp.t2v.lab.play2.auth.{CookieTokenAccessor, AuthConfig}
-import models.domain.{Admin, Eminent, Role, User}
-import play.api.mvc.{Result, RequestHeader}
-import play.api.mvc.Results._
+import jp.t2v.lab.play2.auth.{AuthConfig, CookieTokenAccessor}
+import models.domain.{Admin, Eminent, Role}
+import play.api.Logger
+import play.api.mvc.{RequestHeader, Result}
 import services.AuthService
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 
 class AuthConfigImpl(authService: AuthService) extends BaseController with AuthConfig {
@@ -55,26 +55,33 @@ class AuthConfigImpl(authService: AuthService) extends BaseController with AuthC
   /**
    * Where to redirect the user after a successful login.
    */
-  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    Logger.debug("loginSucceeded")
     Future.successful(Redirect(routes.compController.all()))
+  }
 
   /**
    * Where to redirect the user after logging out
    */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    Logger.debug("logoutSucceeded")
     Future.successful(Redirect(routes.compController.all()))
+  }
 
   /**
    * If the user is not logged in and tries to access a protected resource then redirct them as follows:
    */
-  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(routes.compController.all()))
+  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    Logger.debug("authenticationFailed")
+    Future.successful(Forbidden("authentication failed"))
+  }
 
   /**
    * If authorization failed (usually incorrect password) redirect the user as follows:
    */
   override def authorizationFailed(request: RequestHeader, user: User, authority: Option[Authority])(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Forbidden("no permission"))
+    Logger.debug("authorizationFailed")
+    Future.successful(Forbidden("authorization failed"))
   }
 
   /**
@@ -89,6 +96,7 @@ class AuthConfigImpl(authService: AuthService) extends BaseController with AuthC
    * You should alter this procedure to suit your application.
    */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
+    Logger.debug(s"Authorize [${user.email}, ${user.role.name}, $authority]")
     (user.role, authority) match {
       case (Admin, _)         => true
       case (Eminent, Admin)   => false

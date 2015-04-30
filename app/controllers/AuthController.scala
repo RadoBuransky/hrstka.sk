@@ -2,7 +2,8 @@ package controllers
 
 import auth.AuthConfigImpl
 import common.SupportedLang
-import jp.t2v.lab.play2.auth.{AuthConfig, LoginLogout}
+import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
+import models.domain.Admin
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -27,7 +28,7 @@ object AuthController {
 case class LoginForm(email: String, password: String)
 case class RegisterForm(email: String, password: String, passwordAgain: String)
 
-private class AuthControllerImpl(authService: AuthService) extends AuthConfigImpl(authService) with AuthController {
+private class AuthControllerImpl(authService: AuthService) extends AuthConfigImpl(authService) with AuthElement with AuthController {
   val loginForm = Form(mapping("email" -> email, "password" -> text)(LoginForm.apply)(LoginForm.unapply))
   val registerForm = Form(mapping(
     "email" -> email,
@@ -54,7 +55,8 @@ private class AuthControllerImpl(authService: AuthService) extends AuthConfigImp
     )
   }
 
-  override def register: Action[AnyContent] = withForm(registerForm) { form =>
+  override def register: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+    val form = registerForm.bindFromRequest.get
     form.password match {
       case form.passwordAgain =>
         authService.createUser(form.email, form.password).map { user =>
@@ -64,7 +66,7 @@ private class AuthControllerImpl(authService: AuthService) extends AuthConfigImp
     }
   }
 
-  override def registerView: Action[AnyContent] = Action { implicit request =>
+  override def registerView: Action[AnyContent] = StackAction(AuthorityKey -> Admin) { implicit request =>
     Ok(html.register(SupportedLang.defaultLang))
   }
 }
