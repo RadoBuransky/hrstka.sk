@@ -1,6 +1,6 @@
 package models.db
 
-case class User(id: Identifiable.Id,
+case class User(_id: Identifiable.Id,
                 email: String,
                 encryptedPassword: String,
-                role: String)
+                role: String) extends Identifiable

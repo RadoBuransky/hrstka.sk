@@ -16,6 +16,8 @@ trait AuthController extends Controller with LoginLogout with AuthConfig {
   def login: Action[AnyContent]
   def logout: Action[AnyContent]
   def authenticate: Action[AnyContent]
+  def register: Action[AnyContent]
+  def registerView: Action[AnyContent]
 }
 
 object AuthController {
@@ -23,9 +25,14 @@ object AuthController {
 }
 
 case class LoginForm(email: String, password: String)
+case class RegisterForm(email: String, password: String, passwordAgain: String)
 
 private class AuthControllerImpl(authService: AuthService) extends AuthConfigImpl(authService) with AuthController {
   val loginForm = Form(mapping("email" -> email, "password" -> text)(LoginForm.apply)(LoginForm.unapply))
+  val registerForm = Form(mapping(
+    "email" -> email,
+    "password" -> text,
+    "passwordAgain" -> text)(RegisterForm.apply)(RegisterForm.unapply))
 
   def login = Action { implicit request =>
     Ok(html.login(SupportedLang.defaultLang, loginForm))
@@ -45,5 +52,19 @@ private class AuthControllerImpl(authService: AuthService) extends AuthConfigImp
         }
       }
     )
+  }
+
+  override def register: Action[AnyContent] = withForm(registerForm) { form =>
+    form.password match {
+      case form.passwordAgain =>
+        authService.createUser(form.email, form.password).map { user =>
+          Redirect(AppLoader.routes.compController.all())
+        }
+      case _ => Future.successful(BadRequest("Passwords do not match!"))
+    }
+  }
+
+  override def registerView: Action[AnyContent] = Action { implicit request =>
+    Ok(html.register(SupportedLang.defaultLang))
   }
 }

@@ -1,8 +1,11 @@
 GET     /                           AppLoader.appController.index
 GET     /*path/                     AppLoader.appController.untrail(path: String)
+
 GET     /login                      AppLoader.authController.login
 GET     /logout                     AppLoader.authController.logout
 POST    /authenticate               AppLoader.authController.authenticate
+GET     /register                   AppLoader.authController.registerView
+POST    /register                   AppLoader.authController.register
 
 GET     /tech                       AppLoader.techController.all
 POST    /tech                       AppLoader.techController.add

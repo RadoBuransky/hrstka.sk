@@ -1,6 +1,7 @@
 package auth
 
 import AppLoader.routes
+import controllers.BaseController
 import jp.t2v.lab.play2.auth.{CookieTokenAccessor, AuthConfig}
 import models.domain.{Admin, Eminent, Role, User}
 import play.api.mvc.{Result, RequestHeader}
@@ -10,7 +11,7 @@ import services.AuthService
 import scala.concurrent.{Future, ExecutionContext}
 import scala.reflect._
 
-class AuthConfigImpl(authService: AuthService) extends AuthConfig {
+class AuthConfigImpl(authService: AuthService) extends BaseController with AuthConfig {
 
   /**
    * A type that is used to identify a user.
