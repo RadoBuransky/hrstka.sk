@@ -13,6 +13,9 @@ case class Comp(id: Id,
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
                 note: String,
+                products: Boolean,
+                services: Boolean,
+                internal: Boolean,
                 techs: Seq[Tech],
                 joel: Set[Int]) extends Identifiable
 
@@ -26,6 +29,9 @@ object Comp {
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
     note              = comp.note,
+    products          = comp.products,
+    services          = comp.services,
+    internal          = comp.internal,
     techs             = techs,
     joel              = comp.joel
   )

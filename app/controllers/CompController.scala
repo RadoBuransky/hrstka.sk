@@ -14,7 +14,13 @@ import scala.concurrent.Future
 
 case class AddCompForm(name: String, website: String, location: String, employeeCount: Option[Int],
                        codersCount: Option[Int],
-                       femaleCodersCount: Option[Int], note: String, techs: List[String], joel: List[Int])
+                       femaleCodersCount: Option[Int],
+                       note: String,
+                       products: Boolean,
+                       services: Boolean,
+                       internal: Boolean,
+                       techs: List[String],
+                       joel: List[Int])
 case class AddTechToCompForm(techName: String)
 
 trait CompController {
@@ -34,6 +40,9 @@ object CompController {
       "codersCount" -> optional(number),
       "femaleCodersCount" -> optional(number),
       "note" -> text,
+      "products" -> boolean,
+      "services" -> boolean,
+      "internal" -> boolean,
       "techs" -> list(text),
       "joel" -> list(number)
     )(AddCompForm.apply)(AddCompForm.unapply)
@@ -87,7 +96,7 @@ private class CompControllerImpl(compService: CompService,
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
       compService.insert(form.name, new URL(form.website), form.location, form.employeeCount, form.codersCount, form.femaleCodersCount,
-        form.note, userId, form.techs, form.joel.toSet)
+        form.note, userId, form.products, form.services, form.internal, form.techs, form.joel.toSet)
     }
     else {
       compService.update(domain.Comp(
@@ -99,6 +108,9 @@ private class CompControllerImpl(compService: CompService,
         codersCount = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,
         note = form.note,
+        products = form.products,
+        services = form.services,
+        internal = form.internal,
         techs = Nil,
         joel = form.joel.toSet
       ),

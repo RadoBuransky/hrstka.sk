@@ -10,6 +10,9 @@ case class Comp(id: String,
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
                 note: String,
+                products: Boolean,
+                services: Boolean,
+                internal: Boolean,
                 techs: Seq[String],
                 joel: Set[Int])
 
@@ -23,6 +26,9 @@ object Comp {
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
     note              = comp.note,
+    products          = comp.products,
+    services          = comp.services,
+    internal          = comp.internal,
     techs             = comp.techs.map(_.name),
     joel              = comp.joel)
 }

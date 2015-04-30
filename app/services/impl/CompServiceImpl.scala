@@ -13,8 +13,19 @@ import scala.concurrent.Future
 
 class CompServiceImpl(compRepository: CompRepository,
                       techService: TechService) extends CompService {
-  override def insert(name: String, website: URL, location: String, employeeCount: Option[Int], codersCount: Option[Int], femaleCodersCount: Option[Int],
-                      note: String, userId: Id, techNames: Seq[String], joel: Set[Int]): Future[Id] = {
+  override def insert(name: String,
+                      website: URL,
+                      location: String,
+                      employeeCount: Option[Int],
+                      codersCount: Option[Int],
+                      femaleCodersCount: Option[Int],
+                      note: String,
+                      userId: Id,
+                      products: Boolean,
+                      services: Boolean,
+                      internal: Boolean,
+                      techNames: Seq[String],
+                      joel: Set[Int]): Future[Id] = {
     techNamesToIds(techNames).flatMap { techIds =>
       compRepository.upsert(db.Comp(
         _id               = db.Identifiable.empty,
@@ -26,6 +37,9 @@ class CompServiceImpl(compRepository: CompRepository,
         codersCount       = codersCount,
         femaleCodersCount = femaleCodersCount,
         note              = note,
+        products          = products,
+        services          = services,
+        internal          = internal,
         techs             = techIds,
         joel              = joel
 
@@ -51,6 +65,9 @@ class CompServiceImpl(compRepository: CompRepository,
       codersCount       = comp.codersCount,
       femaleCodersCount = comp.femaleCodersCount,
       note              = comp.note,
+      products          = comp.products,
+      services          = comp.services,
+      internal          = comp.internal,
       techs             = techIds,
       joel              = comp.joel
     ))
