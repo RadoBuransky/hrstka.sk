@@ -7,19 +7,21 @@ POST    /authenticate               AppLoader.authController.authenticate
 GET     /register                   AppLoader.authController.registerView
 POST    /register                   AppLoader.authController.register
 
-GET     /tech                       AppLoader.techController.all
-POST    /tech                       AppLoader.techController.add
-GET     /tech/:id/voteUp            AppLoader.techController.voteUp(id: String)
-GET     /tech/:id/voteDown          AppLoader.techController.voteDown(id: String)
+GET     /technologie                AppLoader.techController.all
+POST    /technologia                AppLoader.techController.add
+GET     /technologia/:id/voteUp     AppLoader.techController.voteUp(id: String)
+GET     /technologia/:id/voteDown   AppLoader.techController.voteDown(id: String)
 
-GET     /comp                       AppLoader.compController.all
-GET     /comp/new                   AppLoader.compController.addForm
-POST    /comp                       AppLoader.compController.save(compId: Option[String])
-GET     /comp/:id/edit              AppLoader.compController.editForm(id: String)
+GET     /firmy                      AppLoader.compController.all
+GET     /firmy/:location            AppLoader.compController.locationTech(location: String, tech: String = "")
+GET     /firmy/:location/:tech      AppLoader.compController.locationTech(location: String, tech: String)
+POST    /firma                      AppLoader.compController.save(compId: Option[String])
+GET     /firma/nova                 AppLoader.compController.addForm
+GET     /firma/:id/uprav            AppLoader.compController.editForm(id: String)
 
 GET     /api/companies              AppLoader.apiController.comps
 GET     /api/technologies           AppLoader.apiController.techs
 
-GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
-GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
+GET     /robots.txt 				        controllers.Assets.at(path="/public", file="robots.txt")
+GET     /sitemap.xml 				        controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

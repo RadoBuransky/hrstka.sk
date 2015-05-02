@@ -3,6 +3,7 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
+import models.domain.CompQuery
 import models.{domain, ui}
 import play.api.data.Form
 import play.api.data.Forms._
@@ -28,6 +29,7 @@ trait CompController {
   def editForm(compId: String): Action[AnyContent]
   def save(compId: Option[String]): Action[AnyContent]
   def all: Action[AnyContent]
+  def locationTech(location: String, tech: String): Action[AnyContent]
 }
 
 object CompController {
@@ -125,7 +127,20 @@ private class CompControllerImpl(compService: CompService,
 
   override def all = Action.async { implicit request =>
     compService.all().map { comps =>
-      Ok(views.html.comps(SupportedLang.defaultLang, comps.map(ui.Comp(_))))
+      val query = request.queryString.get("q").map(q => CompQuery(q.mkString(",")))
+
+      // TODO: Redirect to locationTech if query contains a location (and a tech)?
+      // TODO: List 5 cities with the most companies
+      // TODO: If a city is specified, list top 5 technologies by rating / count
+
+      Ok(views.html.comps(
+        SupportedLang.defaultLang,
+        comps.map(ui.Comp(_)),
+        query.map(_.keywords.mkString(","))))
     }
+  }
+
+  def locationTech(location: String, tech: String): Action[AnyContent] = {
+    all
   }
 }
