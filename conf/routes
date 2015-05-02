@@ -17,6 +17,9 @@ GET     /comp/new                   AppLoader.compController.addForm
 POST    /comp                       AppLoader.compController.save(compId: Option[String])
 GET     /comp/:id/edit              AppLoader.compController.editForm(id: String)
 
+GET     /api/companies              AppLoader.apiController.comps
+GET     /api/technologies           AppLoader.apiController.techs
+
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
