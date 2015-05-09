@@ -10,11 +10,11 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class MongoCityRepository extends BaseMongoRepository(CityCollection) with CityRepository {
-  override def get(handle: String): Future[City] = find[City](Json.obj("handle" -> handle)).map { cities =>
-    cities.headOption match {
-      case Some(city) => city
-      case None => throw new HEException(s"No city found! [$handle]")
-    }
+  override def get(handle: String): Future[City] = find(handle).map {
+    case Some(city) => city
+    case None => throw new HEException(s"No city found! [$handle]")
   }
+  override def find(handle: String): Future[Option[City]] =
+    find[City](Json.obj("handle" -> handle)).map(_.headOption)
   override def insert(city: City): Future[String] = ins(city).map(_ => city.handle)
 }
