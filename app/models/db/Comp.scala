@@ -1,12 +1,12 @@
 package models.db
 
-import models.db.Identifiable.Id
+import models.db.Identifiable.{Handle, Id}
 
 case class Comp(_id: Id,
                 authorId: Id,
                 name: String,
                 website: String,
-                city: Id,
+                city: Handle,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],

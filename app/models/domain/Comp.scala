@@ -20,11 +20,11 @@ case class Comp(id: Id,
                 joel: Set[Int]) extends Identifiable
 
 object Comp {
-  def apply(comp: db.Comp, techs: Seq[Tech], city: db.City): Comp = Comp(
+  def apply(comp: db.Comp, techs: Seq[Tech], city: City): Comp = Comp(
     id                = comp._id.stringify,
     name              = comp.name,
     website           = new URL(comp.website),
-    city              = City(city),
+    city              = city,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,

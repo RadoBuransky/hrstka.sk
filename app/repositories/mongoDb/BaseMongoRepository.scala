@@ -2,7 +2,6 @@ package repositories.mongoDb
 
 import models.db.Identifiable
 import models.db.Identifiable.Id
-import play.api.Logger
 import play.api.Play.current
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoPlugin

@@ -1,4 +1,7 @@
 package models.db
 
-case class City(handle: String,
-                sk: String)
+import models.db.Identifiable.{Id, Handle}
+
+case class City(_id: Id,
+                handle: Handle,
+                sk: String) extends Identifiable

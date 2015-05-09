@@ -2,17 +2,18 @@ package services.impl
 
 import java.net.URL
 
-import models.domain.{CompQuery, Comp}
 import models.domain.Identifiable.{Id, _}
+import models.domain.{Comp, CompQuery, Handle}
 import models.{db, domain}
 import repositories.CompRepository
-import services.{CompService, TechService}
+import services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CompServiceImpl(compRepository: CompRepository,
-                      techService: TechService) extends CompService {
+                      techService: TechService,
+                      locationService: LocationService) extends CompService {
   override def insert(name: String,
                       website: URL,
                       citySk: String,
@@ -27,27 +28,25 @@ class CompServiceImpl(compRepository: CompRepository,
                       techNames: Seq[String],
                       joel: Set[Int]): Future[Id] = {
     techNamesToIds(techNames).flatMap { techIds =>
+      locationService.getOrCreateCity(citySk).flatMap { city =>
+        compRepository.upsert(db.Comp(
+          _id               = db.Identifiable.empty,
+          authorId          = userId,
+          name              = name,
+          website           = website.toString,
+          city              = city.handle,
+          employeeCount     = employeeCount,
+          codersCount       = codersCount,
+          femaleCodersCount = femaleCodersCount,
+          note              = note,
+          products          = products,
+          services          = services,
+          internal          = internal,
+          techs             = techIds,
+          joel              = joel
 
-      // TODO: Get city ID for the slovak name
-      val cityId = db.Identifiable.empty
-
-      compRepository.upsert(db.Comp(
-        _id               = db.Identifiable.empty,
-        authorId          = userId,
-        name              = name,
-        website           = website.toString,
-        city              = cityId,
-        employeeCount     = employeeCount,
-        codersCount       = codersCount,
-        femaleCodersCount = femaleCodersCount,
-        note              = note,
-        products          = products,
-        services          = services,
-        internal          = internal,
-        techs             = techIds,
-        joel              = joel
-
-      )).map(_.stringify)
+        )).map(_.stringify)
+      }
     }
   }
 
@@ -65,7 +64,7 @@ class CompServiceImpl(compRepository: CompRepository,
       authorId          = userId,
       name              = comp.name,
       website           = comp.website.toString,
-      city              = comp.city.id,
+      city              = comp.city.handle,
       employeeCount     = comp.employeeCount,
       codersCount       = comp.codersCount,
       femaleCodersCount = comp.femaleCodersCount,
@@ -79,12 +78,11 @@ class CompServiceImpl(compRepository: CompRepository,
   }
 
   private def dbCompToDomain(comp: db.Comp): Future[domain.Comp] = {
-    techService.all().map { techs =>
+    techService.all().flatMap { techs =>
       val ids = comp.techs.map(_.stringify)
-
-      // TODO: Get db.City
-      val city = db.City(comp.city, "")
-      domain.Comp(comp, techs.filter(t => ids.contains(t.id)), city)
+      locationService.get(Handle(comp.city)).map { city =>
+        domain.Comp(comp, techs.filter(t => ids.contains(t.id)), city)
+      }
     }
   }
 

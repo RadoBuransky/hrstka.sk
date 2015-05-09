@@ -19,7 +19,7 @@ object Comp {
     id                = comp.id.toString,
     name              = comp.name,
     website           = comp.website.toString,
-    location          = comp.city.handle,
+    location          = comp.city.handle.value,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,

@@ -1,8 +1,8 @@
 import controllers._
 import repositories.mongoDb._
 import repositories._
-import services.impl.{AuthServiceImpl, CompServiceImpl, TechServiceImpl}
-import services.{AuthService, CompService, TechService}
+import services.impl.{LocationServiceImpl, AuthServiceImpl, CompServiceImpl, TechServiceImpl}
+import services.{LocationService, AuthService, CompService, TechService}
 
 package object AppLoader {
   // Controllers
@@ -14,8 +14,9 @@ package object AppLoader {
 
   // Services
   lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteRepository, techVoteLogRepository)
-  lazy val compService: CompService = new CompServiceImpl(compRepository, techService)
+  lazy val compService: CompService = new CompServiceImpl(compRepository, techService, locationService)
   lazy val authService: AuthService = new AuthServiceImpl(userRepository)
+  lazy val locationService: LocationService = new LocationServiceImpl(cityRepository)
 
   // Repositories
   lazy val techRepository: TechRepository = new MongoTechRepository
@@ -23,5 +24,6 @@ package object AppLoader {
   lazy val techVoteLogRepository: VoteLogRepository = MongoTechVoteLogRepository
   lazy val compRepository: CompRepository = new MongoCompRepository
   lazy val userRepository: UserRepository = new MongoUserRepository
+  lazy val cityRepository: CityRepository = new MongoCityRepository
 
 }

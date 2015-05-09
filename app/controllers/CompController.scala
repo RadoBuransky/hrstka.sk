@@ -3,7 +3,7 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.domain.{City, CompQuery}
+import models.domain.{Handle, City, CompQuery}
 import models.{domain, ui}
 import play.api.data.Form
 import play.api.data.Forms._
@@ -13,7 +13,10 @@ import services.{CompService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-case class AddCompForm(name: String, website: String, location: String, employeeCount: Option[Int],
+case class AddCompForm(name: String,
+                       website: String,
+                       city: String,
+                       employeeCount:Option[Int],
                        codersCount: Option[Int],
                        femaleCodersCount: Option[Int],
                        note: String,
@@ -37,7 +40,7 @@ object CompController {
     mapping(
       "compName" -> text,
       "website" -> text,
-      "location" -> text,
+      "city" -> text,
       "employeeCount" -> optional(number),
       "codersCount" -> optional(number),
       "femaleCodersCount" -> optional(number),
@@ -97,7 +100,7 @@ private class CompControllerImpl(compService: CompService,
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
     val result = if (compId.isEmpty) {
-      compService.insert(form.name, new URL(form.website), form.location, form.employeeCount, form.codersCount, form.femaleCodersCount,
+      compService.insert(form.name, new URL(form.website), form.city, form.employeeCount, form.codersCount, form.femaleCodersCount,
         form.note, userId, form.products, form.services, form.internal, form.techs, form.joel.toSet)
     }
     else {
@@ -105,7 +108,7 @@ private class CompControllerImpl(compService: CompService,
         id = compId.get,
         name = form.name,
         website = new URL(form.website),
-        city = City("", form.location),
+        city = City(Handle.fromHumanName(form.city), form.city),
         employeeCount = form.employeeCount,
         codersCount = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,
