@@ -17,7 +17,7 @@ class MongoTechRepository extends BaseMongoRepository(TechCollection) with TechR
 
   override def insert(name: String, authorId: Id): Future[Id] = {
     val id = BSONObjectID.generate
-    insert(Tech(_id = id,
+    ins(Tech(_id = id,
       authorId = authorId,
       name = name,
       upVotes = 0,

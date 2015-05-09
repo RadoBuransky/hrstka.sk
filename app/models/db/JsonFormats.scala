@@ -9,4 +9,5 @@ object JsonFormats {
   implicit val compFormat = Json.format[Comp]
   implicit val voteFormat = Json.format[Vote]
   implicit val voteLogFormat = Json.format[VoteLog]
+  implicit val cityFormat = Json.format[City]
 }

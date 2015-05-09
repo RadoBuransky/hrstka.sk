@@ -12,6 +12,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class MongoUserRepository extends BaseMongoRepository(UserCollection) with UserRepository {
   import JsonFormats._
 
-  override def insert(user: User): Future[LastError] = super.insert[User](user.copy(_id = BSONObjectID.generate))
+  override def insert(user: User): Future[LastError] = super.ins[User](user.copy(_id = BSONObjectID.generate))
   override def findByEmail(email: String): Future[Option[User]] = find[User](Json.obj("email" -> email)).map(_.headOption)
 }

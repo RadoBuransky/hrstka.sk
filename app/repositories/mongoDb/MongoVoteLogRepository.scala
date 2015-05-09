@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 class MongoVoteLogRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteLogRepository {
   override def logVote(id: Id, authorId: Id, value: Int): Future[Unit] =
-    insert(VoteLog(BSONObjectID.generate, id, authorId, value)).map(_ => Unit)
+    ins(VoteLog(BSONObjectID.generate, id, authorId, value)).map(_ => Unit)
 }
 
 object MongoTechVoteLogRepository extends MongoVoteLogRepository(TechVoteLogCollection)

@@ -2,13 +2,13 @@ package models.domain
 
 import models.db
 
-case class City(id: Identifiable.Id,
-                handle: String,
-                sk: String) extends Identifiable
+case class City(handle: String,
+                sk: String) extends Identifiable {
+  def id = handle
+}
 
 object City {
   def apply(city: db.City): City = City(
-    id      = city._id.stringify,
     handle  = city.handle,
     sk      = city.sk
   )

@@ -83,7 +83,7 @@ class CompServiceImpl(compRepository: CompRepository,
       val ids = comp.techs.map(_.stringify)
 
       // TODO: Get db.City
-      val city = db.City(comp.city, "", "")
+      val city = db.City(comp.city, "")
       domain.Comp(comp, techs.filter(t => ids.contains(t.id)), city)
     }
   }

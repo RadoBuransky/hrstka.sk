@@ -16,8 +16,7 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 
 abstract class BaseMongoRepository(coll: MongoCollection) {
-  protected def insert[T](value: T)(implicit writes: Writes[T]): Future[LastError] = {
-    Logger.debug(s"Insert [$value]")
+  protected def ins[T](value: T)(implicit writes: Writes[T]): Future[LastError] = {
     collection.insert(value)
   }
 

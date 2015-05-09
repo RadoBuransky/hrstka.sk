@@ -8,4 +8,5 @@ case object CompCollection extends MongoCollection("comp")
 case object CompVoteCollection extends MongoCollection("compVote")
 case object CompVoteLogCollection extends MongoCollection("compVoteLog")
 case object UserCollection extends MongoCollection("user")
+case object CityCollection extends MongoCollection("city")
 
