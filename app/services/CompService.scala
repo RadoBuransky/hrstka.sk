@@ -11,7 +11,7 @@ trait CompService {
   def get(compId: Id): Future[Comp]
   def insert(name: String,
              website: URL,
-             location: String,
+             citySk: String,
              employeeCount: Option[Int],
              codersCount: Option[Int],
              femaleCodersCount: Option[Int],

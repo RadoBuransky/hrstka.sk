@@ -2,7 +2,7 @@ package services.impl
 
 import java.net.URL
 
-import models.domain.Comp
+import models.domain.{CompQuery, Comp}
 import models.domain.Identifiable.{Id, _}
 import models.{db, domain}
 import repositories.CompRepository
@@ -15,7 +15,7 @@ class CompServiceImpl(compRepository: CompRepository,
                       techService: TechService) extends CompService {
   override def insert(name: String,
                       website: URL,
-                      location: String,
+                      citySk: String,
                       employeeCount: Option[Int],
                       codersCount: Option[Int],
                       femaleCodersCount: Option[Int],
@@ -27,12 +27,16 @@ class CompServiceImpl(compRepository: CompRepository,
                       techNames: Seq[String],
                       joel: Set[Int]): Future[Id] = {
     techNamesToIds(techNames).flatMap { techIds =>
+
+      // TODO: Get city ID for the slovak name
+      val cityId = db.Identifiable.empty
+
       compRepository.upsert(db.Comp(
         _id               = db.Identifiable.empty,
         authorId          = userId,
         name              = name,
         website           = website.toString,
-        location          = location,
+        city              = cityId,
         employeeCount     = employeeCount,
         codersCount       = codersCount,
         femaleCodersCount = femaleCodersCount,
@@ -55,12 +59,13 @@ class CompServiceImpl(compRepository: CompRepository,
 
   override def get(compId: Id): Future[Comp] = compRepository.get(compId).flatMap(dbCompToDomain)
   override def update(comp: Comp, techNames: Seq[String], userId: Id): Future[Unit] = techNamesToIds(techNames).map { techIds =>
+    // TODO: What if user modifies the city?
     compRepository.upsert(db.Comp(
       _id               = comp.id,
       authorId          = userId,
       name              = comp.name,
       website           = comp.website.toString,
-      location          = comp.location,
+      city              = comp.city.id,
       employeeCount     = comp.employeeCount,
       codersCount       = comp.codersCount,
       femaleCodersCount = comp.femaleCodersCount,
@@ -76,7 +81,10 @@ class CompServiceImpl(compRepository: CompRepository,
   private def dbCompToDomain(comp: db.Comp): Future[domain.Comp] = {
     techService.all().map { techs =>
       val ids = comp.techs.map(_.stringify)
-      domain.Comp(comp, techs.filter(t => ids.contains(t.id)))
+
+      // TODO: Get db.City
+      val city = db.City(comp.city, "", "")
+      domain.Comp(comp, techs.filter(t => ids.contains(t.id)), city)
     }
   }
 
@@ -85,4 +93,6 @@ class CompServiceImpl(compRepository: CompRepository,
       allTechs.filter(t => techNames.contains(t.name)).map(t => db.Identifiable(t.id))
     }
   }
+
+  override def find(query: CompQuery, location: Option[String], tech: Option[String]): Future[Seq[Comp]] = ???
 }

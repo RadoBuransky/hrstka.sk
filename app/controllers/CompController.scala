@@ -3,7 +3,7 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.domain.CompQuery
+import models.domain.{City, CompQuery}
 import models.{domain, ui}
 import play.api.data.Form
 import play.api.data.Forms._
@@ -105,7 +105,7 @@ private class CompControllerImpl(compService: CompService,
         id = compId.get,
         name = form.name,
         website = new URL(form.website),
-        location = form.location,
+        city = City(form.location, "", ""),
         employeeCount = form.employeeCount,
         codersCount = form.codersCount,
         femaleCodersCount = form.femaleCodersCount,

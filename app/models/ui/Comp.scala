@@ -21,7 +21,7 @@ object Comp {
     id                = comp.id,
     name              = comp.name,
     website           = comp.website.toString,
-    location          = comp.location,
+    location          = comp.city.handle,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,

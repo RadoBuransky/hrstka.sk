@@ -8,7 +8,7 @@ import models.domain.Identifiable.Id
 case class Comp(id: Id,
                 name: String,
                 website: URL,
-                location: String,
+                city: City,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
@@ -20,11 +20,11 @@ case class Comp(id: Id,
                 joel: Set[Int]) extends Identifiable
 
 object Comp {
-  def apply(comp: db.Comp, techs: Seq[Tech]): Comp = Comp(
+  def apply(comp: db.Comp, techs: Seq[Tech], city: db.City): Comp = Comp(
     id                = comp._id.stringify,
     name              = comp.name,
     website           = new URL(comp.website),
-    location          = comp.location,
+    city              = City(city),
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
