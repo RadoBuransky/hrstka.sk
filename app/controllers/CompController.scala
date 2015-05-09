@@ -3,12 +3,12 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.domain.{Handle, City, CompQuery}
+import models.domain.{Identifiable, Handle, City, CompQuery}
 import models.{domain, ui}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Call, Result}
-import services.{CompService, TechService}
+import services.{LocationService, CompService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -73,13 +73,11 @@ object CompController {
     "Do new candidates write code during their interview?",
     "Do you do hallway usability testing?"
   )
-
-  def apply(compService: CompService,techService: TechService): CompController =
-    new CompControllerImpl(compService, techService)
 }
 
-private class CompControllerImpl(compService: CompService,
-                                 techService: TechService) extends BaseController with CompController {
+class CompControllerImpl(compService: CompService,
+                         techService: TechService,
+                         locationService: LocationService) extends BaseController with CompController {
   import controllers.CompController._
 
   override def addForm: Action[AnyContent] = Action.async {
@@ -99,32 +97,27 @@ private class CompControllerImpl(compService: CompService,
     }
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
-    val result = if (compId.isEmpty) {
-      compService.insert(form.name, new URL(form.website), form.city, form.employeeCount, form.codersCount, form.femaleCodersCount,
-        form.note, userId, form.products, form.services, form.internal, form.techs, form.joel.toSet)
-    }
-    else {
-      compService.update(domain.Comp(
-        id = compId.get,
-        name = form.name,
-        website = new URL(form.website),
-        city = City(Handle.fromHumanName(form.city), form.city),
-        employeeCount = form.employeeCount,
-        codersCount = form.codersCount,
-        femaleCodersCount = form.femaleCodersCount,
-        note = form.note,
-        products = form.products,
-        services = form.services,
-        internal = form.internal,
-        techs = Nil,
-        joel = form.joel.toSet
-      ),
-      form.techs,
-      userId)
-    }
-
-    result.map { Unit =>
-      Redirect(AppLoader.routes.compController.all())
+    locationService.getOrCreateCity(form.city).flatMap { city =>
+      compService.upsert(
+        domain.Comp(
+          id                = compId.getOrElse(Identifiable.empty),
+          name              = form.name,
+          website           = new URL(form.website),
+          city              = city,
+          employeeCount     = form.employeeCount,
+          codersCount       = form.codersCount,
+          femaleCodersCount = form.femaleCodersCount,
+          note              = form.note,
+          products          = form.products,
+          services          = form.services,
+          internal          = form.internal,
+          techs             = Nil,
+          joel              = form.joel.toSet
+        ),
+        form.techs,
+        userId).map { Unit =>
+        Redirect(AppLoader.routes.compController.all())
+      }
     }
   }
 

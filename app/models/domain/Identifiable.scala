@@ -12,6 +12,7 @@ trait Identifiable {
 
 object Identifiable {
   type Id = String
+  val empty: Id = ""
 
   implicit def toBSON(id: Id): BSONObjectID = BSONObjectID(id)
   implicit def toBSON(handle: Handle): db.Identifiable.Handle = handle.value

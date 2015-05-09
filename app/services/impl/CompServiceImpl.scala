@@ -1,7 +1,5 @@
 package services.impl
 
-import java.net.URL
-
 import models.domain.Identifiable.{Id, _}
 import models.domain.{Comp, CompQuery, Handle}
 import models.{db, domain}
@@ -14,42 +12,6 @@ import scala.concurrent.Future
 class CompServiceImpl(compRepository: CompRepository,
                       techService: TechService,
                       locationService: LocationService) extends CompService {
-  override def insert(name: String,
-                      website: URL,
-                      citySk: String,
-                      employeeCount: Option[Int],
-                      codersCount: Option[Int],
-                      femaleCodersCount: Option[Int],
-                      note: String,
-                      userId: Id,
-                      products: Boolean,
-                      services: Boolean,
-                      internal: Boolean,
-                      techNames: Seq[String],
-                      joel: Set[Int]): Future[Id] = {
-    techNamesToIds(techNames).flatMap { techIds =>
-      locationService.getOrCreateCity(citySk).flatMap { city =>
-        compRepository.upsert(db.Comp(
-          _id               = db.Identifiable.empty,
-          authorId          = userId,
-          name              = name,
-          website           = website.toString,
-          city              = city.handle,
-          employeeCount     = employeeCount,
-          codersCount       = codersCount,
-          femaleCodersCount = femaleCodersCount,
-          note              = note,
-          products          = products,
-          services          = services,
-          internal          = internal,
-          techs             = techIds,
-          joel              = joel
-
-        )).map(_.stringify)
-      }
-    }
-  }
-
   override def all(): Future[Seq[Comp]] = {
     compRepository.all().flatMap { comps =>
       Future.sequence(comps.map(dbCompToDomain))
@@ -57,23 +19,23 @@ class CompServiceImpl(compRepository: CompRepository,
   }
 
   override def get(compId: Id): Future[Comp] = compRepository.get(compId).flatMap(dbCompToDomain)
-  override def update(comp: Comp, techNames: Seq[String], userId: Id): Future[Unit] = techNamesToIds(techNames).map { techIds =>
-    // TODO: What if user modifies the city?
-    compRepository.upsert(db.Comp(
-      _id               = comp.id,
-      authorId          = userId,
-      name              = comp.name,
-      website           = comp.website.toString,
-      city              = comp.city.handle,
-      employeeCount     = comp.employeeCount,
-      codersCount       = comp.codersCount,
-      femaleCodersCount = comp.femaleCodersCount,
-      note              = comp.note,
-      products          = comp.products,
-      services          = comp.services,
-      internal          = comp.internal,
-      techs             = techIds,
-      joel              = comp.joel
+  override def upsert(comp: Comp, techNames: Seq[String], userId: Id): Future[Unit] =
+    techNamesToIds(techNames).map { techIds =>
+      compRepository.upsert(db.Comp(
+        _id               = comp.id,
+        authorId          = userId,
+        name              = comp.name,
+        website           = comp.website.toString,
+        city              = comp.city.handle,
+        employeeCount     = comp.employeeCount,
+        codersCount       = comp.codersCount,
+        femaleCodersCount = comp.femaleCodersCount,
+        note              = comp.note,
+        products          = comp.products,
+        services          = comp.services,
+        internal          = comp.internal,
+        techs             = techIds,
+        joel              = comp.joel
     ))
   }
 
