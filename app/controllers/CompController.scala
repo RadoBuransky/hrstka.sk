@@ -3,12 +3,12 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.domain.{Identifiable, Handle, City, CompQuery}
+import models.domain.{CompQuery, Identifiable}
 import models.{domain, ui}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Call, Result}
-import services.{LocationService, CompService, TechService}
+import services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

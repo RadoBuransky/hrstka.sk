@@ -10,7 +10,7 @@ package object AppLoader {
   lazy val techController = TechController(techService)
   lazy val compController: CompController = new CompControllerImpl(compService, techService, locationService)
   lazy val authController = AuthController(authService)
-  lazy val apiController = ApiController(compService, techService)
+  lazy val apiController: ApiController = new ApiControllerImpl(compService, techService, locationService)
 
   // Services
   lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteRepository, techVoteLogRepository)

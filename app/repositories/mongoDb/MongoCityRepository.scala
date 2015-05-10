@@ -17,4 +17,6 @@ class MongoCityRepository extends BaseMongoRepository(CityCollection) with CityR
   override def find(handle: String): Future[Option[City]] =
     find[City](Json.obj("handle" -> handle)).map(_.headOption)
   override def insert(city: City): Future[String] = ins(city).map(_ => city.handle)
+
+  override def all(): Future[Seq[City]] = find[City](Json.obj())
 }

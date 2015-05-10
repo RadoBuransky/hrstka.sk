@@ -1,7 +1,7 @@
 package services.impl
 
 import models.db
-import models.domain.{City, CityInfo, CompQuery, Handle}
+import models.domain.{City, CompQuery, Handle}
 import reactivemongo.bson.BSONObjectID
 import repositories.CityRepository
 import services.LocationService
@@ -10,6 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class LocationServiceImpl(cityRepository: CityRepository) extends LocationService {
+  override def all(): Future[Seq[City]] = cityRepository.all().map(_.map(City.apply))
   override def get(handle: Handle): Future[City] = cityRepository.get(handle.value).map(City.apply)
   override def getOrCreateCity(humanName: String): Future[City] = {
     val handle = Handle.fromHumanName(humanName)
@@ -27,5 +28,4 @@ class LocationServiceImpl(cityRepository: CityRepository) extends LocationServic
   }
 
   override def getLocation(compQuery: CompQuery): Future[Option[String]] = ???
-  override def cityInfos(): Future[Seq[CityInfo]] = ???
 }
