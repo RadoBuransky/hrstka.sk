@@ -122,17 +122,20 @@ class CompControllerImpl(compService: CompService,
   }
 
   override def all = Action.async { implicit request =>
-    compService.all().map { comps =>
+    compService.all().flatMap { comps =>
       val query = request.queryString.get("q").map(q => CompQuery(q.mkString(",")))
 
       // TODO: Redirect to locationTech if query contains a location (and a tech)?
       // TODO: List 5 cities with the most companies
       // TODO: If a city is specified, list top 5 technologies by rating / count
 
-      Ok(views.html.comps(
-        SupportedLang.defaultLang,
-        comps.map(ui.Comp(_)),
-        query.map(_.keywords.mkString(","))))
+      compService.topCities().map { cities =>
+        Ok(views.html.comps(
+          SupportedLang.defaultLang,
+          comps.map(ui.Comp(_)),
+          cities.map(ui.City(_)),
+          query.map(_.keywords.mkString(","))))
+      }
     }
   }
 

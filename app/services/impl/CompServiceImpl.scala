@@ -1,7 +1,8 @@
 package services.impl
 
+import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
-import models.domain.{Comp, CompQuery, Handle}
+import models.domain.{City, Comp, CompQuery, Handle}
 import models.{db, domain}
 import repositories.CompRepository
 import services.{CompService, LocationService, TechService}
@@ -22,7 +23,7 @@ class CompServiceImpl(compRepository: CompRepository,
   override def upsert(comp: Comp, techNames: Seq[String], userId: Id): Future[Unit] =
     techNamesToIds(techNames).map { techIds =>
       compRepository.upsert(db.Comp(
-        _id               = comp.id,
+        _id               = if (comp.id.isEmpty) Identifiable.empty else comp.id,
         authorId          = userId,
         name              = comp.name,
         website           = comp.website.toString,
@@ -55,4 +56,14 @@ class CompServiceImpl(compRepository: CompRepository,
   }
 
   override def find(query: CompQuery, location: Option[String], tech: Option[String]): Future[Seq[Comp]] = ???
+
+  override def topCities(): Future[Seq[City]] = {
+    locationService.all().flatMap { cities =>
+      all().map { comps =>
+        cities.sortBy { city =>
+          -1 * comps.count(_.city.handle == city.handle)
+        }.take(5)
+      }
+    }
+  }
 }
