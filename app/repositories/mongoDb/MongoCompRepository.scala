@@ -3,6 +3,7 @@ package repositories.mongoDb
 import models.db.Identifiable._
 import models.db.JsonFormats._
 import models.db.{Comp, Identifiable}
+import play.api.Logger
 import play.api.libs.json.Json
 import reactivemongo.bson.BSONObjectID
 import repositories.CompRepository
