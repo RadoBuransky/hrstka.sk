@@ -13,8 +13,8 @@ GET     /technologia/:id/voteUp     AppLoader.techController.voteUp(id: String)
 GET     /technologia/:id/voteDown   AppLoader.techController.voteDown(id: String)
 
 GET     /firmy                      AppLoader.compController.all
-GET     /firmy/:location            AppLoader.compController.locationTech(location: String, tech: String = "")
-GET     /firmy/:location/:tech      AppLoader.compController.locationTech(location: String, tech: String)
+GET     /firmy/:city                AppLoader.compController.cityTech(city: String, tech: String = "")
+GET     /firmy/:city/:tech          AppLoader.compController.cityTech(city: String, tech: String)
 POST    /firma                      AppLoader.compController.save(compId: Option[String])
 GET     /firma/nova                 AppLoader.compController.addForm
 GET     /firma/:id/uprav            AppLoader.compController.editForm(id: String)
@@ -23,6 +23,6 @@ GET     /api/companies              AppLoader.apiController.comps
 GET     /api/technologies           AppLoader.apiController.techs
 GET     /api/cities                 AppLoader.apiController.cities
 
-GET     /robots.txt 				        controllers.Assets.at(path="/public", file="robots.txt")
-GET     /sitemap.xml 				        controllers.Assets.at(path="/public", file="sitemap.xml")
+GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
+GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

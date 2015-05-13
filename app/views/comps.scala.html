@@ -1,15 +1,20 @@
 @(lang: Lang,
   comps: Seq[models.ui.Comp],
   cities: Seq[models.ui.City],
+  city: Option[models.ui.City],
   q: Option[String])
 
 @main("Hŕstka Eminencie", "xxx", lang) {
-    <h2>Firmy</h2>
-    <div>
-        @for(city <- cities) {
-        <span>@city.sk</span>
-        }
-    </div>
+    @if(city.isEmpty) {
+        <div>
+            @for(city <- cities) {
+            <span><a href="@AppLoader.routes.compController.cityTech(city.handle, "")">@city.sk</a></span>
+            }
+        </div>
+        <h2>Firmy</h2>
+    } else {
+        <h2>Firmy v meste @city.get.sk</h2>
+    }
     <form action="@AppLoader.routes.compController.all" method="get">
         <div class="form-group">
             <input type="text" class="form-control" id="q" name="q">

@@ -2,7 +2,7 @@ package services.impl
 
 import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
-import models.domain.{City, Comp, CompQuery, Handle}
+import models.domain._
 import models.{db, domain}
 import repositories.CompRepository
 import services.{CompService, LocationService, TechService}
@@ -13,8 +13,8 @@ import scala.concurrent.Future
 class CompServiceImpl(compRepository: CompRepository,
                       techService: TechService,
                       locationService: LocationService) extends CompService {
-  override def all(): Future[Seq[Comp]] = {
-    compRepository.all().flatMap { comps =>
+  override def all(city: Option[Handle], tech: Option[Handle]): Future[Seq[Comp]] = {
+    compRepository.all(city.map(_.value)).flatMap { comps =>
       Future.sequence(comps.map(dbCompToDomain))
     }
   }
@@ -55,14 +55,14 @@ class CompServiceImpl(compRepository: CompRepository,
     }
   }
 
-  override def find(query: CompQuery, location: Option[String], tech: Option[String]): Future[Seq[Comp]] = ???
+  override def find(query: CompQuery): Future[Seq[Comp]] = ???
 
   override def topCities(): Future[Seq[City]] = {
     locationService.all().flatMap { cities =>
       all().map { comps =>
         cities.sortBy { city =>
           -1 * comps.count(_.city.handle == city.handle)
-        }.take(5)
+        }
       }
     }
   }

@@ -27,7 +27,7 @@ class TechServiceImpl(techRepository: TechRepository,
   }
 
   override def all() =
-    techRepository.all().map(_.map(Tech(_)))
+    techRepository.all().map(_.map(Tech(_)).sortBy(-1 * _.rating.value))
 
   override def voteUp(id: Id, userId: Id) = voteDelta(id, userId, 1)
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)

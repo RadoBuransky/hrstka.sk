@@ -3,8 +3,9 @@ package controllers
 import java.net.URL
 
 import common.SupportedLang
-import models.domain.{CompQuery, Identifiable}
+import models.domain.{CompQuery, Handle, Identifiable}
 import models.{domain, ui}
+import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Action, AnyContent, Call, Result}
@@ -32,7 +33,7 @@ trait CompController {
   def editForm(compId: String): Action[AnyContent]
   def save(compId: Option[String]): Action[AnyContent]
   def all: Action[AnyContent]
-  def locationTech(location: String, tech: String): Action[AnyContent]
+  def cityTech(cityHandle: String, tech: String): Action[AnyContent]
 }
 
 object CompController {
@@ -121,25 +122,36 @@ class CompControllerImpl(compService: CompService,
     }
   }
 
-  override def all = Action.async { implicit request =>
-    compService.all().flatMap { comps =>
-      val query = request.queryString.get("q").map(q => CompQuery(q.mkString(",")))
+  override def all = cityTech("", "")
+
+  def cityTech(cityHandle: String, tech: String) = Action.async { implicit request =>
+    val query = request.queryString.get("q").map(q => CompQuery(q.mkString(",")))
 
       // TODO: Redirect to locationTech if query contains a location (and a tech)?
-      // TODO: List 5 cities with the most companies
       // TODO: If a city is specified, list top 5 technologies by rating / count
 
-      compService.topCities().map { cities =>
-        Ok(views.html.comps(
-          SupportedLang.defaultLang,
-          comps.map(ui.Comp(_)),
-          cities.map(ui.City(_)),
-          query.map(_.keywords.mkString(","))))
+    cityForHandle(cityHandle).flatMap { city =>
+      compService.all(city.map(_.handle)).flatMap { comps =>
+        compService.topCities().map { cities =>
+          Ok(views.html.comps(
+            SupportedLang.defaultLang,
+            comps.map(ui.Comp(_)),
+            cities.take(5).map(ui.City(_)),
+            city.map(ui.City(_)),
+            query.map(_.keywords.mkString(","))))
+        }
       }
+    }.recover {
+      case t =>
+        Logger.error(s"Cannot get companies for city/tech! [$cityHandle, $tech]", t)
+        Redirect(AppLoader.routes.compController.all())
     }
   }
 
-  def locationTech(location: String, tech: String): Action[AnyContent] = {
-    all
-  }
+  private def cityForHandle(cityHandle: String): Future[Option[domain.City]] =
+    if (cityHandle.nonEmpty) {
+      locationService.get(Handle(cityHandle)).map(Some(_))
+    }
+    else
+      Future.successful(None)
 }
