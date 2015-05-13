@@ -14,44 +14,35 @@ class CompServiceImpl(compRepository: CompRepository,
                       techService: TechService,
                       locationService: LocationService) extends CompService {
   override def all(city: Option[Handle], tech: Option[Handle]): Future[Seq[Comp]] = {
-    compRepository.all(city.map(_.value)).flatMap { comps =>
+    compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { comps =>
       Future.sequence(comps.map(dbCompToDomain))
     }
   }
 
   override def get(compId: Id): Future[Comp] = compRepository.get(compId).flatMap(dbCompToDomain)
-  override def upsert(comp: Comp, techNames: Seq[String], userId: Id): Future[Unit] =
-    techNamesToIds(techNames).map { techIds =>
-      compRepository.upsert(db.Comp(
-        _id               = if (comp.id.isEmpty) Identifiable.empty else comp.id,
-        authorId          = userId,
-        name              = comp.name,
-        website           = comp.website.toString,
-        city              = comp.city.handle,
-        employeeCount     = comp.employeeCount,
-        codersCount       = comp.codersCount,
-        femaleCodersCount = comp.femaleCodersCount,
-        note              = comp.note,
-        products          = comp.products,
-        services          = comp.services,
-        internal          = comp.internal,
-        techs             = techIds,
-        joel              = comp.joel
-    ))
-  }
+  override def upsert(comp: Comp, techHandles: Seq[Handle], userId: Id): Future[Id] =
+    compRepository.upsert(db.Comp(
+      _id               = if (comp.id.isEmpty) Identifiable.empty else comp.id,
+      authorId          = userId,
+      name              = comp.name,
+      website           = comp.website.toString,
+      city              = comp.city.handle,
+      employeeCount     = comp.employeeCount,
+      codersCount       = comp.codersCount,
+      femaleCodersCount = comp.femaleCodersCount,
+      note              = comp.note,
+      products          = comp.products,
+      services          = comp.services,
+      internal          = comp.internal,
+      techs             = techHandles.map(_.value),
+      joel              = comp.joel
+  )).map(_.stringify)
 
   private def dbCompToDomain(comp: db.Comp): Future[domain.Comp] = {
     techService.all().flatMap { techs =>
-      val ids = comp.techs.map(_.stringify)
       locationService.get(Handle(comp.city)).map { city =>
-        domain.Comp(comp, techs.filter(t => ids.contains(t.id)), city)
+        domain.Comp(comp, techs.filter(t => comp.techs.contains(t.handle.value)), city)
       }
-    }
-  }
-
-  private def techNamesToIds(techNames: Seq[String]): Future[Seq[db.Identifiable.Id]] = {
-    techService.all().map { allTechs =>
-      allTechs.filter(t => techNames.contains(t.name)).map(t => db.Identifiable(t.id))
     }
   }
 

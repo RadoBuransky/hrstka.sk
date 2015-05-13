@@ -14,5 +14,5 @@ case class Comp(_id: Id,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techs: Seq[Id],
+                techs: Seq[Handle],
                 joel: Set[Int]) extends Identifiable with Authorable

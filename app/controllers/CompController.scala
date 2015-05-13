@@ -33,7 +33,7 @@ trait CompController {
   def editForm(compId: String): Action[AnyContent]
   def save(compId: Option[String]): Action[AnyContent]
   def all: Action[AnyContent]
-  def cityTech(cityHandle: String, tech: String): Action[AnyContent]
+  def cityTech(cityHandle: String, techHandle: String): Action[AnyContent]
 }
 
 object CompController {
@@ -93,7 +93,7 @@ class CompControllerImpl(compService: CompService,
 
   private def edit(comp: Option[domain.Comp], action: Call): Future[Result] =
     techService.all().map { techs =>
-      val ts = techs.map(t => (t.name, comp.exists(_.techs.exists(_.name == t.name))))
+      val ts = techs.map(t => (t.handle.value, comp.exists(_.techs.exists(_.handle == t.handle))))
       Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply), ts, joelQuestions, action))
     }
 
@@ -115,7 +115,7 @@ class CompControllerImpl(compService: CompService,
           techs             = Nil,
           joel              = form.joel.toSet
         ),
-        form.techs,
+        form.techs.map(Handle(_)),
         userId).map { Unit =>
         Redirect(AppLoader.routes.compController.all())
       }
@@ -124,29 +124,58 @@ class CompControllerImpl(compService: CompService,
 
   override def all = cityTech("", "")
 
-  def cityTech(cityHandle: String, tech: String) = Action.async { implicit request =>
+  def cityTech(cityHandle: String, techHandle: String) = Action.async { implicit request =>
     val query = request.queryString.get("q").map(q => CompQuery(q.mkString(",")))
 
-      // TODO: Redirect to locationTech if query contains a location (and a tech)?
-      // TODO: If a city is specified, list top 5 technologies by rating / count
-
     cityForHandle(cityHandle).flatMap { city =>
-      compService.all(city.map(_.handle)).flatMap { comps =>
-        compService.topCities().map { cities =>
-          Ok(views.html.comps(
-            SupportedLang.defaultLang,
-            comps.map(ui.Comp(_)),
-            cities.take(5).map(ui.City(_)),
-            city.map(ui.City(_)),
-            query.map(_.keywords.mkString(","))))
+      techForHandle(techHandle).flatMap { tech =>
+        compService.all(city.map(_.handle), tech.map(_.handle)).flatMap { comps =>
+          compService.topCities().flatMap { cities =>
+            techService.topTechs().map { techs =>
+              Ok(views.html.comps(
+                SupportedLang.defaultLang,
+                headline(city, tech),
+                comps.map(ui.Comp(_)),
+                cities.take(5).map(ui.City(_)),
+                techs.map(ui.Tech(_)),
+                city.map(ui.City(_)),
+                tech.map(ui.Tech(_)),
+                query.map(_.keywords.mkString(","))))
+            }
+          }
+        }.recover {
+          case t =>
+            Logger.error(s"Cannot get companies for city/tech! [$cityHandle, $techHandle]", t)
+            InternalServerError("Oh shit!")
         }
+      }.recover {
+        case t =>
+          Logger.error(s"Cannot get tech for handle! [$techHandle]", t)
+          Redirect(AppLoader.routes.compController.cityTech(cityHandle, ""))
       }
     }.recover {
       case t =>
-        Logger.error(s"Cannot get companies for city/tech! [$cityHandle, $tech]", t)
+        Logger.error(s"Cannot get city for handle! [$cityHandle]", t)
         Redirect(AppLoader.routes.compController.all())
     }
   }
+
+  private def headline(city: Option[domain.City], tech: Option[domain.Tech]): String = {
+    val cityHeadline = city.map { c =>
+      " v meste " + c.sk
+    }
+    val techHeadline = tech.map { t =>
+      " používajúce " + t.handle.value
+    }
+    "Firmy" + cityHeadline.getOrElse("") + techHeadline.getOrElse("")
+  }
+
+  private def techForHandle(techHandle: String): Future[Option[domain.Tech]] =
+    if (techHandle.nonEmpty) {
+      techService.get(Handle(techHandle)).map(Some(_))
+    }
+    else
+      Future.successful(None)
 
   private def cityForHandle(cityHandle: String): Future[Option[domain.City]] =
     if (cityHandle.nonEmpty) {

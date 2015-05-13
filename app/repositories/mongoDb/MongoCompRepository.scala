@@ -11,9 +11,19 @@ import scala.concurrent.Future
 
 class MongoCompRepository extends BaseMongoRepository(CompCollection) with CompRepository {
   override def get(compId: Id): Future[Comp] = get[Comp](compId)
-  override def all(city: Option[Handle] = None): Future[Seq[Comp]] = {
-    val cityQuery = city.map { cityHandle => Json.obj("city" -> cityHandle) }
-    find[Comp](cityQuery.getOrElse(Json.obj()))
+  override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]] = {
+
+    val cityQuery = city match {
+      case Some(cityHandle) => Json.obj("city" -> cityHandle)
+      case None => Json.obj()
+    }
+
+    val techQuery = tech match {
+      case Some(techHandle) => Json.obj("techs" -> Json.obj(MongoOperators.in -> Json.arr(techHandle)))
+      case None => Json.obj()
+    }
+
+    find[Comp](cityQuery ++ techQuery)
   }
   override def upsert(comp: Comp): Future[Id] = {
     val compToUpsert = if (comp._id == Identifiable.empty) comp.copy(_id = BSONObjectID.generate) else comp

@@ -1,13 +1,13 @@
 package models.api
 
 case class Tech(id: String,
-                name: String,
+                handle: String,
                 rating: Double)
 
 object Tech {
   def fromDomain(tech: models.domain.Tech) = Tech(
     id      = tech.id,
-    name    = tech.name,
+    handle  = tech.handle.value,
     rating  = tech.rating.value
   )
 }
