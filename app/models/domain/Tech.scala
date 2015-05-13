@@ -5,7 +5,7 @@ import models.{db, domain}
 
 case class Tech(id: Id,
                 authorId: Id,
-                name: String,
+                handle: Handle,
                 rating: TechRating) extends Identifiable with Authorable
 
 object Tech {
@@ -13,7 +13,7 @@ object Tech {
     domain.Tech(
       id = src._id.stringify,
       authorId = src.authorId.stringify,
-      name = src.name,
+      handle = Handle(src.handle),
       rating = TechRating(src.upVotesValue, src.downVotes + src.upVotes))
   }
 }

@@ -3,7 +3,6 @@ package repositories.mongoDb
 import models.db.Identifiable.Id
 import models.db.JsonFormats._
 import models.db.Tech
-import play.api.Logger
 import play.api.libs.json.Json
 import reactivemongo.bson.BSONObjectID
 import repositories.TechRepository
@@ -19,13 +18,13 @@ class MongoTechRepository extends BaseMongoRepository(TechCollection) with TechR
     val id = BSONObjectID.generate
     ins(Tech(_id = id,
       authorId = authorId,
-      name = name,
+      handle = name,
       upVotes = 0,
       upVotesValue = 0,
       downVotes = 0)).map(_ => id)
   }
 
-  override def all() = find[Tech](Json.obj(), sort = Json.obj("name" -> 1))
+  override def all() = find[Tech](Json.obj(), sort = Json.obj("handle" -> 1))
 
   override def updateRating(techId: Id, delta: Int, value: Int) = {
     if (delta != -1 && delta != 1)

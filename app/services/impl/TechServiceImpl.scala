@@ -1,8 +1,9 @@
 package services.impl
 
+import common.HEException
 import models._
 import models.domain.Identifiable.{Id, _}
-import models.domain.{Tech, TechRating, TechVote}
+import models.domain.{Handle, Tech, TechRating, TechVote}
 import repositories.{TechRepository, VoteLogRepository, VoteRepository}
 import services.TechService
 
@@ -12,6 +13,10 @@ import scala.concurrent.Future
 class TechServiceImpl(techRepository: TechRepository,
                       techVoteRepository: VoteRepository,
                       techVoteLogRepository: VoteLogRepository) extends TechService {
+  def get(handle: Handle) = all().map(_.find(_.handle == handle) match {
+    case Some(tech) => tech
+    case None => throw new HEException(s"Tech doesn't exist! [${handle.value}]")
+  })
 
   override def insert(name: String, userId: domain.Identifiable.Id) =
     techRepository.insert(
@@ -20,7 +25,7 @@ class TechServiceImpl(techRepository: TechRepository,
     ).map(_.stringify)
 
   override def getOrInsert(name: String, userId: Id): Future[Id] = {
-    techRepository.all().map(_.find(_.name == name)).flatMap {
+    techRepository.all().map(_.find(_.handle == name)).flatMap {
       case Some(tech) => Future(tech._id)
       case None => insert(name, userId)
     }
@@ -28,6 +33,8 @@ class TechServiceImpl(techRepository: TechRepository,
 
   override def all() =
     techRepository.all().map(_.map(Tech(_)).sortBy(-1 * _.rating.value))
+
+  override def topTechs(): Future[Seq[Tech]] = all().map(_.take(10))
 
   override def voteUp(id: Id, userId: Id) = voteDelta(id, userId, 1)
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)
@@ -52,4 +59,5 @@ class TechServiceImpl(techRepository: TechRepository,
 
   override def votesFor(userId: Id): Future[Seq[TechVote]] =
     techVoteRepository.getAll(userId).map(_.map(TechVote(_)))
+
 }

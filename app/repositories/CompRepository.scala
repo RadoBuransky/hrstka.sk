@@ -8,5 +8,5 @@ import scala.concurrent.Future
 trait CompRepository {
   def get(compId: Id): Future[Comp]
   def upsert(comp: Comp): Future[Id]
-  def all(city: Option[Handle] = None): Future[Seq[Comp]]
+  def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]]
 }

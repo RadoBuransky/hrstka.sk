@@ -29,6 +29,6 @@ object Comp {
     products          = comp.products,
     services          = comp.services,
     internal          = comp.internal,
-    techs             = comp.techs.map(_.name),
+    techs             = comp.techs.map(_.handle.value),
     joel              = comp.joel)
 }
