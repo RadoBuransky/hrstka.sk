@@ -2,7 +2,6 @@ package controllers
 
 import java.net.URL
 
-import common.SupportedLang
 import models.domain.{CompQuery, Handle, Identifiable}
 import models.{domain, ui}
 import play.api.Logger
@@ -94,7 +93,7 @@ class CompControllerImpl(compService: CompService,
   private def edit(comp: Option[domain.Comp], action: Call): Future[Result] =
     techService.all().map { techs =>
       val ts = techs.map(t => (t.handle.value, comp.exists(_.techs.exists(_.handle == t.handle))))
-      Ok(views.html.compEdit(SupportedLang.defaultLang, comp.map(ui.Comp.apply), ts, joelQuestions, action))
+      Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
     }
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
@@ -133,7 +132,6 @@ class CompControllerImpl(compService: CompService,
           compService.topCities().flatMap { cities =>
             techService.topTechs().map { techs =>
               Ok(views.html.comps(
-                SupportedLang.defaultLang,
                 headline(city, tech),
                 comps.map(ui.Comp(_)),
                 cities.take(5).map(ui.City(_)),

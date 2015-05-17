@@ -1,6 +1,6 @@
-@(lang: Lang, form: Form[controllers.LoginForm])
+@(form: Form[controllers.LoginForm])
 
-@main("Hŕstka Eminencie", "xxx", lang) {
+@main("Hŕstka Eminencie", "xxx") {
     <form class="form-signin" action="@AppLoader.routes.authController.authenticate()" method="post">
         <h2>Prihlasovanie pre eminentov</h2>
 

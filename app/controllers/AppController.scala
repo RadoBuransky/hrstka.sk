@@ -12,6 +12,8 @@ object AppController {
 }
 
 private class AppControllerImpl extends Controller with AppController {
-  def index = Action { Redirect(AppLoader.routes.compController.all()) }
+  def index = Action {
+    Ok(views.html.index())
+  }
   def untrail(path: String) = Action { MovedPermanently("/" + path) }
 }

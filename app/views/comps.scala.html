@@ -1,5 +1,4 @@
-@(lang: Lang,
-  headline: String,
+@(headline: String,
   comps: Seq[models.ui.Comp],
   cities: Seq[models.ui.City],
   techs: Seq[models.ui.Tech],
@@ -7,7 +6,7 @@
   tech: Option[models.ui.Tech],
   q: Option[String])
 
-@main("Hŕstka Eminencie", "xxx", lang) {
+@main("Hŕstka Eminencie", "xxx") {
     @if(city.isEmpty) {
         <div>
             @for(c <- cities) {

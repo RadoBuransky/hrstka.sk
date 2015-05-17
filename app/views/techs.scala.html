@@ -1,6 +1,6 @@
-@(lang: Lang, msg: Option[String], techs: Seq[models.ui.Tech])
+@(msg: Option[String], techs: Seq[models.ui.Tech])
 
-@main("Hŕstka Eminencie", "xxx", lang) {
+@main("Hŕstka Eminencie", "xxx") {
     <h2>Technológie</h2>
 
     <form action="@AppLoader.routes.techController.add" method="post" class="form-inline">
@@ -14,7 +14,7 @@
     @for(tech <- techs) {
         <div>
             @tech.rating%
-            @tech.name
+            @tech.handle
             @if(tech.userVoteValue.isDefined) {
               @tech.userVoteValue.get
             }

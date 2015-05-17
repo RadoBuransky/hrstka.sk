@@ -1,6 +1,8 @@
-name := """hrstka-eminencie"""
+organization := "sk.hrstka"
 
-version := "1.0-SNAPSHOT"
+name := "website"
+
+version := "1.0.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 

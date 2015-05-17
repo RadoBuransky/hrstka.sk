@@ -1,7 +1,6 @@
 package controllers
 
 import auth.AuthConfigImpl
-import common.SupportedLang
 import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
 import models.domain.Admin
 import play.api.data.Form
@@ -36,7 +35,7 @@ private class AuthControllerImpl(authService: AuthService) extends AuthConfigImp
     "passwordAgain" -> text)(RegisterForm.apply)(RegisterForm.unapply))
 
   def login = Action { implicit request =>
-    Ok(html.login(SupportedLang.defaultLang, loginForm))
+    Ok(html.login(loginForm))
   }
 
   def logout = Action.async { implicit request =>
@@ -45,7 +44,7 @@ private class AuthControllerImpl(authService: AuthService) extends AuthConfigImp
 
   def authenticate = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(html.login(SupportedLang.defaultLang, formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(html.login(formWithErrors))),
       loginForm => {
         authService.authenticate(loginForm.email, loginForm.password).flatMap {
           case Some(user) => gotoLoginSucceeded(user.email)
@@ -67,6 +66,6 @@ private class AuthControllerImpl(authService: AuthService) extends AuthConfigImp
   }
 
   override def registerView: Action[AnyContent] = StackAction(AuthorityKey -> Admin) { implicit request =>
-    Ok(html.register(SupportedLang.defaultLang))
+    Ok(html.register())
   }
 }

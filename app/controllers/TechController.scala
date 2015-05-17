@@ -1,6 +1,5 @@
 package controllers
 
-import common.SupportedLang
 import models.ui.Tech
 import play.api.data.Forms._
 import play.api.data._
@@ -46,7 +45,7 @@ private class TechControllerImpl(techService: TechService) extends BaseControlle
 
     serviceResult.map {
       case (techs, userVotes) =>
-        Ok(views.html.techs(SupportedLang.defaultLang, None, techs.map { tech =>
+        Ok(views.html.techs(None, techs.map { tech =>
           Tech(tech, userVotes.find(_.techId == tech.id).map(_.value))
         }))
     }

@@ -1,6 +1,6 @@
-@(lang: Lang, comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)
+@(comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)
 
-@main("Hŕstka Eminencie", "xxx", lang) {
+@main("Hŕstka Eminencie", "xxx") {
     <form action="@action" method="post">
         <div class="form-group">
             <label for="compName">Názov</label>
