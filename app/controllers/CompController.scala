@@ -7,7 +7,7 @@ import models.{domain, ui}
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Action, AnyContent, Call, Result}
+import play.api.mvc._
 import services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -76,24 +76,26 @@ object CompController {
 }
 
 class CompControllerImpl(compService: CompService,
-                         techService: TechService,
-                         locationService: LocationService) extends BaseController with CompController {
+                         protected val techService: TechService,
+                         protected val locationService: LocationService) extends BaseController with CompController with MainModelProvider {
   import controllers.CompController._
 
-  override def addForm: Action[AnyContent] = Action.async {
+  override def addForm: Action[AnyContent] = Action.async { implicit request =>
     edit(None, AppLoader.routes.compController.save(None))
   }
 
-  override def editForm(compId: String): Action[AnyContent] = Action.async {
+  override def editForm(compId: String): Action[AnyContent] = Action.async { implicit request =>
     compService.get(compId).flatMap { comp =>
       edit(Some(comp), AppLoader.routes.compController.save(Some(compId)))
     }
   }
 
-  private def edit(comp: Option[domain.Comp], action: Call): Future[Result] =
-    techService.all().map { techs =>
+  private def edit[A](comp: Option[domain.Comp], action: Call)(implicit request: Request[A]): Future[Result] =
+    techService.all().flatMap { techs =>
       val ts = techs.map(t => (t.handle.value, comp.exists(_.techs.exists(_.handle == t.handle))))
-      Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
+      withMainModel { implicit mainModel =>
+        Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
+      }
     }
 
   override def save(compId: Option[String]) = withForm(addCompForm) { form =>
@@ -130,15 +132,17 @@ class CompControllerImpl(compService: CompService,
       techForHandle(techHandle).flatMap { tech =>
         compService.all(city.map(_.handle), tech.map(_.handle)).flatMap { comps =>
           compService.topCities().flatMap { cities =>
-            techService.topTechs().map { techs =>
-              Ok(views.html.comps(
-                headline(city, tech),
-                comps.map(ui.Comp(_)),
-                cities.take(5).map(ui.City(_)),
-                techs.map(ui.Tech(_)),
-                city.map(ui.City(_)),
-                tech.map(ui.Tech(_)),
-                query.map(_.keywords.mkString(","))))
+            techService.topTechs().flatMap { techs =>
+              withMainModel { implicit mainModel =>
+                Ok(views.html.comps(
+                  headline(city, tech),
+                  comps.map(ui.Comp(_)),
+                  cities.take(5).map(ui.City(_)),
+                  techs.map(ui.Tech(_)),
+                  city.map(ui.City(_)),
+                  tech.map(ui.Tech(_)),
+                  query.map(_.keywords.mkString(","))))
+              }
             }
           }
         }.recover {

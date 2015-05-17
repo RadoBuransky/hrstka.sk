@@ -116,8 +116,9 @@
                 <h2 class="sidebar-item sidebar-heading">Mestá</h2>
                 <nav class="sidebar-section">
                     <ol>
-                        <li class="sidebar-item">Bratislava</li>
-                        <li class="sidebar-item">Banská Bystrica</li>
+                    @for(city <- mainModel.cities) {
+                        <li class="sidebar-item">@city.sk</li>
+                    }
                     </ol>
                 </nav>
             </section>
@@ -125,10 +126,9 @@
                 <h2 class="sidebar-item sidebar-heading">Technológie</h2>
                 <nav class="sidebar-section">
                     <ol>
-                        <li class="sidebar-item">Scala</li>
-                        <li class="sidebar-item">Akka</li>
-                        <li class="sidebar-item">Java</li>
-                        <li class="sidebar-item">C#</li>
+                    @for(tech <- mainModel.techs) {
+                        <li class="sidebar-item">@tech.handle</li>
+                    }
                     </ol>
                 </nav>
             </section>

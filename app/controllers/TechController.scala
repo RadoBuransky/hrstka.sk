@@ -5,7 +5,7 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
-import services.TechService
+import services.{LocationService, TechService}
 
 import scala.concurrent.Future
 
@@ -24,11 +24,10 @@ object TechController {
       "techName" -> text
     )(AddTechForm.apply)(AddTechForm.unapply)
   )
-
-  def apply(techService: TechService): TechController = new TechControllerImpl(techService)
 }
 
-private class TechControllerImpl(techService: TechService) extends BaseController with TechController {
+class TechControllerImpl(protected val locationService: LocationService,
+                         protected val techService: TechService) extends BaseController with TechController with MainModelProvider {
   import controllers.TechController._
 
   override def add: Action[AnyContent] = withForm(addTechForm) { form =>
@@ -43,11 +42,13 @@ private class TechControllerImpl(techService: TechService) extends BaseControlle
       userVotes <- techService.votesFor(userId)
     } yield (techs, userVotes)
 
-    serviceResult.map {
+    serviceResult.flatMap {
       case (techs, userVotes) =>
-        Ok(views.html.techs(None, techs.map { tech =>
-          Tech(tech, userVotes.find(_.techId == tech.id).map(_.value))
-        }))
+        withMainModel { implicit mainModel =>
+          Ok(views.html.techs(None, techs.map { tech =>
+            Tech(tech, userVotes.find(_.techId == tech.id).map(_.value))
+          }))
+        }
     }
   }
 
