@@ -6,7 +6,7 @@ import services.{LocationService, AuthService, CompService, TechService}
 
 package object AppLoader {
   // Controllers
-  lazy val appController = AppController()
+  lazy val appController = new AppControllerImpl(locationService, techService)
   lazy val techController = TechController(techService)
   lazy val compController: CompController = new CompControllerImpl(compService, techService, locationService)
   lazy val authController = AuthController(authService)

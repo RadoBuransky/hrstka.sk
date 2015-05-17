@@ -4,7 +4,7 @@
   techs: Seq[models.ui.Tech],
   city: Option[models.ui.City],
   tech: Option[models.ui.Tech],
-  q: Option[String])
+  q: Option[String])(implicit mainModel: models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
     @if(city.isEmpty) {

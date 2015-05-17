@@ -1,4 +1,4 @@
-@(comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)
+@(comp: Option[models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)(implicit mainModel: models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
     <form action="@action" method="post">
