@@ -33,7 +33,7 @@ class AuthControllerImpl(authService: AuthService,
     "passwordAgain" -> text)(RegisterForm.apply)(RegisterForm.unapply))
 
   def login = Action.async { implicit request =>
-    withMainModel { implicit mainModel =>
+    withMainModel() { implicit mainModel =>
       Ok(html.login(loginForm))
     }
   }
@@ -44,7 +44,7 @@ class AuthControllerImpl(authService: AuthService,
 
   def authenticate = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
-      formWithErrors => withMainModel { implicit mainModel =>
+      formWithErrors => withMainModel() { implicit mainModel =>
         BadRequest(html.login(formWithErrors))
       },
       loginForm => {
@@ -68,7 +68,7 @@ class AuthControllerImpl(authService: AuthService,
   }
 
   override def registerView: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
-    withMainModel { implicit mainModel =>
+    withMainModel() { implicit mainModel =>
       Ok(html.register())
     }
   }

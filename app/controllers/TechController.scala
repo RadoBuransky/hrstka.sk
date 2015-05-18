@@ -44,7 +44,7 @@ class TechControllerImpl(protected val locationService: LocationService,
 
     serviceResult.flatMap {
       case (techs, userVotes) =>
-        withMainModel { implicit mainModel =>
+        withMainModel() { implicit mainModel =>
           Ok(views.html.techs(None, techs.map { tech =>
             Tech(tech, userVotes.find(_.techId == tech.id).map(_.value))
           }))

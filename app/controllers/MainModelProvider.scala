@@ -9,14 +9,14 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MainModelProvider {
-  protected def withMainModel[A, R](action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
+  protected def withMainModel[A, R](city: Option[String] = None, tech: Option[String] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     locationService.all().flatMap { cities =>
       techService.all().map { techs =>
         action(MainModel(
           cities  = cities.map(ui.City(_)),
           techs   = techs.map(ui.Tech(_)),
-          city    = None,
-          tech    = None
+          city    = city,
+          tech    = tech
         ))
       }
     }

@@ -93,7 +93,7 @@ class CompControllerImpl(compService: CompService,
   private def edit[A](comp: Option[domain.Comp], action: Call)(implicit request: Request[A]): Future[Result] =
     techService.all().flatMap { techs =>
       val ts = techs.map(t => (t.handle.value, comp.exists(_.techs.exists(_.handle == t.handle))))
-      withMainModel { implicit mainModel =>
+      withMainModel() { implicit mainModel =>
         Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
       }
     }
@@ -124,12 +124,14 @@ class CompControllerImpl(compService: CompService,
   }
 
   override def all = cityTech("", "")
+  override def cityTech(cityHandle: String, techHandle: String) =
+    cityTechAction(Option(cityHandle).filter(_.trim.nonEmpty), Option(techHandle).filter(_.trim.nonEmpty))
 
-  def cityTech(cityHandle: String, techHandle: String) = Action.async { implicit request =>
+  private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = Action.async { implicit request =>
     cityForHandle(cityHandle).flatMap { city =>
       techForHandle(techHandle).flatMap { tech =>
         compService.all(city.map(_.handle), tech.map(_.handle)).flatMap { comps =>
-            withMainModel { implicit mainModel =>
+            withMainModel(cityHandle, techHandle) { implicit mainModel =>
               Ok(views.html.index(
                 headline(city, tech),
                 comps.map(ui.Comp(_))))
@@ -142,7 +144,7 @@ class CompControllerImpl(compService: CompService,
       }.recover {
         case t =>
           Logger.error(s"Cannot get tech for handle! [$techHandle]", t)
-          Redirect(AppLoader.routes.compController.cityTech(cityHandle, ""))
+          Redirect(AppLoader.routes.compController.cityTech(cityHandle.getOrElse(""), ""))
       }
     }.recover {
       case t =>
@@ -156,7 +158,7 @@ class CompControllerImpl(compService: CompService,
       " v meste " + c.sk
     }
     val techHeadline = tech.map { t =>
-      " používajúce " + t.handle.value
+      " používajúce " + t.handle.value.capitalize
     }
     if (city.isEmpty && tech.isEmpty)
       "Firmy na Slovensku kde sa programuje"
@@ -164,14 +166,14 @@ class CompControllerImpl(compService: CompService,
       "Firmy" + cityHeadline.getOrElse("") + techHeadline.getOrElse("")
   }
 
-  private def techForHandle(techHandle: String): Future[Option[domain.Tech]] = techHandle.isEmpty match {
-    case false => techService.get(Handle(techHandle)).map(Some(_))
-    case truw => Future.successful(None)
+  private def techForHandle(techHandle: Option[String]): Future[Option[domain.Tech]] = techHandle match {
+    case Some(handle) => techService.get(Handle(handle)).map(Some(_))
+    case None => Future.successful(None)
   }
 
 
-  private def cityForHandle(cityHandle: String): Future[Option[domain.City]] = cityHandle.isEmpty match {
-    case false => locationService.get(Handle(cityHandle)).map(Some(_))
-    case true => Future.successful(None)
+  private def cityForHandle(cityHandle: Option[String]): Future[Option[domain.City]] = cityHandle match {
+    case Some(handle) => locationService.get(Handle(handle)).map(Some(_))
+    case None => Future.successful(None)
   }
 }
