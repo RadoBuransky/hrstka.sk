@@ -1,4 +1,4 @@
-GET     /                           AppLoader.appController.index
+GET     /                           AppLoader.compController.all
 GET     /*path/                     AppLoader.appController.untrail(path: String)
 
 GET     /login                      AppLoader.authController.login

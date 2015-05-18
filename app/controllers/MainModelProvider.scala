@@ -13,8 +13,10 @@ trait MainModelProvider {
     locationService.all().flatMap { cities =>
       techService.all().map { techs =>
         action(MainModel(
-          cities = cities.map(ui.City(_)),
-          techs = techs.map(ui.Tech(_))
+          cities  = cities.map(ui.City(_)),
+          techs   = techs.map(ui.Tech(_)),
+          city    = None,
+          tech    = None
         ))
       }
     }

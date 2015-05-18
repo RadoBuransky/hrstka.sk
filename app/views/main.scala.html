@@ -48,7 +48,7 @@
     <style>
         #sidebar {
             float: left;
-            width: 130px;
+            width: 180px;
         }
 
         #sidebar h2 {
@@ -127,7 +127,11 @@
                 <nav class="sidebar-section">
                     <ol>
                     @for(tech <- mainModel.techs) {
-                        <li class="sidebar-item">@tech.handle</li>
+                        <li class="sidebar-item">
+                            <a href="@AppLoader.routes.compController.cityTech(mainModel.city.getOrElse(mainModel.cities.head.handle), tech.handle)">
+                                @tech.handle
+                            </a>
+                        </li>
                     }
                     </ol>
                 </nav>

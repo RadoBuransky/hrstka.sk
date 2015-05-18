@@ -1,19 +1,5 @@
-@()(implicit mainModel: models.ui.MainModel)
+@(headline: String, comps: Seq[models.ui.Comp])(implicit mainModel: models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
-    <header>
-        <h2>Programátorské firmy na Slovensku</h2>
-        <p>Zoradené podľa hodnotenia.</p>
-    </header>
-    <div>
-        <article class="company-brief">
-            <h3>Firma 1</h3>
-        </article>
-        <article class="company-brief">
-            <h3>Firma 2</h3>
-        </article>
-        <article class="company-brief">
-            <h3>Firma 3</h3>
-        </article>
-    </div>
+    @controls.comps(headline, comps)
 }

@@ -2,7 +2,7 @@ package controllers
 
 import java.net.URL
 
-import models.domain.{CompQuery, Handle, Identifiable}
+import models.domain.{Handle, Identifiable}
 import models.{domain, ui}
 import play.api.Logger
 import play.api.data.Form
@@ -126,24 +126,13 @@ class CompControllerImpl(compService: CompService,
   override def all = cityTech("", "")
 
   def cityTech(cityHandle: String, techHandle: String) = Action.async { implicit request =>
-    val query = request.queryString.get("q").map(q => CompQuery(q.mkString(",")))
-
     cityForHandle(cityHandle).flatMap { city =>
       techForHandle(techHandle).flatMap { tech =>
         compService.all(city.map(_.handle), tech.map(_.handle)).flatMap { comps =>
-          compService.topCities().flatMap { cities =>
-            techService.topTechs().flatMap { techs =>
-              withMainModel { implicit mainModel =>
-                Ok(views.html.comps(
-                  headline(city, tech),
-                  comps.map(ui.Comp(_)),
-                  cities.take(5).map(ui.City(_)),
-                  techs.map(ui.Tech(_)),
-                  city.map(ui.City(_)),
-                  tech.map(ui.Tech(_)),
-                  query.map(_.keywords.mkString(","))))
-              }
-            }
+            withMainModel { implicit mainModel =>
+              Ok(views.html.index(
+                headline(city, tech),
+                comps.map(ui.Comp(_))))
           }
         }.recover {
           case t =>
@@ -169,20 +158,20 @@ class CompControllerImpl(compService: CompService,
     val techHeadline = tech.map { t =>
       " používajúce " + t.handle.value
     }
-    "Firmy" + cityHeadline.getOrElse("") + techHeadline.getOrElse("")
+    if (city.isEmpty && tech.isEmpty)
+      "Firmy na Slovensku kde sa programuje"
+    else
+      "Firmy" + cityHeadline.getOrElse("") + techHeadline.getOrElse("")
   }
 
-  private def techForHandle(techHandle: String): Future[Option[domain.Tech]] =
-    if (techHandle.nonEmpty) {
-      techService.get(Handle(techHandle)).map(Some(_))
-    }
-    else
-      Future.successful(None)
+  private def techForHandle(techHandle: String): Future[Option[domain.Tech]] = techHandle.isEmpty match {
+    case false => techService.get(Handle(techHandle)).map(Some(_))
+    case truw => Future.successful(None)
+  }
 
-  private def cityForHandle(cityHandle: String): Future[Option[domain.City]] =
-    if (cityHandle.nonEmpty) {
-      locationService.get(Handle(cityHandle)).map(Some(_))
-    }
-    else
-      Future.successful(None)
+
+  private def cityForHandle(cityHandle: String): Future[Option[domain.City]] = cityHandle.isEmpty match {
+    case false => locationService.get(Handle(cityHandle)).map(Some(_))
+    case true => Future.successful(None)
+  }
 }
