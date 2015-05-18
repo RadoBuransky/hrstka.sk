@@ -12,10 +12,11 @@ POST    /technologia                AppLoader.techController.add
 GET     /technologia/:id/voteUp     AppLoader.techController.voteUp(id: String)
 GET     /technologia/:id/voteDown   AppLoader.techController.voteDown(id: String)
 
-GET     /firmy                      AppLoader.compController.all
-GET     /firmy/:city                AppLoader.compController.cityTech(city: String, tech: String = "")
-GET     /firmy/:city/:tech          AppLoader.compController.cityTech(city: String, tech: String)
-POST    /firma                      AppLoader.compController.save(compId: Option[String])
+GET     /programovanie/firmy              AppLoader.compController.all
+GET     /programovanie/firmy/:city        AppLoader.compController.cityTech(city: String, tech: String = "")
+GET     /programovanie/firmy/:city/:tech  AppLoader.compController.cityTech(city: String, tech: String)
+
+POST    /firma                                  AppLoader.compController.save(compId: Option[String])
 GET     /firma/nova                 AppLoader.compController.addForm
 GET     /firma/:id/uprav            AppLoader.compController.editForm(id: String)
 
