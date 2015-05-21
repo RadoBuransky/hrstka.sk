@@ -8,8 +8,12 @@
 @for(comp <- comps) {
 <article>
     <h3><a href="@comp.website" target="_blank">@comp.name</a></h3>
-    <div>@comp.city.sk, programátorov / z toho žien: @comp.codersCount / @comp.femaleCodersCount</div>
-    <div>@comp.note</div>
+    <div>@comp.city.sk</div>
+    <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
+    <div>Rank v meste / na Slovensku: ? / ?</div>
+    <div>Top techs: @comp.techs.take(10).mkString(" ")</div>
+    <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
+    <div>Joel's test: @comp.joel.toList.sorted.map(_ + 1).mkString(", ")</div>
     <div><a href="@AppLoader.routes.compController.editForm(comp.id)">Upraviť</a></div>
 </article>
 }

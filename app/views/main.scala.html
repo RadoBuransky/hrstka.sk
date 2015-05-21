@@ -118,7 +118,7 @@
                     <ol>
                     @for(city <- mainModel.cities) {
                         <li class="sidebar-item">
-                            <a href="@AppLoader.routes.compController.cityTech(city.handle, mainModel.tech.getOrElse(""))">
+                            <a href="@AppLoader.routes.compController.cityTech(city.handle, "")">
                                 @city.sk
                             </a>
                         </li>

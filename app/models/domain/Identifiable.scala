@@ -17,9 +17,4 @@ object Identifiable {
   implicit def toBSON(id: Id): BSONObjectID = BSONObjectID(id)
   implicit def toBSON(handle: Handle): db.Identifiable.Handle = handle.value
   implicit def fromBSON(id: BSONObjectID): Id = id.stringify
-
-  def fromHumanName(name: String): Identifiable.Id = {
-    // TODO: Handle diacritics, quotes, etc, must be latin alpha string with dashes
-    name.toLowerCase.trim.replace(' ', '-')
-  }
 }
