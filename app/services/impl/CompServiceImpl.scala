@@ -20,23 +20,24 @@ class CompServiceImpl(compRepository: CompRepository,
   }
 
   override def get(compId: Id): Future[Comp] = compRepository.get(compId).flatMap(dbCompToDomain)
-  override def upsert(comp: Comp, techHandles: Seq[Handle], userId: Id): Future[Id] =
+  override def upsert(comp: Comp, techHandles: Seq[Handle], userId: Id): Future[Id] = {
     compRepository.upsert(db.Comp(
-      _id               = if (comp.id.isEmpty) Identifiable.empty else comp.id,
-      authorId          = userId,
-      name              = comp.name,
-      website           = comp.website.toString,
-      city              = comp.city.handle,
-      employeeCount     = comp.employeeCount,
-      codersCount       = comp.codersCount,
+      _id = if (comp.id.isEmpty) Identifiable.empty else comp.id,
+      authorId = userId,
+      name = comp.name,
+      website = comp.website.toString,
+      city = comp.city.handle,
+      employeeCount = comp.employeeCount,
+      codersCount = comp.codersCount,
       femaleCodersCount = comp.femaleCodersCount,
-      note              = comp.note,
-      products          = comp.products,
-      services          = comp.services,
-      internal          = comp.internal,
-      techs             = techHandles.map(_.value),
-      joel              = comp.joel
-  )).map(_.stringify)
+      note = comp.note,
+      products = comp.products,
+      services = comp.services,
+      internal = comp.internal,
+      techs = techHandles.map(_.value),
+      joel = comp.joel
+    )).map(_.stringify)
+  }
 
   private def dbCompToDomain(comp: db.Comp): Future[domain.Comp] = {
     techService.all().flatMap { techs =>

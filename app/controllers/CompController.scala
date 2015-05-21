@@ -134,7 +134,7 @@ class CompControllerImpl(compService: CompService,
             withMainModel(cityHandle, techHandle) { implicit mainModel =>
               Ok(views.html.index(
                 headline(city, tech),
-                comps.map(ui.Comp(_))))
+                comps.sortBy(_.rank). map(ui.Comp(_))))
           }
         }.recover {
           case t =>

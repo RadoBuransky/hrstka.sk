@@ -17,7 +17,9 @@ case class Comp(id: Id,
                 services: Boolean,
                 internal: Boolean,
                 techs: Seq[Tech],
-                joel: Set[Int]) extends Identifiable
+                joel: Set[Int]) extends Identifiable {
+  def rank: Double = if (techs.isEmpty) 0.0 else techs.map(_.rating.value).sum / techs.size.toDouble
+}
 
 object Comp {
   def apply(comp: db.Comp, techs: Seq[Tech], city: City): Comp = Comp(
