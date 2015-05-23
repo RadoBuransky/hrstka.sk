@@ -15,8 +15,10 @@ GET     /technologia/:id/voteDown   AppLoader.techController.voteDown(id: String
 GET     /programovanie/firmy              AppLoader.compController.all
 GET     /programovanie/firmy/:city        AppLoader.compController.cityTech(city: String, tech: String = "")
 GET     /programovanie/firmy/:city/:tech  AppLoader.compController.cityTech(city: String, tech: String)
+GET     /programovanie/firma/:compId      AppLoader.compController.get(compId: String)
+GET     /programovanie/zeny               AppLoader.compController.women
 
-POST    /firma                                  AppLoader.compController.save(compId: Option[String])
+POST    /firma                      AppLoader.compController.save(compId: Option[String])
 GET     /firma/nova                 AppLoader.compController.addForm
 GET     /firma/:id/uprav            AppLoader.compController.editForm(id: String)
 

@@ -1,18 +1,12 @@
-@(headline: String, comps: Seq[models.ui.Comp])
+@(comp: models.ui.Comp)(implicit mainModel: models.ui.MainModel)
 
-<div><a href="@AppLoader.routes.compController.addForm">Pridať</a></div>
-<header>
-    <h2>@headline</h2>
-    <p>Zoradené podľa hodnotenia.</p>
-</header>
-@for(comp <- comps) {
-<article>
-    <h3><a href="@AppLoader.routes.compController.get(comp.id)">@comp.name</a></h3>
+@main("Hŕstka Eminencie", "xxx") {
+    <h2><a href="@comp.website" target="_blank">@comp.name</a></h2>
     <div>@comp.city.sk</div>
     <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
-    <div>Top techs: @comp.techs.take(10).mkString(" ")</div>
+    <div>Techs: @comp.techs.mkString(" ")</div>
     <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
     <div>Joel's test: @comp.joel.toList.sorted.map(_ + 1).mkString(", ")</div>
+    <div>@comp.note</div>
     <div><a href="@AppLoader.routes.compController.editForm(comp.id)">Upraviť</a></div>
-</article>
 }

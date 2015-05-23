@@ -58,4 +58,19 @@ class CompServiceImpl(compRepository: CompRepository,
       }
     }
   }
+
+  override def topWomen(): Future[Seq[Comp]] = {
+    def womenRank(comp: Comp): Option[Double] = comp.codersCount.flatMap {
+      case 0 => None
+      case codersCount => comp.femaleCodersCount.flatMap {
+        case 0 => None
+        case femaleCodersCount => Some(femaleCodersCount.toDouble / codersCount.toDouble)
+      }
+    }
+
+    all(None, None).map { comps =>
+      // Compute rank, filter only those with known emplyee/women count, sort and take top few
+      comps.map(comp => (comp, womenRank(comp))).filter(_._2.isDefined).sortBy(-1 * _._2.get).map(_._1).take(42)
+    }
+  }
 }

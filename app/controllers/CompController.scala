@@ -28,9 +28,11 @@ case class AddCompForm(name: String,
 case class AddTechToCompForm(techName: String)
 
 trait CompController {
+  def get(compId: String): Action[AnyContent]
   def addForm: Action[AnyContent]
   def editForm(compId: String): Action[AnyContent]
   def save(compId: Option[String]): Action[AnyContent]
+  def women: Action[AnyContent]
   def all: Action[AnyContent]
   def cityTech(cityHandle: String, techHandle: String): Action[AnyContent]
 }
@@ -80,6 +82,14 @@ class CompControllerImpl(compService: CompService,
                          protected val locationService: LocationService) extends BaseController with CompController with MainModelProvider {
   import controllers.CompController._
 
+  def get(compId: String): Action[AnyContent] = Action.async { implicit request =>
+    compService.get(compId).flatMap { comp =>
+      withMainModel() { implicit mainModel =>
+        Ok(views.html.comp(ui.Comp(comp)))
+      }
+    }
+  }
+
   override def addForm: Action[AnyContent] = Action.async { implicit request =>
     edit(None, AppLoader.routes.compController.save(None))
   }
@@ -119,6 +129,14 @@ class CompControllerImpl(compService: CompService,
         form.techs.map(Handle(_)),
         userId).map { Unit =>
         Redirect(AppLoader.routes.compController.all())
+      }
+    }
+  }
+
+  override def women: Action[AnyContent] = Action.async { implicit request =>
+    compService.topWomen().flatMap { topWomen =>
+      withMainModel(None, None) { implicit mainModel =>
+        Ok(views.html.women(topWomen.map(ui.Comp(_))))
       }
     }
   }
