@@ -17,9 +17,9 @@ GET     /programovanie/zeny                     AppLoader.compController.women
 GET     /programovanie/firmy/:city              AppLoader.compController.cityTech(city: String, tech: String = "")
 GET     /programovanie/firmy/:city/:tech        AppLoader.compController.cityTech(city: String, tech: String)
 GET     /programovanie/firma/:compId            AppLoader.compController.get(compId: String)
-GET     /programovanie/firma/:compId/uprav      AppLoader.compController.editForm(compId: String)
-POST    /programovanie/firma                    AppLoader.compController.save(compId: Option[String])
-GET     /programovanie/firma-nova               AppLoader.compController.addForm
+GET     /programovanie/firma/:compId/uprav      AppLoader.authCompController.editForm(compId: String)
+POST    /programovanie/firma                    AppLoader.authCompController.save(compId: Option[String])
+GET     /programovanie/firma-nova               AppLoader.authCompController.addForm
 
 GET     /api/companies              AppLoader.apiController.comps
 GET     /api/technologies           AppLoader.apiController.techs

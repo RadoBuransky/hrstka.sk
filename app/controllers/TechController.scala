@@ -30,9 +30,11 @@ class TechControllerImpl(protected val locationService: LocationService,
                          protected val techService: TechService) extends BaseController with TechController with MainModelProvider {
   import controllers.TechController._
 
-  override def add: Action[AnyContent] = withForm(addTechForm) { form =>
-    techService.insert(form.techName, userId).map { Unit =>
-      Redirect(AppLoader.routes.techController.all())
+  override def add: Action[AnyContent] = Action.async { implicit request =>
+    withForm(addTechForm) { form =>
+      techService.insert(form.techName, userId).map { Unit =>
+        Redirect(AppLoader.routes.techController.all())
+      }
     }
   }
 
