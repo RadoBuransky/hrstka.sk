@@ -2,13 +2,15 @@ package controllers
 
 import java.net.URL
 
-import models.domain.{Handle, Identifiable}
+import auth.AuthConfigImpl
+import jp.t2v.lab.play2.auth.AuthElement
+import models.domain.{Admin, Handle, Identifiable}
 import models.{domain, ui}
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-import services.{CompService, LocationService, TechService}
+import services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -78,8 +80,10 @@ object CompController {
 }
 
 class CompControllerImpl(compService: CompService,
+                         authService: AuthService,
                          protected val techService: TechService,
-                         protected val locationService: LocationService) extends BaseController with CompController with MainModelProvider {
+                         protected val locationService: LocationService)
+  extends AuthConfigImpl(authService) with CompController with MainModelProvider with AuthElement {
   import controllers.CompController._
 
   def get(compId: String): Action[AnyContent] = Action.async { implicit request =>
@@ -90,7 +94,7 @@ class CompControllerImpl(compService: CompService,
     }
   }
 
-  override def addForm: Action[AnyContent] = Action.async { implicit request =>
+  override def addForm: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
     edit(None, AppLoader.routes.compController.save(None))
   }
 

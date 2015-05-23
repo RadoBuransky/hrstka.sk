@@ -3,26 +3,17 @@ package services.impl
 import com.github.t3hnar.bcrypt._
 import models.db
 import models.db.Identifiable
-import models.domain.{Admin, Role, Eminent, User}
+import models.domain.{Eminent, Role, User}
 import play.api.Logger
 import repositories.UserRepository
 import services.AuthService
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class AuthServiceImpl(userRepository: UserRepository) extends AuthService {
   def createUser(email: String, password: String): Future[Unit] = {
-    // I like this
-    val role = email match {
-      case "radoburansky@gmail.com" => {
-        Logger.debug("You fucker!")
-        Admin
-      }
-      case _ => Eminent
-    }
-
-    userRepository.insert(db.User(Identifiable.empty, email, encrypt(password), role.name)).map { lastError =>
+    userRepository.insert(db.User(Identifiable.empty, email, encrypt(password), Eminent.name)).map { lastError =>
       Logger.info(s"User created. [$email]")
     }
   }
