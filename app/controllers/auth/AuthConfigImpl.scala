@@ -1,4 +1,4 @@
-package auth
+package controllers.auth
 
 import AppLoader.routes
 import controllers.BaseController

@@ -7,10 +7,10 @@ POST    /authenticate               AppLoader.authController.authenticate
 GET     /register                   AppLoader.authController.registerView
 POST    /register                   AppLoader.authController.register
 
-GET     /technologie                AppLoader.techController.all
-POST    /technologia                AppLoader.techController.add
-GET     /technologia/:id/voteUp     AppLoader.techController.voteUp(id: String)
-GET     /technologia/:id/voteDown   AppLoader.techController.voteDown(id: String)
+GET     /technologie                AppLoader.authTechController.all
+POST    /technologia                AppLoader.authTechController.add
+GET     /technologia/:id/voteUp     AppLoader.authTechController.voteUp(id: String)
+GET     /technologia/:id/voteDown   AppLoader.authTechController.voteDown(id: String)
 
 GET     /programovanie/firmy                    AppLoader.compController.all
 GET     /programovanie/zeny                     AppLoader.compController.women

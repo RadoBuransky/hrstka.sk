@@ -1,4 +1,5 @@
 import controllers._
+import controllers.auth.{AuthTechController, AuthTechControllerImpl, AuthCompControllerImpl, AuthCompController}
 import repositories.mongoDb._
 import repositories._
 import services.impl.{LocationServiceImpl, AuthServiceImpl, CompServiceImpl, TechServiceImpl}
@@ -7,11 +8,13 @@ import services.{LocationService, AuthService, CompService, TechService}
 package object AppLoader {
   // Controllers
   lazy val appController = new AppControllerImpl(locationService, techService)
-  lazy val techController = new TechControllerImpl(locationService, techService)
   lazy val compController: CompController = new CompControllerImpl(compService, authService, techService, locationService)
   lazy val authController = new AuthControllerImpl(authService, locationService, techService)
   lazy val apiController: ApiController = new ApiControllerImpl(compService, techService, locationService)
+
+  // Controllers that require authorization
   lazy val authCompController: AuthCompController = new AuthCompControllerImpl(compService, authService, techService, locationService)
+  lazy val authTechController: AuthTechController = new AuthTechControllerImpl(authService, locationService, techService)
 
   // Services
   lazy val techService: TechService = new TechServiceImpl(techRepository, techVoteRepository, techVoteLogRepository)

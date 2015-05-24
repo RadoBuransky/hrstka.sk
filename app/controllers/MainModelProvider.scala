@@ -1,18 +1,18 @@
 package controllers
 
-import models.domain.Role
+import models.domain.User
 import models.ui
 import models.ui.MainModel
 import play.api.mvc.Request
-import services.{TechService, LocationService}
+import services.{LocationService, TechService}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait MainModelProvider {
   protected def withMainModel[A, R](city: Option[String] = None,
                                     tech: Option[String] = None,
-                                    role: Option[Role] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
+                                    user: Option[User] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     locationService.all().flatMap { cities =>
       techService.all().map { techs =>
         action(MainModel(
@@ -20,7 +20,7 @@ trait MainModelProvider {
           techs   = techs.map(ui.Tech(_)),
           city    = city,
           tech    = tech,
-          role    = role
+          user    = user
         ))
       }
     }

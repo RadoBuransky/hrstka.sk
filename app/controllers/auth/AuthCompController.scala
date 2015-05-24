@@ -1,9 +1,10 @@
-package controllers
+package controllers.auth
 
 import java.net.URL
 
-import auth.AuthConfigImpl
+import controllers.MainModelProvider
 import jp.t2v.lab.play2.auth.AuthElement
+import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import models.domain.{Admin, Handle, Identifiable}
 import models.{domain, ui}
 import play.api.data.Form
@@ -79,7 +80,7 @@ class AuthCompControllerImpl(compService: CompService,
                              protected val techService: TechService,
                              protected val locationService: LocationService)
   extends AuthConfigImpl(authService) with AuthCompController with MainModelProvider with AuthElement {
-  import controllers.AuthCompController._
+  import AuthCompController._
 
   override def addForm: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
     edit(None, AppLoader.routes.authCompController.save(None))
@@ -118,10 +119,10 @@ class AuthCompControllerImpl(compService: CompService,
     }
   }
 
-  private def edit[A](comp: Option[domain.Comp], action: Call)(implicit request: Request[A]): Future[Result] =
+  private def edit[A](comp: Option[domain.Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
     techService.all().flatMap { techs =>
       val ts = techs.map(t => (t.handle.value, comp.exists(_.techs.exists(_.handle == t.handle))))
-      withMainModel() { implicit mainModel =>
+      withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
         Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
       }
     }
