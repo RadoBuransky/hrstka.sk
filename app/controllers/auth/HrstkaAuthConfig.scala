@@ -1,17 +1,18 @@
 package controllers.auth
 
-import AppLoader.routes
-import controllers.BaseController
 import jp.t2v.lab.play2.auth.{AuthConfig, CookieTokenAccessor}
 import models.domain.{Admin, Eminent, Role}
-import play.api.mvc.{RequestHeader, Result}
+import play.api.mvc.{Controller, RequestHeader, Result}
 import services.AuthService
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 
-class AuthConfigImpl(authService: AuthService) extends BaseController with AuthConfig {
-
+trait HrstkaAuthConfig extends AuthConfig {
+  self: Controller =>
+  
+  protected def authService: AuthService
+  
   /**
    * A type that is used to identify a user.
    * `String`, `Int`, `Long` and so on.
@@ -55,14 +56,14 @@ class AuthConfigImpl(authService: AuthService) extends BaseController with AuthC
    * Where to redirect the user after a successful login.
    */
   def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(routes.compController.all()))
+    Future.successful(Redirect(controllers.routes.CompController.all()))
   }
 
   /**
    * Where to redirect the user after logging out
    */
   def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(routes.compController.all()))
+    Future.successful(Redirect(controllers.routes.CompController.all()))
   }
 
   /**

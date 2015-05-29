@@ -1,7 +1,7 @@
 @(form: Form[controllers.LoginForm])(implicit mainModel: models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
-    <form class="form-signin" action="@AppLoader.routes.authController.authenticate()" method="post">
+    <form class="form-signin" action="@controllers.routes.AuthController.authenticate()" method="post">
         <h2>Prihlasovanie pre eminentov</h2>
 
         @form.globalError.map { error =>

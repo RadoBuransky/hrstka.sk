@@ -1,12 +1,13 @@
 package controllers.auth
 
-import controllers.MainModelProvider
+import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import models.domain.Admin
 import models.ui.Tech
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.{AuthService, LocationService, TechService}
 
@@ -30,10 +31,11 @@ object AuthTechController {
   )
 }
 
-class AuthTechControllerImpl(authService: AuthService,
+class AuthTechControllerImpl(protected val authService: AuthService,
                              protected val locationService: LocationService,
-                             protected val techService: TechService)
-  extends AuthConfigImpl(authService) with AuthTechController with MainModelProvider with AuthElement {
+                             protected val techService: TechService,
+                             val messagesApi: MessagesApi)
+  extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechController._
 
   override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
@@ -55,7 +57,7 @@ class AuthTechControllerImpl(authService: AuthService,
   override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
     withForm(addTechForm) { form =>
       techService.insert(form.techName, userId).map { Unit =>
-        Redirect(AppLoader.routes.authTechController.all())
+        Redirect(controllers.auth.routes.AuthTechController.all())
       }
     }
   }
@@ -69,6 +71,6 @@ class AuthTechControllerImpl(authService: AuthService,
 
   private def vote[A](action: Future[Unit])(implicit request: RequestWithAttributes[A]) =
     action.map { Unit =>
-      Redirect(AppLoader.routes.authTechController.all())
+      Redirect(controllers.auth.routes.AuthTechController.all())
     }
 }

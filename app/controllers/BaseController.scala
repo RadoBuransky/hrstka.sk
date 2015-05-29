@@ -2,11 +2,12 @@ package controllers
 
 import models.domain
 import play.api.data.Form
-import play.api.mvc.{Request, Action, Controller, Result}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Controller, Request, Result}
 
 import scala.concurrent.Future
 
-abstract class BaseController extends Controller {
+abstract class BaseController extends Controller with I18nSupport {
   protected def userId: domain.Identifiable.Id = BaseController.userId1
   protected def withForm[T, A](form: Form[T])(action: T => Future[Result])(implicit request: Request[A]) =
     form.bindFromRequest.fold(

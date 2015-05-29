@@ -1,10 +1,11 @@
 package controllers
 
-import auth.AuthConfigImpl
+import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import models.domain.Handle
 import models.{domain, ui}
 import play.api.Logger
+import play.api.i18n.MessagesApi
 import play.api.mvc._
 import services.{AuthService, CompService, LocationService, TechService}
 
@@ -19,10 +20,11 @@ trait CompController {
 }
 
 class CompControllerImpl(compService: CompService,
-                         authService: AuthService,
+                         protected val authService: AuthService,
                          protected val techService: TechService,
-                         protected val locationService: LocationService)
-  extends AuthConfigImpl(authService) with CompController with MainModelProvider with OptionalAuthElement {
+                         protected val locationService: LocationService,
+                         val messagesApi: MessagesApi)
+  extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 
   def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     compService.get(compId).flatMap { comp =>
@@ -61,12 +63,18 @@ class CompControllerImpl(compService: CompService,
       }.recover {
         case t =>
           Logger.error(s"Cannot get tech for handle! [$techHandle]", t)
-          Redirect(AppLoader.routes.compController.cityTech(cityHandle.getOrElse(""), ""))
+          if (techHandle.isDefined)
+            Redirect(controllers.routes.CompController.cityTech(cityHandle.getOrElse(""), ""))
+          else
+            BadRequest("Cannot get tech!")
       }
     }.recover {
       case t =>
         Logger.error(s"Cannot get city for handle! [$cityHandle]", t)
-        Redirect(AppLoader.routes.compController.all())
+        if (cityHandle.isDefined)
+          Redirect(controllers.routes.CompController.all())
+        else
+          BadRequest("Cannot get city!")
     }
   }
 

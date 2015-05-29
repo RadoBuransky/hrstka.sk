@@ -3,7 +3,7 @@
 @main("Hŕstka Eminencie", "xxx") {
     <h2>Technológie</h2>
 
-    <form action="@AppLoader.routes.authTechController.add" method="post" class="form-inline">
+    <form action="@controllers.auth.routes.AuthTechController.add" method="post" class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" id="techName" name="techName">
         </div>
@@ -18,8 +18,8 @@
             @if(tech.userVoteValue.isDefined) {
               @tech.userVoteValue.get
             }
-            <a href="@AppLoader.routes.authTechController.voteUp(tech.id)">+</a>
-            <a href="@AppLoader.routes.authTechController.voteDown(tech.id)">-</a>
+            <a href="@controllers.auth.routes.AuthTechController.voteUp(tech.id)">+</a>
+            <a href="@controllers.auth.routes.AuthTechController.voteDown(tech.id)">-</a>
         </div>
     }
     </div>

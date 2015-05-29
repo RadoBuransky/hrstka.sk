@@ -14,7 +14,7 @@ trait ApiController {
 
 class ApiControllerImpl(compService: CompService,
                         techService: TechService,
-                        locationService: LocationService) extends BaseController with ApiController {
+                        locationService: LocationService) extends Controller with ApiController {
   import models.api.JsonFormats._
 
   override def comps(): Action[AnyContent] = Action.async { implicit request =>

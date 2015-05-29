@@ -1,10 +1,11 @@
 package controllers
 
-import auth.AuthConfigImpl
+import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
 import models.domain.Admin
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.{AuthService, LocationService, TechService}
 import views.html
@@ -23,9 +24,11 @@ trait AuthController extends Controller with LoginLogout with AuthConfig {
 case class LoginForm(email: String, password: String)
 case class RegisterForm(email: String, password: String, passwordAgain: String)
 
-class AuthControllerImpl(authService: AuthService,
+class AuthControllerImpl(protected val authService: AuthService,
                          protected val locationService: LocationService,
-                         protected val techService: TechService) extends AuthConfigImpl(authService) with AuthElement with AuthController with MainModelProvider {
+                         protected val techService: TechService,
+                         val messagesApi: MessagesApi)
+  extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   val loginForm = Form(mapping("email" -> email, "password" -> text)(LoginForm.apply)(LoginForm.unapply))
   val registerForm = Form(mapping(
     "email" -> email,
@@ -61,7 +64,7 @@ class AuthControllerImpl(authService: AuthService,
     form.password match {
       case form.passwordAgain =>
         authService.createUser(form.email, form.password).map { user =>
-          Redirect(AppLoader.routes.compController.all())
+          Redirect(controllers.routes.CompController.all())
         }
       case _ => Future.successful(BadRequest("Passwords do not match!"))
     }

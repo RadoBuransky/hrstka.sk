@@ -8,5 +8,5 @@
     <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
     <div>Joel's test: @comp.joel.toList.sorted.map(_ + 1).mkString(", ")</div>
     <div>@comp.note</div>
-    <div><a href="@AppLoader.routes.authCompController.editForm(comp.id)">Upraviť</a></div>
+    <div><a href="@controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
 }

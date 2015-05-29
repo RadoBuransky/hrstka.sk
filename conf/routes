@@ -1,29 +1,30 @@
-GET     /                           AppLoader.compController.all
-GET     /*path/                     AppLoader.appController.untrail(path: String)
+GET     /                           controllers.CompController.all
+GET     /*path/                     controllers.AppController.untrail(path: String)
 
-GET     /login                      AppLoader.authController.login
-GET     /logout                     AppLoader.authController.logout
-POST    /authenticate               AppLoader.authController.authenticate
-GET     /register                   AppLoader.authController.registerView
-POST    /register                   AppLoader.authController.register
+GET     /login                      controllers.AuthController.login
+GET     /logout                     controllers.AuthController.logout
+POST    /authenticate               controllers.AuthController.authenticate
+GET     /register                   controllers.AuthController.registerView
+POST    /register                   controllers.AuthController.register
 
-GET     /technologie                AppLoader.authTechController.all
-POST    /technologia                AppLoader.authTechController.add
-GET     /technologia/:id/voteUp     AppLoader.authTechController.voteUp(id: String)
-GET     /technologia/:id/voteDown   AppLoader.authTechController.voteDown(id: String)
+GET     /technologie                controllers.auth.AuthTechController.all
+POST    /technologia                controllers.auth.AuthTechController.add
+GET     /technologia/:id/voteUp     controllers.auth.AuthTechController.voteUp(id: String)
+GET     /technologia/:id/voteDown   controllers.auth.AuthTechController.voteDown(id: String)
 
-GET     /programovanie/firmy                    AppLoader.compController.all
-GET     /programovanie/zeny                     AppLoader.compController.women
-GET     /programovanie/firmy/:city              AppLoader.compController.cityTech(city: String, tech: String = "")
-GET     /programovanie/firmy/:city/:tech        AppLoader.compController.cityTech(city: String, tech: String)
-GET     /programovanie/firma/:compId            AppLoader.compController.get(compId: String)
-GET     /programovanie/firma/:compId/uprav      AppLoader.authCompController.editForm(compId: String)
-POST    /programovanie/firma                    AppLoader.authCompController.save(compId: Option[String])
-GET     /programovanie/firma-nova               AppLoader.authCompController.addForm
+GET     /programovanie/firmy                    controllers.CompController.all
+GET     /programovanie/zeny                     controllers.CompController.women
+GET     /programovanie/firmy/:city              controllers.CompController.cityTech(city: String, tech: String = "")
+GET     /programovanie/firmy/:city/:tech        controllers.CompController.cityTech(city: String, tech: String)
+GET     /programovanie/firma/:compId            controllers.CompController.get(compId: String)
 
-GET     /api/companies              AppLoader.apiController.comps
-GET     /api/technologies           AppLoader.apiController.techs
-GET     /api/cities                 AppLoader.apiController.cities
+GET     /programovanie/firma/:compId/uprav      controllers.auth.AuthCompController.editForm(compId: String)
+POST    /programovanie/firma                    controllers.auth.AuthCompController.save(compId: Option[String])
+GET     /programovanie/firma-nova               controllers.auth.AuthCompController.addForm
+
+GET     /api/companies              controllers.ApiController.comps
+GET     /api/technologies           controllers.ApiController.techs
+GET     /api/cities                 controllers.ApiController.cities
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")

@@ -94,7 +94,7 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="@AppLoader.routes.compController.women">Ženy</a></li>
+                    <li><a href="@controllers.routes.CompController.women">Ženy</a></li>
                     <li><a href="#">API</a></li>
                     <li><a href="https://github.com/RadoBuransky/hrstka.sk">GitHub</a></li>
                     <li><a href="">O hŕstke</a></li>
@@ -106,10 +106,10 @@
                             @mainModel.user.get.email<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="@AppLoader.routes.authCompController.addForm">Pridať firmu</a></li>
-                            <li><a href="@AppLoader.routes.authTechController.all">Technológie</a></li>
+                            <li><a href="@controllers.auth.routes.AuthCompController.addForm">Pridať firmu</a></li>
+                            <li><a href="@controllers.auth.routes.AuthTechController.all">Technológie</a></li>
                             <li class="divider"></li>
-                            <li><a href="@AppLoader.routes.authController.logout">Odhlásiť</a></li>
+                            <li><a href="@controllers.routes.AuthController.logout">Odhlásiť</a></li>
                         </ul>
                     </li>
                     } else {
@@ -132,7 +132,7 @@
                     <ol>
                     @for(city <- mainModel.cities) {
                         <li class="sidebar-item">
-                            <a href="@AppLoader.routes.compController.cityTech(city.handle, "")">
+                            <a href="@controllers.routes.CompController.cityTech(city.handle, "")">
                                 @city.sk
                             </a>
                         </li>
@@ -146,7 +146,7 @@
                     <ol>
                     @for(tech <- mainModel.techs) {
                         <li class="sidebar-item">
-                            <a href="@AppLoader.routes.compController.cityTech(mainModel.city.getOrElse(mainModel.cities.head.handle), tech.handle)">
+                            <a href="@controllers.routes.CompController.cityTech(mainModel.city.getOrElse(mainModel.cities.head.handle), tech.handle)">
                                 @tech.handle
                             </a>
                         </li>
