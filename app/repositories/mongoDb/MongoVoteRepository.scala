@@ -1,19 +1,21 @@
 package repositories.mongoDb
 
+import com.google.inject.{Inject, Singleton}
 import common.HEException
 import models.db.Identifiable.Id
+import models.db.JsonFormats._
 import models.db.Vote
 import play.api.libs.json.Json
+import play.modules.reactivemongo.ReactiveMongoApi
+import play.modules.reactivemongo.json.BSONFormats._
 import reactivemongo.bson.{BSONDocument, _}
 import reactivemongo.core.commands.{FindAndModify, Update}
-import repositories.VoteRepository
-import models.db.JsonFormats._
+import repositories.{CompVoteRepository, TechVoteRepository, VoteRepository}
 
-import play.modules.reactivemongo.json.BSONFormats._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MongoVoteRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteRepository {
+abstract class MongoVoteRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteRepository {
   override def vote(id: Id, authorId: Id, value: Int): Future[Boolean] = {
     val findAndModify = new FindAndModify(
       collection  = coll.name,
@@ -39,5 +41,10 @@ class MongoVoteRepository(coll: MongoCollection) extends BaseMongoRepository(col
     find[Vote](Json.obj("authorId" -> authorId))
 }
 
-object MongoTechVoteRepository extends MongoVoteRepository(TechVoteCollection)
-object MongoCompVoteRepository extends MongoVoteRepository(CompVoteCollection)
+@Singleton
+final class MongoTechVoteRepository @Inject()(protected val reactiveMongoApi: ReactiveMongoApi)
+  extends MongoVoteRepository(TechVoteCollection) with TechVoteRepository
+
+@Singleton
+final class MongoCompVoteRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
+  extends MongoVoteRepository(CompVoteCollection) with CompVoteRepository

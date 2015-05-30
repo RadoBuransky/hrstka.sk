@@ -1,5 +1,6 @@
 package controllers
 
+import com.google.inject._
 import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
 import models.domain.Admin
@@ -13,6 +14,7 @@ import views.html
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[AuthControllerImpl])
 trait AuthController extends Controller with LoginLogout with AuthConfig {
   def login: Action[AnyContent]
   def logout: Action[AnyContent]
@@ -24,10 +26,11 @@ trait AuthController extends Controller with LoginLogout with AuthConfig {
 case class LoginForm(email: String, password: String)
 case class RegisterForm(email: String, password: String, passwordAgain: String)
 
-class AuthControllerImpl(protected val authService: AuthService,
-                         protected val locationService: LocationService,
-                         protected val techService: TechService,
-                         val messagesApi: MessagesApi)
+@Singleton
+class AuthControllerImpl @Inject() (protected val authService: AuthService,
+                                    protected val locationService: LocationService,
+                                    protected val techService: TechService,
+                                    val messagesApi: MessagesApi)
   extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   val loginForm = Form(mapping("email" -> email, "password" -> text)(LoginForm.apply)(LoginForm.unapply))
   val registerForm = Form(mapping(

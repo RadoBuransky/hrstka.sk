@@ -1,5 +1,6 @@
 package controllers.auth
 
+import com.google.inject.{Inject, Singleton, ImplementedBy}
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
@@ -16,6 +17,7 @@ import scala.concurrent.Future
 
 case class AddTechForm(techName: String)
 
+@ImplementedBy(classOf[AuthTechControllerImpl])
 trait AuthTechController {
   def all: Action[AnyContent]
   def add: Action[AnyContent]
@@ -31,10 +33,11 @@ object AuthTechController {
   )
 }
 
-class AuthTechControllerImpl(protected val authService: AuthService,
-                             protected val locationService: LocationService,
-                             protected val techService: TechService,
-                             val messagesApi: MessagesApi)
+@Singleton
+class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
+                                        protected val locationService: LocationService,
+                                        protected val techService: TechService,
+                                        val messagesApi: MessagesApi)
   extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechController._
 

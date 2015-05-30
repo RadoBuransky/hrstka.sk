@@ -1,10 +1,13 @@
 package services
 
+import com.google.inject.ImplementedBy
 import models.domain.Identifiable._
 import models.domain._
+import services.impl.CompServiceImpl
 
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[CompServiceImpl])
 trait CompService {
   def get(compId: Id): Future[Comp]
   def upsert(comp: Comp, techHandles: Seq[Handle], userId: Id): Future[Identifiable.Id]

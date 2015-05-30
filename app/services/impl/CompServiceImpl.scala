@@ -1,5 +1,6 @@
 package services.impl
 
+import com.google.inject.{Inject, Singleton}
 import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
 import models.domain._
@@ -10,9 +11,10 @@ import services.{CompService, LocationService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CompServiceImpl(compRepository: CompRepository,
-                      techService: TechService,
-                      locationService: LocationService) extends CompService {
+@Singleton
+final class CompServiceImpl @Inject() (compRepository: CompRepository,
+                                       techService: TechService,
+                                       locationService: LocationService) extends CompService {
   override def all(city: Option[Handle], tech: Option[Handle]): Future[Seq[Comp]] = {
     compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { comps =>
       Future.sequence(comps.map(dbCompToDomain))

@@ -2,6 +2,7 @@ package controllers.auth
 
 import java.net.URL
 
+import com.google.inject._
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
@@ -30,6 +31,7 @@ case class AddCompForm(name: String,
                        joel: List[Int])
 case class AddTechToCompForm(techName: String)
 
+@ImplementedBy(classOf[AuthCompControllerImpl])
 trait AuthCompController {
   def addForm: Action[AnyContent]
   def editForm(compId: String): Action[AnyContent]
@@ -76,11 +78,12 @@ object AuthCompController {
   )
 }
 
-class AuthCompControllerImpl(compService: CompService,
-                             protected val authService: AuthService,
-                             protected val techService: TechService,
-                             protected val locationService: LocationService,
-                             val messagesApi: MessagesApi)
+@Singleton
+class AuthCompControllerImpl @Inject() (compService: CompService,
+                                        protected val authService: AuthService,
+                                        protected val techService: TechService,
+                                        protected val locationService: LocationService,
+                                        val messagesApi: MessagesApi)
   extends BaseController with AuthCompController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthCompController._
 

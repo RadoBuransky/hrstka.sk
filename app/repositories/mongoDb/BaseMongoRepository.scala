@@ -2,9 +2,8 @@ package repositories.mongoDb
 
 import models.db.Identifiable
 import models.db.Identifiable.Id
-import play.api.Play.current
 import play.api.libs.json._
-import play.modules.reactivemongo.ReactiveMongoPlugin
+import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.BSONFormats._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.QueryOpts
@@ -15,6 +14,8 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 
 abstract class BaseMongoRepository(coll: MongoCollection) {
+  protected def reactiveMongoApi: ReactiveMongoApi
+
   protected def ins[T](value: T)(implicit writes: Writes[T]): Future[LastError] = {
     collection.insert(value)
   }
@@ -48,5 +49,5 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
   protected def remove(id: Id): Future[LastError] = collection.remove(Json.obj("_id" -> id))
 
   protected def collection = db.collection[JSONCollection](coll.name)
-  protected def db = ReactiveMongoPlugin.db
+  protected def db = reactiveMongoApi.db
 }

@@ -1,20 +1,23 @@
 package controllers
 
+import com.google.inject._
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+@ImplementedBy(classOf[ApiControllerImpl])
 trait ApiController {
   def comps(): Action[AnyContent]
   def techs(): Action[AnyContent]
   def cities(): Action[AnyContent]
 }
 
-class ApiControllerImpl(compService: CompService,
-                        techService: TechService,
-                        locationService: LocationService) extends Controller with ApiController {
+@Singleton
+final class ApiControllerImpl @Inject() (compService: CompService,
+                                         techService: TechService,
+                                         locationService: LocationService) extends Controller with ApiController {
   import models.api.JsonFormats._
 
   override def comps(): Action[AnyContent] = Action.async { implicit request =>

@@ -1,20 +1,18 @@
-import controllers._
-import controllers.auth.{AuthTechControllerImpl, AuthTechController, AuthCompControllerImpl, AuthCompController}
-import play.api.ApplicationLoader.Context
-import play.api.i18n.I18nComponents
-import play.api.routing.Router
-import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
-import repositories._
-import repositories.mongoDb._
-import router.Routes
-import services.{LocationService, AuthService, CompService, TechService}
-import services.impl.{LocationServiceImpl, AuthServiceImpl, CompServiceImpl, TechServiceImpl}
+import play.api.ApplicationLoader
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceApplicationLoader}
 
-class HrstkaApplicationLoader extends ApplicationLoader {
-  override def load(context: Context): Application = new HrstkaComponents(context).application
+class HrstkaApplicationLoader extends GuiceApplicationLoader() {
+  override protected def builder(context: ApplicationLoader.Context): GuiceApplicationBuilder = {
+    super.builder(context)
+  }
 }
+/*
+final class HrstkaComponents(context: Context)
+  extends BuiltInComponentsFromContext(context)
+  with I18nComponents
+  with ReactiveMongoComponents
+  with EhCacheComponents {
 
-class HrstkaComponents(context: Context) extends BuiltInComponentsFromContext(context) with I18nComponents {
   // Injected router
   lazy val router: Router = new Routes(
     httpErrorHandler,
@@ -46,10 +44,10 @@ class HrstkaComponents(context: Context) extends BuiltInComponentsFromContext(co
   lazy val locationService: LocationService = new LocationServiceImpl(cityRepository)
 
   // Repositories
-  lazy val techRepository: TechRepository = new MongoTechRepository
-  lazy val techVoteRepository: VoteRepository = MongoTechVoteRepository
-  lazy val techVoteLogRepository: VoteLogRepository = MongoTechVoteLogRepository
-  lazy val compRepository: CompRepository = new MongoCompRepository
-  lazy val userRepository: UserRepository = new MongoUserRepository
-  lazy val cityRepository: CityRepository = new MongoCityRepository
-}
+  lazy val techRepository: TechRepository = new MongoTechRepository(reactiveMongoApi)
+  lazy val techVoteRepository: VoteRepository = new MongoTechVoteRepository(reactiveMongoApi)
+  lazy val techVoteLogRepository: VoteLogRepository = new MongoTechVoteLogRepository(reactiveMongoApi)
+  lazy val compRepository: CompRepository = new MongoCompRepository(reactiveMongoApi)
+  lazy val userRepository: UserRepository = new MongoUserRepository(reactiveMongoApi)
+  lazy val cityRepository: CityRepository = new MongoCityRepository(reactiveMongoApi)
+}*/

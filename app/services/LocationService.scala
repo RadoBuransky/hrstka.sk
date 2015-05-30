@@ -1,9 +1,12 @@
 package services
 
-import models.domain.{Handle, City, CityInfo, CompQuery}
+import com.google.inject.ImplementedBy
+import models.domain.{City, CompQuery, Handle}
+import services.impl.LocationServiceImpl
 
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[LocationServiceImpl])
 trait LocationService {
   def all(): Future[Seq[City]]
   def get(handle: Handle): Future[City]

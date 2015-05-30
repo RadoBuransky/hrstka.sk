@@ -1,16 +1,19 @@
 package repositories.mongoDb
 
+import com.google.inject.{Inject, Singleton}
 import models.db.Identifiable._
 import models.db.JsonFormats._
 import models.db.{Comp, Identifiable}
-import play.api.Logger
 import play.api.libs.json.Json
+import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.bson.BSONObjectID
 import repositories.CompRepository
 
 import scala.concurrent.Future
 
-class MongoCompRepository extends BaseMongoRepository(CompCollection) with CompRepository {
+@Singleton
+final class MongoCompRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
+  extends BaseMongoRepository(CompCollection) with CompRepository {
   override def get(compId: Id): Future[Comp] = get[Comp](compId)
   override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]] = {
 

@@ -1,5 +1,6 @@
 package controllers
 
+import com.google.inject.{Inject, Singleton, ImplementedBy}
 import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import models.domain.Handle
@@ -12,6 +13,7 @@ import services.{AuthService, CompService, LocationService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[CompControllerImpl])
 trait CompController {
   def get(compId: String): Action[AnyContent]
   def women: Action[AnyContent]
@@ -19,11 +21,12 @@ trait CompController {
   def cityTech(cityHandle: String, techHandle: String): Action[AnyContent]
 }
 
-class CompControllerImpl(compService: CompService,
-                         protected val authService: AuthService,
-                         protected val techService: TechService,
-                         protected val locationService: LocationService,
-                         val messagesApi: MessagesApi)
+@Singleton
+class CompControllerImpl @Inject() (compService: CompService,
+                                    protected val authService: AuthService,
+                                    protected val techService: TechService,
+                                    protected val locationService: LocationService,
+                                    val messagesApi: MessagesApi)
   extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 
   def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>

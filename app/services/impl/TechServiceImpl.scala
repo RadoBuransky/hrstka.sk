@@ -1,18 +1,20 @@
 package services.impl
 
+import com.google.inject.{Inject, Singleton}
 import common.HEException
 import models._
 import models.domain.Identifiable.{Id, _}
 import models.domain.{Handle, Tech, TechRating, TechVote}
-import repositories.{TechRepository, VoteLogRepository, VoteRepository}
+import repositories._
 import services.TechService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TechServiceImpl(techRepository: TechRepository,
-                      techVoteRepository: VoteRepository,
-                      techVoteLogRepository: VoteLogRepository) extends TechService {
+@Singleton
+final class TechServiceImpl @Inject() (techRepository: TechRepository,
+                                       techVoteRepository: TechVoteRepository,
+                                       techVoteLogRepository: TechVoteLogRepository) extends TechService {
   def get(handle: Handle) = all().map(_.find(_.handle == handle) match {
     case Some(tech) => tech
     case None => throw new HEException(s"Tech doesn't exist! [${handle.value}]")

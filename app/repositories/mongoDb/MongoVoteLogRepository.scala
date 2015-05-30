@@ -1,18 +1,25 @@
 package repositories.mongoDb
 
+import com.google.inject.{Inject, Singleton}
 import models.db.Identifiable.Id
 import models.db.JsonFormats._
 import models.db.VoteLog
+import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.bson.BSONObjectID
-import repositories.VoteLogRepository
+import repositories.{CompVoteLogRepository, TechVoteLogRepository, VoteLogRepository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MongoVoteLogRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteLogRepository {
+abstract class MongoVoteLogRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteLogRepository {
   override def logVote(id: Id, authorId: Id, value: Int): Future[Unit] =
     ins(VoteLog(BSONObjectID.generate, id, authorId, value)).map(_ => Unit)
 }
 
-object MongoTechVoteLogRepository extends MongoVoteLogRepository(TechVoteLogCollection)
-object MongoCompVoteLogRepository extends MongoVoteLogRepository(CompVoteLogCollection)
+@Singleton
+final class MongoTechVoteLogRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
+  extends MongoVoteLogRepository(TechVoteLogCollection) with TechVoteLogRepository
+
+@Singleton
+final class MongoCompVoteLogRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
+  extends MongoVoteLogRepository(CompVoteLogCollection) with CompVoteLogRepository
