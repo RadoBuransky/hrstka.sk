@@ -15,7 +15,7 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 libraryDependencies ++= Seq(
   cache,
   "org.webjars"       %   "bootstrap"             % "3.3.2",
-  "org.reactivemongo" %%  "play2-reactivemongo"   % "0.12.1-SNAPSHOT",
+  "org.reactivemongo" %%  "play2-reactivemongo"   % "0.10.5.0.akka23.play24-SNAPSHOT",
   "jp.t2v"            %%  "play2-auth"            % "0.14.0-SNAPSHOT",
   "jp.t2v"            %%  "stackable-controller"  % "0.5.0-SNAPSHOT",
   "com.github.t3hnar" %%  "scala-bcrypt"          % "2.4",
