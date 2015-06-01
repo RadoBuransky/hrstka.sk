@@ -1,53 +1,76 @@
 package repositories
 
-import itest.TestApplication
 import models.db.City
 import models.domain.Handle
-import org.scalatest.concurrent.Futures
-import org.scalatest.{Outcome, fixture}
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.core.errors.DatabaseException
+import repositories.mongoDb.CityCollection
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
-final class MongoCityRepositoryISpec extends fixture.FlatSpec with TestApplication with Futures {
-  behavior of "insert"
+final class MongoCityRepositoryISpec extends BaseRepositoryISpec[CityRepository](CityCollection) {
+  import MongoCityRepositoryISpec._
 
-  it should "insert city" in { insert(_, "Košice") }
-  it should "not allow to insert the same city" in { cityRepository =>
-    val f = insert(cityRepository, "Košice").flatMap(_ => insert(cityRepository, "Košice"))
-    intercept[DatabaseException] { Await.result(f, 30.seconds) }
+  behavior of "all"
+
+  it should "get all inserted cities" in { cityRepository =>
+    val result = insertAll(cityRepository).flatMap { _ =>
+      cityRepository.all()
+    }
+
+    assert(result.futureValue.toSet == Set(kosice, noveZamky))
   }
 
   behavior of "get"
 
   it should "return inserted city" in { cityRepository =>
-    val sk = "Nové Zámky"
-    val city = City(
-      _id     = BSONObjectID.generate,
-      handle  = Handle.fromHumanName(sk).value,
-      sk      = sk
-    )
-
-    val f = cityRepository.insert(city).flatMap { _ =>
-      cityRepository.get(city.handle)
+    val result = cityRepository.insert(noveZamky).flatMap { _ =>
+      cityRepository.get(noveZamky.handle)
     }
-
-    assert(Await.result(f, 30.seconds) == city)
+    assert(result.futureValue == noveZamky)
   }
 
-  private def insert(cityRepository: CityRepository, sk: String, _id: BSONObjectID = BSONObjectID.generate): Future[String] = {
-    cityRepository.insert(City(
-      _id     = _id,
-      handle  = Handle.fromHumanName(sk).value,
-      sk      = sk
-    ))
+  behavior of "find"
+
+  it should "find one city" in { cityRepository =>
+    val result = insertAll(cityRepository).flatMap { _ =>
+      cityRepository.find(kosice.handle)
+    }
+    assert(result.futureValue.contains(kosice))
   }
 
-  override type FixtureParam = CityRepository
-  override protected def withFixture(test: OneArgTest): Outcome = {
-    test.apply(application.injector.instanceOf[CityRepository])
+  it should "find no city" in { cityRepository =>
+    val result = insertAll(cityRepository).flatMap { _ =>
+      cityRepository.find("a")
+    }
+    assert(result.futureValue.isEmpty)
   }
+
+  behavior of "insert"
+
+  it should "not allow to insert the same city" in { cityRepository =>
+    val result = cityRepository.insert(kosice).flatMap { _ =>
+      cityRepository.insert(kosice)
+    }
+    whenReady(result.failed) { ex =>
+      assert(ex.isInstanceOf[DatabaseException])
+    }
+  }
+
+  private def insertAll(cityRepository: CityRepository): Future[_] = for {
+      kosiceFuture <- cityRepository.insert(kosice)
+      noveZamkyFuture <- cityRepository.insert(noveZamky)
+    } yield ()
+}
+
+private object MongoCityRepositoryISpec {
+  val kosice = createCity("Košice")
+  val noveZamky = createCity("Nové Zámky")
+
+  private def createCity(sk: String) = City(
+    _id     = BSONObjectID.generate,
+    handle  = Handle.fromHumanName(sk).value,
+    sk      = sk
+  )
 }
