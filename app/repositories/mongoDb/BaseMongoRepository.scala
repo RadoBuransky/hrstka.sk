@@ -1,5 +1,6 @@
 package repositories.mongoDb
 
+import common.HEException
 import models.db.Identifiable
 import models.db.Identifiable.Id
 import play.api.libs.json._
@@ -44,7 +45,12 @@ abstract class BaseMongoRepository(coll: MongoCollection) {
     batch.cursor[T].collect[Seq]()
   }
 
-  protected def get[T](id: Id)(implicit reads: Reads[T]): Future[T] =  find[T](Json.obj("_id" -> id)).map(_.head)
+  protected def get[T](id: Id)(implicit reads: Reads[T]): Future[T] =  find[T](Json.obj("_id" -> id)).map {
+    _.headOption match {
+      case Some(result) => result
+      case None => throw new HEException(s"No ${coll.name} with _id = ${id.stringify}!")
+    }
+  }
 
   protected def remove(id: Id): Future[LastError] = collection.remove(Json.obj("_id" -> id))
 

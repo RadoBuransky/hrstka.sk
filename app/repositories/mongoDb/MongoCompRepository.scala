@@ -1,6 +1,7 @@
 package repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
+import common.HEException
 import models.db.Identifiable._
 import models.db.JsonFormats._
 import models.db.{Comp, Identifiable}
@@ -15,6 +16,12 @@ import scala.concurrent.Future
 final class MongoCompRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
   extends BaseMongoRepository(CompCollection) with CompRepository {
   override def get(compId: Id): Future[Comp] = get[Comp](compId)
+
+  override def upsert(comp: Comp): Future[Id] = {
+    val compToUpsert = if (comp._id == Identifiable.empty) comp.copy(_id = BSONObjectID.generate) else comp
+    super[BaseMongoRepository].upsert(compToUpsert)
+  }
+
   override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]] = {
 
     val cityQuery = city match {
@@ -28,9 +35,5 @@ final class MongoCompRepository @Inject() (protected val reactiveMongoApi: React
     }
 
     find[Comp](cityQuery ++ techQuery)
-  }
-  override def upsert(comp: Comp): Future[Id] = {
-    val compToUpsert = if (comp._id == Identifiable.empty) comp.copy(_id = BSONObjectID.generate) else comp
-    super[BaseMongoRepository].upsert(compToUpsert)
   }
 }
