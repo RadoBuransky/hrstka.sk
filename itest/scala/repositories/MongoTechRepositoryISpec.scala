@@ -1,5 +1,6 @@
 package repositories
 
+import common.HEException
 import itest.TestApplication
 import models.db.{Identifiable, Tech}
 import org.scalatest.DoNotDiscover
@@ -32,10 +33,64 @@ class MongoTechRepositoryISpec(testApplication: TestApplication)
     assert(result.futureValue.toSet == Set(scala, java))
   }
 
+  behavior of "updateRating"
+
+  it should "fail if delta is 0" in { techRepository =>
+    intercept[IllegalArgumentException] { techRepository.updateRating(scala._id, 0, 0) }
+  }
+
+  it should "fail if delta is -2" in { techRepository =>
+    intercept[IllegalArgumentException] { techRepository.updateRating(scala._id, -2, 0) }
+  }
+
+  it should "fail if delta is 2" in { techRepository =>
+    intercept[IllegalArgumentException] { techRepository.updateRating(scala._id, 2, 0) }
+  }
+
+  it should "increase scala rating" in { techRepository =>
+    val result = for {
+      insertedScala <- techRepository.upsert(scala)
+      increasedScala <- techRepository.updateRating(scala._id, 1, 1)
+      updatedScala <- techRepository.get(scala._id)
+    } yield updatedScala
+
+    val updatedScala = result.futureValue
+    assert(updatedScala == scala.copy(upVotes = 1, upVotesValue = 1))
+  }
+
+  it should "decrease scala rating" in { techRepository =>
+    val result = for {
+      insertedScala <- techRepository.upsert(scala)
+      increasedScala <- techRepository.updateRating(scala._id, -1, -1)
+      updatedScala <- techRepository.get(scala._id)
+    } yield updatedScala
+
+    val updatedScala = result.futureValue
+    assert(updatedScala == scala.copy(downVotes = 1))
+  }
+
+  behavior of "get"
+
+  it should "return existing technology" in { techRepository =>
+    val result = insertTechs(techRepository).flatMap { _ =>
+      techRepository.get(scala._id)
+    }
+    assert(result.futureValue == scala)
+  }
+
+  it should "fail for nonexisting technology" in { techRepository =>
+    val result = insertTechs(techRepository).flatMap { _ =>
+      techRepository.get(BSONObjectID.generate)
+    }
+    whenReady(result.failed) { ex =>
+      assert(ex.isInstanceOf[HEException])
+    }
+  }
+
   private def insertTechs(techRepository: TechRepository): Future[_] = {
     for {
-      avitechFuture <- techRepository.upsert(scala)
-      rescoFuture <- techRepository.upsert(java)
+      scalaFuture <- techRepository.upsert(scala)
+      javaFuture <- techRepository.upsert(java)
     } yield ()
   }
 }

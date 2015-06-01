@@ -32,12 +32,9 @@ trait TestApplication extends SuiteMixin with BeforeAndAfterAll {
   }
 
   override protected def afterAll() = {
-    // Drop DB ...
-    val closing = dropDb(db).flatMap { _ =>
-      // ... and close connection
-      db.connection.askClose()(30.seconds)
-    }
-    Await.result(closing, 30.seconds)
+    Await.result(dropDb(db), 30.seconds)
+    Await.result(application.stop(), 30.seconds)
+    application.actorSystem.shutdown()
   }
 
   private def prepareDb(db: DB): Future[_] = application.injector.instanceOf[DbManager].applicationInit()

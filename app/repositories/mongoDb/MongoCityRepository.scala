@@ -15,8 +15,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 final class MongoCityRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
   extends BaseMongoRepository(CityCollection) with CityRepository {
-  private lazy val logger = LoggerFactory.getLogger(getClass)
-
   override def get(handle: String): Future[City] = find(handle).map {
     case Some(city) => city
     case None => throw new HEException(s"No city found! [$handle]")
@@ -24,7 +22,6 @@ final class MongoCityRepository @Inject() (protected val reactiveMongoApi: React
   override def find(handle: String): Future[Option[City]] =
     find[City](Json.obj("handle" -> handle)).map(_.headOption)
   override def insert(city: City): Future[String] = {
-    logger.debug(s"Inserting $city.")
     ins(city).map(_ => city.handle)
   }
 

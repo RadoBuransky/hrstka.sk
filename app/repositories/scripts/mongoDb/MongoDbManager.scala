@@ -47,14 +47,14 @@ private object MongoDbManager {
   lazy val allIndexes = Seq(
     compNameIndex,
     compWebsiteIndex,
-    techNameIndex,
+    techHandleIndex,
     userEmailIndex,
     cityHandleIndex
   )
 
   lazy val compNameIndex = createUniqueIndex(CompCollection, "name")
   lazy val compWebsiteIndex = createUniqueIndex(CompCollection, "website")
-  lazy val techNameIndex = createUniqueIndex(TechCollection, "name")
+  lazy val techHandleIndex = createUniqueIndex(TechCollection, "handle")
   lazy val userEmailIndex = createUniqueIndex(UserCollection, "email")
   lazy val cityHandleIndex = createUniqueIndex(CityCollection, "handle")
 

@@ -1,3 +1,4 @@
+import sbt.Tests.Setup
 import sbt._
 
 organization := "sk.hrstka"
