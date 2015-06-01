@@ -11,6 +11,7 @@ import reactivemongo.bson.BSONObjectID
 import repositories.CompRepository
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 final class MongoCompRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)

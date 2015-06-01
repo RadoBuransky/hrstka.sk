@@ -4,8 +4,9 @@ import java.net.URL
 
 import common.HEException
 import itest.TestApplication
-import models.db.Comp
+import models.db.{Identifiable, Comp}
 import org.scalatest.DoNotDiscover
+import play.api.Logger
 import reactivemongo.bson.BSONObjectID
 import repositories.mongoDb.{CompCollection, MongoCompRepository}
 
@@ -38,15 +39,11 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
   behavior of "upsert"
 
   it should "insert new company" in { compRepository =>
-    val doesNotExist = compRepository.get(avitech._id)
-    whenReady(doesNotExist.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
+    val result = compRepository.upsert(avitech.copy(_id = Identifiable.empty)).flatMap { avitechId =>
+      compRepository.get(avitechId)
     }
-
-    val result = compRepository.upsert(avitech).flatMap { _ =>
-      compRepository.get(avitech._id)
-    }
-    assert(result.futureValue == avitech)
+    val insertedAvitech = result.futureValue
+    assert(insertedAvitech == avitech.copy(_id = insertedAvitech._id))
   }
 
   it should "update existing company" in { compRepository =>
@@ -71,6 +68,15 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
       }
     }
     assert(result.futureValue == changedAvitech)
+  }
+
+  it should "fail if a company with the same name aleady exists" in { compRepository =>
+    val result = compRepository.upsert(avitech.copy(_id = Identifiable.empty)).flatMap { _ =>
+      compRepository.upsert(resco.copy(_id = Identifiable.empty, name = avitech.name))
+    }
+    whenReady(result.failed) { ex =>
+      assert(ex.isInstanceOf[HEException])
+    }
   }
 
   behavior of "all"

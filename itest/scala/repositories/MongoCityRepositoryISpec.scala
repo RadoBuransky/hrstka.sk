@@ -54,7 +54,7 @@ final class MongoCityRepositoryISpec(testApplication: TestApplication)
 
   it should "not allow to insert the same city" in { cityRepository =>
     val result = cityRepository.insert(kosice).flatMap { _ =>
-      cityRepository.insert(kosice)
+      cityRepository.insert(kosice.copy(_id = BSONObjectID.generate))
     }
     whenReady(result.failed) { ex =>
       assert(ex.isInstanceOf[DatabaseException])

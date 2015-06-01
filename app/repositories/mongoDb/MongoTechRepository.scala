@@ -3,7 +3,7 @@ package repositories.mongoDb
 import com.google.inject.{Inject, Singleton}
 import models.db.Identifiable.Id
 import models.db.JsonFormats._
-import models.db.Tech
+import models.db.{Identifiable, Tech}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.bson.BSONObjectID
@@ -18,14 +18,9 @@ final class MongoTechRepository @Inject() (protected val reactiveMongoApi: React
   extends BaseMongoRepository(TechCollection) with TechRepository {
   import MongoTechRepository._
 
-  override def insert(name: String, authorId: Id): Future[Id] = {
-    val id = BSONObjectID.generate
-    ins(Tech(_id = id,
-      authorId = authorId,
-      handle = name,
-      upVotes = 0,
-      upVotesValue = 0,
-      downVotes = 0)).map(_ => id)
+  override def upsert(tech: Tech): Future[Id] = {
+    val techToUpsert = if (tech._id == Identifiable.empty) tech.copy(_id = BSONObjectID.generate) else tech
+    super[BaseMongoRepository].upsert(techToUpsert)
   }
 
   override def all() = find[Tech](Json.obj(), sort = Json.obj("handle" -> 1))

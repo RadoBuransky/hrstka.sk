@@ -14,8 +14,6 @@ lazy val root = (project in file(".")).
   enablePlugins(PlayScala)
 
 scalaSource in IntegrationTest := baseDirectory.value / "itest" / "scala"
-unmanagedResourceDirectories in IntegrationTest += baseDirectory.value / "conf"
-javaOptions in IntegrationTest += "-XX:MaxMetaspaceSize={unlimited}"
 
 routesGenerator := InjectedRoutesGenerator
 

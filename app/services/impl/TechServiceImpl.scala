@@ -3,8 +3,10 @@ package services.impl
 import com.google.inject.{Inject, Singleton}
 import common.HEException
 import models._
+import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
 import models.domain.{Handle, Tech, TechRating, TechVote}
+import reactivemongo.bson.BSONDocument
 import repositories._
 import services.TechService
 
@@ -21,10 +23,14 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
   })
 
   override def insert(name: String, userId: domain.Identifiable.Id) =
-    techRepository.insert(
-      name      = name.toLowerCase,
-      authorId  = userId
-    ).map(_.stringify)
+    techRepository.upsert(db.Tech(
+      _id           = Identifiable.empty,
+      authorId      = userId,
+      handle        = name.toLowerCase,
+      upVotes       = 0,
+      upVotesValue  = 0,
+      downVotes     = 0
+    )).map(_.stringify)
 
   override def getOrInsert(name: String, userId: Id): Future[Id] = {
     techRepository.all().map(_.find(_.handle == name)).flatMap {

@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 @ImplementedBy(classOf[MongoTechRepository])
 trait TechRepository {
-  def insert(name: String, authorId: Id): Future[Id]
+  def upsert(comp: Tech): Future[Id]
   def all(): Future[Seq[Tech]]
   def get(techId: Id): Future[Tech]
   def updateRating(techId: Id, delta: Int, value: Int): Future[Unit]

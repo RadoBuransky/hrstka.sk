@@ -4,6 +4,9 @@ import itest.TestApplication
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Outcome, fixture}
 import play.api.Application
+import play.api.libs.json.Json
+import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.api.collections.default.BSONCollection
 import reactivemongo.core.commands.Drop
 import repositories.mongoDb.MongoCollection
 
@@ -19,7 +22,7 @@ abstract class BaseRepositoryISpec[TRepository : ClassTag](protected val testApp
       test.apply(testApplication.application.injector.instanceOf[TRepository])
     }
     finally {
-      assert(testApplication.db.command(new Drop(collection.name)).futureValue)
+      assert(testApplication.db.collection[JSONCollection](collection.name).remove(Json.obj()).futureValue.ok)
     }
   }
 }
