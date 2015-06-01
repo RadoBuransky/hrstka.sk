@@ -18,8 +18,8 @@ trait TestApplication extends SuiteMixin with BeforeAndAfterAll {
   private var _application: Application = _
   private var _db: DB = _
 
-  protected def application = _application
-  protected def db = _db
+  def application = _application
+  def db = _db
 
   override protected def beforeAll() = {
     _application = new GuiceApplicationBuilder()

@@ -3,22 +3,23 @@ package repositories
 import itest.TestApplication
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Outcome, fixture}
+import play.api.Application
 import reactivemongo.core.commands.Drop
 import repositories.mongoDb.MongoCollection
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.reflect.ClassTag
 
-abstract class BaseRepositoryISpec[TRepository : ClassTag](collection: MongoCollection)
-  extends fixture.FlatSpec with TestApplication with ScalaFutures {
+abstract class BaseRepositoryISpec[TRepository : ClassTag](protected val testApplication: TestApplication, collection: MongoCollection)
+  extends fixture.FlatSpec with ScalaFutures {
 
   override type FixtureParam = TRepository
   override protected def withFixture(test: OneArgTest): Outcome = {
     try {
-      test.apply(application.injector.instanceOf[TRepository])
+      test.apply(testApplication.application.injector.instanceOf[TRepository])
     }
     finally {
-      assert(db.command(new Drop(collection.name)).futureValue)
+      assert(testApplication.db.command(new Drop(collection.name)).futureValue)
     }
   }
 }

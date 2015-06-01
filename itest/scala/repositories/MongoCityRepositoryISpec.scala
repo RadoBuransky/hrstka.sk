@@ -1,7 +1,9 @@
 package repositories
 
+import itest.TestApplication
 import models.db.City
 import models.domain.Handle
+import org.scalatest.DoNotDiscover
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.core.errors.DatabaseException
 import repositories.mongoDb.CityCollection
@@ -9,7 +11,9 @@ import repositories.mongoDb.CityCollection
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-final class MongoCityRepositoryISpec extends BaseRepositoryISpec[CityRepository](CityCollection) {
+@DoNotDiscover
+final class MongoCityRepositoryISpec(testApplication: TestApplication)
+  extends BaseRepositoryISpec[CityRepository](testApplication, CityCollection) {
   import MongoCityRepositoryISpec._
 
   behavior of "all"
@@ -18,7 +22,6 @@ final class MongoCityRepositoryISpec extends BaseRepositoryISpec[CityRepository]
     val result = insertAll(cityRepository).flatMap { _ =>
       cityRepository.all()
     }
-
     assert(result.futureValue.toSet == Set(kosice, noveZamky))
   }
 
