@@ -1,10 +1,13 @@
 package controllers.auth
 
-import com.google.inject.{Inject, Singleton, ImplementedBy}
+import java.net.URL
+
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
-import models.domain.Admin
+import models.domain
+import models.domain.{Handle, Identifiable, Other}
 import models.ui.Tech
 import play.api.data.Form
 import play.api.data.Forms._
@@ -41,34 +44,42 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
   extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechController._
 
-  override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     val serviceResult = for {
-      techs <- techService.all()
+      techRatings <- techService.allRatings()
       userVotes <- techService.votesFor(userId)
-    } yield (techs, userVotes)
+    } yield (techRatings, userVotes)
 
     serviceResult.flatMap {
-      case (techs, userVotes) =>
+      case (techRatings, userVotes) =>
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-          Ok(views.html.techs(None, techs.map { tech =>
-            Tech(tech, userVotes.find(_.techId == tech.id).map(_.value))
+          Ok(views.html.techs(None, techRatings.map { techRating =>
+            // TODO: ui.TechRating ...
+            Tech(techRating.tech)
           }))
         }
     }
   }
 
-  override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     withForm(addTechForm) { form =>
-      techService.insert(form.techName, userId).map { Unit =>
+      // TODO: Get proper values ...
+      techService.upsert(domain.Tech(
+        id        = Identifiable.empty,
+        handle    = Handle.fromHumanName(form.techName),
+        category  = Other,
+        name      = form.techName,
+        website   = new URL("http://www.google.com/")
+      )).map { techId =>
         Redirect(controllers.auth.routes.AuthTechController.all())
       }
     }
   }
 
-  override def voteUp(id: String) = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def voteUp(id: String) = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     vote(techService.voteUp(id, userId))
   }
-  override def voteDown(id: String) = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def voteDown(id: String) = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     vote(techService.voteDown(id, userId))
   }
 

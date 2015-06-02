@@ -11,6 +11,5 @@ import scala.concurrent.Future
 trait TechRepository {
   def upsert(tech: Tech): Future[Id]
   def all(): Future[Seq[Tech]]
-  def get(techId: Id): Future[Tech]
-  def updateRating(techId: Id, delta: Int, value: Int): Future[Unit]
+  def get(handle: String): Future[Tech]
 }

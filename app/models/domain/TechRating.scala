@@ -4,8 +4,12 @@ import common.HEException
 
 /**
  * Technology rating.
+ *
+ * @param tech Technology rated.
+ * @param value Percentage between 0 and 100.
  */
-case class TechRating(value: Double) {
+case class TechRating(tech: Tech,
+                      value: Double) {
   if (value > 100.0)
     throw new HEException(s"Tech rating cannot be greater than 100 [$value]")
   if (value < 0.0)
@@ -16,9 +20,9 @@ object TechRating {
   val maxVoteValue = 3
   val minVoteValue = -1
 
-  def apply(upVotesValue: Int, voteCount: Int): TechRating =
+  def apply(tech: Tech, upVotesValue: Int, voteCount: Int): TechRating =
     if (voteCount == 0)
-      TechRating(0)
+      TechRating(tech, 0)
     else
-      TechRating(upVotesValue.toDouble / (voteCount.toDouble * maxVoteValue))
+      TechRating(tech, upVotesValue.toDouble / (voteCount.toDouble * maxVoteValue))
 }

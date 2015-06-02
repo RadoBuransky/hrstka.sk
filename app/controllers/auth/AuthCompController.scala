@@ -113,7 +113,7 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
             products = form.products,
             services = form.services,
             internal = form.internal,
-            techs = Nil,
+            techRatings = Nil,
             joel = form.joel.toSet
           ),
           form.techs.map(Handle(_)),
@@ -125,8 +125,8 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
   }
 
   private def edit[A](comp: Option[domain.Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
-    techService.all().flatMap { techs =>
-      val ts = techs.map(t => (t.handle.value, comp.exists(_.techs.exists(_.handle == t.handle))))
+    techService.allRatings().flatMap { techRatings =>
+      val ts = techRatings.map(t => (t.tech.handle.value, comp.exists(_.techRatings.exists(_.tech.handle == t.tech.handle))))
       withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
         Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
       }

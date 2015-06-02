@@ -13,11 +13,7 @@
     <div>
     @for(tech <- techs) {
         <div>
-            @tech.rating%
             @tech.handle
-            @if(tech.userVoteValue.isDefined) {
-              @tech.userVoteValue.get
-            }
             <a href="@controllers.auth.routes.AuthTechController.voteUp(tech.id)">+</a>
             <a href="@controllers.auth.routes.AuthTechController.voteDown(tech.id)">-</a>
         </div>

@@ -19,11 +19,8 @@ final class MongoCityRepository @Inject() (protected val reactiveMongoApi: React
     case Some(city) => city
     case None => throw new HEException(s"No city found! [$handle]")
   }
-  override def find(handle: String): Future[Option[City]] =
-    find[City](Json.obj("handle" -> handle)).map(_.headOption)
-  override def insert(city: City): Future[String] = {
-    ins(city).map(_ => city.handle)
-  }
 
+  override def find(handle: String): Future[Option[City]] = find[City](Json.obj("handle" -> handle)).map(_.headOption)
+  override def insert(city: City): Future[String] = ins(city).map(_ => city.handle)
   override def all(): Future[Seq[City]] = find[City](Json.obj())
 }

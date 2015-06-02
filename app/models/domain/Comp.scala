@@ -16,13 +16,13 @@ case class Comp(id: Id,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techs: Seq[Tech],
+                techRatings: Seq[TechRating],
                 joel: Set[Int]) extends Identifiable {
-  def rank: Double = if (techs.isEmpty) 0.0 else techs.map(_.rating.value).sum / techs.size.toDouble
+  def rank: Double = if (techRatings.isEmpty) 0.0 else techRatings.map(_.value).sum / techRatings.size.toDouble
 }
 
 object Comp {
-  def apply(comp: db.Comp, techs: Seq[Tech], city: City): Comp = Comp(
+  def apply(comp: db.Comp, techRatings: Seq[TechRating], city: City): Comp = Comp(
     id                = comp._id.stringify,
     name              = comp.name,
     website           = new URL(comp.website),
@@ -34,7 +34,7 @@ object Comp {
     products          = comp.products,
     services          = comp.services,
     internal          = comp.internal,
-    techs             = techs,
+    techRatings       = techRatings,
     joel              = comp.joel
   )
 }

@@ -42,9 +42,9 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   }
 
   private def dbCompToDomain(comp: db.Comp): Future[domain.Comp] = {
-    techService.all().flatMap { techs =>
+    techService.allRatings().flatMap { techRatings =>
       locationService.get(Handle(comp.city)).map { city =>
-        domain.Comp(comp, techs.filter(t => comp.techs.contains(t.handle.value)), city)
+        domain.Comp(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
       }
     }
   }

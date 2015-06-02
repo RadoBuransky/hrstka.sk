@@ -14,10 +14,10 @@ trait MainModelProvider {
                                     tech: Option[String] = None,
                                     user: Option[User] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     locationService.all().flatMap { cities =>
-      techService.all().map { techs =>
+      techService.allRatings().map { techRatings =>
         action(MainModel(
           cities  = cities.map(ui.City(_)),
-          techs   = techs.map(ui.Tech(_)),
+          techs   = techRatings.map(techRating => ui.Tech(techRating.tech)),
           city    = city,
           tech    = tech,
           user    = user

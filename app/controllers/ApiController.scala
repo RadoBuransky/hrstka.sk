@@ -27,8 +27,8 @@ final class ApiControllerImpl @Inject() (compService: CompService,
   }
 
   override def techs(): Action[AnyContent] = Action.async { implicit request =>
-    techService.all().map { techs =>
-      Ok(Json.toJson(techs.map(models.api.Tech.fromDomain)))
+    techService.allRatings().map { techRatings =>
+      Ok(Json.toJson(techRatings.map(models.api.Tech.fromDomain)))
     }
   }
 
