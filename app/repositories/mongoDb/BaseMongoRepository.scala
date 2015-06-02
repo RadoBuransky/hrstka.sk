@@ -15,6 +15,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
+/**
+ * Common repository operations.
+ *
+ * @param coll MongoDB collection.
+ * @param ev1 Scala type evidence.
+ * @param reads Json reads.
+ * @param writes Json writes.
+ * @tparam T Entity type.
+ */
 abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoCollection)(implicit reads: Reads[T], writes: Writes[T]) {
   protected def reactiveMongoApi: ReactiveMongoApi
   /**

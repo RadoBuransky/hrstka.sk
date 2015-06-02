@@ -1,10 +1,11 @@
 package repositories
 
-import itest.TestApplication
+import _root_.itest.TestApplication
 import models.db.Tech
 import models.domain.Language
 import org.scalatest.DoNotDiscover
 import reactivemongo.bson.BSONObjectID
+import repositories.itest.BaseRepositoryISpec
 import repositories.mongoDb.TechCollection
 
 @DoNotDiscover

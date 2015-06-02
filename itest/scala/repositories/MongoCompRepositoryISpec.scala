@@ -2,12 +2,12 @@ package repositories
 
 import java.net.URL
 
+import _root_.itest.TestApplication
 import common.HEException
-import itest.TestApplication
-import models.db.{Identifiable, Comp}
+import models.db.{Comp, Identifiable}
 import org.scalatest.DoNotDiscover
-import play.api.Logger
 import reactivemongo.bson.BSONObjectID
+import repositories.itest.BaseRepositoryISpec
 import repositories.mongoDb.{CompCollection, MongoCompRepository}
 
 import scala.concurrent.ExecutionContext.Implicits.global

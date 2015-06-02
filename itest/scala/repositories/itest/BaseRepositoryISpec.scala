@@ -1,13 +1,10 @@
-package repositories
+package repositories.itest
 
 import itest.TestApplication
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Outcome, fixture}
-import play.api.Application
 import play.api.libs.json.Json
 import play.modules.reactivemongo.json.collection.JSONCollection
-import reactivemongo.api.collections.default.BSONCollection
-import reactivemongo.core.commands.Drop
 import repositories.mongoDb.MongoCollection
 
 import scala.concurrent.ExecutionContext.Implicits.global
