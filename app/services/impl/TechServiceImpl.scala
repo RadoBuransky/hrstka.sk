@@ -15,7 +15,7 @@ import scala.concurrent.Future
 final class TechServiceImpl @Inject() (techRepository: TechRepository,
                                        techVoteRepository: TechVoteRepository,
                                        techVoteLogRepository: TechVoteLogRepository) extends TechService {
-  def get(handle: Handle) = techRepository.get(handle).map(domain.Tech(_))
+  def get(handle: Handle) = techRepository.getByHandle(handle).map(domain.Tech(_))
 
   override def upsert(tech: Tech): Future[Id] =
     techRepository.upsert(db.Tech(

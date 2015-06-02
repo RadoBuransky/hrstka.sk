@@ -11,9 +11,10 @@ import repositories.{CompVoteLogRepository, TechVoteLogRepository, VoteLogReposi
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class MongoVoteLogRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteLogRepository {
+abstract class MongoVoteLogRepository(coll: MongoCollection)
+  extends BaseMongoRepository[VoteLog](coll) with VoteLogRepository {
   override def logVote(id: Id, authorId: Id, value: Int): Future[Unit] =
-    ins(VoteLog(BSONObjectID.generate, id, authorId, value)).map(_ => Unit)
+    insert(VoteLog(BSONObjectID.generate, id, authorId, value)).map(_ => Unit)
 }
 
 @Singleton

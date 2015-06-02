@@ -10,12 +10,10 @@ import repositories.UserRepository
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import JsonFormats._
 
 @Singleton
 final class MongoUserRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
-  extends BaseMongoRepository(UserCollection) with UserRepository {
-  import JsonFormats._
-
-  override def insert(user: User): Future[LastError] = super.ins[User](user.copy(_id = BSONObjectID.generate))
-  override def findByEmail(email: String): Future[Option[User]] = find[User](Json.obj("email" -> email)).map(_.headOption)
+  extends BaseMongoRepository[User](UserCollection) with UserRepository {
+  override def findByEmail(email: String): Future[Option[User]] = find(Json.obj("email" -> email)).map(_.headOption)
 }

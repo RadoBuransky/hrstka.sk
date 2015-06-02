@@ -15,7 +15,8 @@ import repositories.{CompVoteRepository, TechVoteRepository, VoteRepository}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class MongoVoteRepository(coll: MongoCollection) extends BaseMongoRepository(coll) with VoteRepository {
+abstract class MongoVoteRepository(coll: MongoCollection)
+  extends BaseMongoRepository[Vote](coll) with VoteRepository {
   override def vote(id: Id, authorId: Id, value: Int): Future[Boolean] = {
     val findAndModify = new FindAndModify(
       collection  = coll.name,
@@ -35,10 +36,10 @@ abstract class MongoVoteRepository(coll: MongoCollection) extends BaseMongoRepos
   }
 
   override def getValue(id: Id, authorId: Id): Future[Option[Int]] =
-    find[Vote](Json.obj("id" -> id, "authorId" -> authorId)).map(_.headOption.map(_.value))
+    find(Json.obj("id" -> id, "authorId" -> authorId)).map(_.headOption.map(_.value))
 
   override def getAll(authorId: Id): Future[Seq[Vote]] =
-    find[Vote](Json.obj("authorId" -> authorId))
+    find(Json.obj("authorId" -> authorId))
 }
 
 @Singleton

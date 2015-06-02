@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 @ImplementedBy(classOf[MongoCompRepository])
 trait CompRepository {
-  def get(compId: Id): Future[Comp]
+  def get(id: Id): Future[Comp]
   def upsert(comp: Comp): Future[Id]
   def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]]
 }
