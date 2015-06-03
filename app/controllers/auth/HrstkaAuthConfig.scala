@@ -94,12 +94,7 @@ trait HrstkaAuthConfig extends AuthConfig {
    * You should alter this procedure to suit your application.
    */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
-    (user.role, authority) match {
-      case (Admin, _)         => true
-      case (Eminent, Admin)   => false
-      case (Eminent, Eminent) => true
-      case _                  => false
-    }
+    user.role.isA(authority)
   }
 
   /**

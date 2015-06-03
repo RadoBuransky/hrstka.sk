@@ -48,11 +48,11 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
   extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechController._
 
-  override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
+  override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Eminent) { implicit request =>
     val serviceResult = for {
       allRatings <- techService.allRatings()
       allCategories <- techService.allCategories()
-      userVotes <- techService.votesFor(userId)
+      userVotes <- techService.votesFor(loggedIn.id)
     } yield (allRatings, allCategories, userVotes)
 
     serviceResult.flatMap {
@@ -60,13 +60,14 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
           Ok(views.html.techs(
             None,
-            techRatings.map(techRatingForUser(_, userVotes)),
+            techRatings.map(ui.TechRating.apply),
+            userVotes.map(uv => uv.techId -> uv.value).toMap,
             allCategories.map(ui.TechCategory.apply)))
         }
     }
   }
 
-  override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
+  override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Eminent) { implicit request =>
     withForm(addTechForm) { form =>
       techService.upsert(domain.Tech(
         id        = domain.Identifiable.empty,
@@ -80,19 +81,12 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
     }
   }
 
-  override def voteUp(id: String) = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
-    vote(techService.voteUp(id, userId))
-  }
-  override def voteDown(id: String) = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
-    vote(techService.voteDown(id, userId))
+  override def voteUp(id: String) = AsyncStack(AuthorityKey -> domain.Eminent) { implicit request =>
+    vote(techService.voteUp(id, loggedIn.id))
   }
 
-  private def techRatingForUser(techRating: domain.TechRating, userVotes: Iterable[domain.TechVote]): ui.TechRating = {
-    val value = userVotes.find(_.techId == techRating.tech.id).map(_.value).getOrElse(0)
-    ui.TechRating(
-      tech  = ui.Tech(techRating.tech),
-      value= value
-    )
+  override def voteDown(id: String) = AsyncStack(AuthorityKey -> domain.Eminent) { implicit request =>
+    vote(techService.voteDown(id, loggedIn.id))
   }
 
   private def vote[A](action: Future[Unit])(implicit request: RequestWithAttributes[A]) =

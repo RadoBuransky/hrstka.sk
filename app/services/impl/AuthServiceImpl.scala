@@ -29,7 +29,7 @@ class AuthServiceImpl @Inject() (userRepository: UserRepository) extends AuthSer
     val result = userRepository.findByEmail(email).map {
       case Some(user) if check(password, user.encryptedPassword) => {
         Logger.debug(s"User authenticated. [$email]")
-        Some(User(email, Role(user.role)))
+        Some(User(user._id.stringify, email, Role(user.role)))
       }
       case Some(user) => {
         Logger.debug(s"Invalid password. [$email]")

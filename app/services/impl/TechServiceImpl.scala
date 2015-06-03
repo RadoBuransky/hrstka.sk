@@ -26,15 +26,37 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
     )).map(_.stringify)
 
   override def allRatings(): Future[Seq[TechRating]] =
-    // TODO: Compute rating ...
-    techRepository.all().map(_.map(dbTech => TechRating(Tech(dbTech), 0.0)))
+    techVoteRepository.all(None).flatMap { dbTechVotes =>
+      val allTechVotes = dbTechVotes.map(TechVote.apply)
+      techRepository.all().map { techs =>
+        techs.map { dbTech =>
+          val tech = Tech(dbTech)
+          TechRating(tech, techRatingValue(tech, allTechVotes))
+        }
+      }
+    }
 
   override def voteUp(id: Id, userId: Id) = voteDelta(id, userId, 1)
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)
   override def votesFor(userId: Id): Future[Seq[TechVote]] =
-    techVoteRepository.all(userId).map(_.map(TechVote(_)))
+    techVoteRepository.all(Some(userId)).map(_.map(TechVote(_)))
 
   override def allCategories(): Future[Seq[TechCategory]] = Future.successful(TechCategory.allCategories)
+
+  /**
+   * Computes technology rating. Ignores votes with zero value. 100% if all votes have highest value.
+   *
+   * @param tech Technology for which to compute rating value.
+   * @param allTechVotes Votes for all users and technologies.
+   * @return Rating value, a number between 0.0 and 100.0
+   */
+  private def techRatingValue(tech: Tech, allTechVotes: Iterable[TechVote]): Double = {
+    val techVotes = allTechVotes.filter(tv => tv.techId == tech.id && tv.value != 0).map(_.value)
+    if (techVotes.isEmpty)
+      0.0
+    else
+      techVotes.filter(_ > 0).sum.toDouble / (techVotes.size * TechRating.maxVoteValue).toDouble
+  }
 
   private def voteDelta(id: Id, userId: Id, delta: Int): Future[Unit] = {
     techVoteRepository.findValue(id, userId).map { latestVoteOption =>

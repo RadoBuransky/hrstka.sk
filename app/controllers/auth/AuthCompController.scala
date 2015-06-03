@@ -6,7 +6,7 @@ import com.google.inject._
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
-import models.domain.{Admin, Handle, Identifiable}
+import models.domain.{Eminent, Admin, Handle, Identifiable}
 import models.{domain, ui}
 import play.api.Application
 import play.api.data.Form
@@ -89,17 +89,17 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
   extends BaseController with AuthCompController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthCompController._
 
-  override def addForm: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def addForm: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     edit(None, controllers.auth.routes.AuthCompController.save(None))
   }
 
-  override def editForm(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def editForm(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     compService.get(compId).flatMap { comp =>
       edit(Some(comp), controllers.auth.routes.AuthCompController.save(Some(compId)))
     }
   }
 
-  override def save(compId: Option[String]): Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
+  override def save(compId: Option[String]): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     withForm(addCompForm) { form =>
       locationService.getOrCreateCity(form.city).flatMap { city =>
         compService.upsert(
@@ -119,7 +119,8 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
             joel = form.joel.toSet
           ),
           form.techs.map(Handle(_)),
-          userId).map { Unit =>
+          loggedIn.email
+        ).map { _ =>
           Redirect(controllers.routes.CompController.all())
         }
       }

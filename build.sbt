@@ -24,7 +24,8 @@ libraryDependencies ++= Seq(
   "org.reactivemongo" %%  "play2-reactivemongo"   % "0.10.5.0.akka23.play24-SNAPSHOT",
   "jp.t2v"            %%  "play2-auth"            % "0.13.2",
   "com.github.t3hnar" %%  "scala-bcrypt"          % "2.4",
-  "org.scalatest"     %%  "scalatest"             % "2.2.4"             % "it,test"
+  "org.scalatest"     %%  "scalatest"             % "2.2.4"             % "it,test",
+  "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test"
 )
 
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "repositories.*"

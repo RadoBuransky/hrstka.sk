@@ -11,5 +11,5 @@ import scala.concurrent.Future
 trait TechVoteRepository {
   def vote(techId: Id, userId: Id, value: Int): Future[Boolean]
   def findValue(techId: Id, userId: Id): Future[Option[Int]]
-  def all(userId: Id): Future[Seq[TechVote]]
+  def all(userId: Option[Id]): Future[Seq[TechVote]]
 }
