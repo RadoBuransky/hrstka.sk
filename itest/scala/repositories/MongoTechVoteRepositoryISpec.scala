@@ -34,9 +34,9 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
   it should "update an existing vote" in { techVoteRepository =>
     val result = for {
       changed1 <- techVoteRepository.vote(scalaId, user1Id, 42)
-      all1 <- techVoteRepository.all(user1Id)
+      all1 <- techVoteRepository.all(Some(user1Id))
       changed2 <- techVoteRepository.vote(scalaId, user1Id, -13)
-      all2 <- techVoteRepository.all(user1Id)
+      all2 <- techVoteRepository.all(Some(user1Id))
     } yield (changed1, all1, changed2, all2)
     val (changed1, all1, changed2, all2) = result.futureValue
     assert(changed1)
@@ -81,9 +81,9 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
       _ <- techVoteRepository.vote(scalaId, user1Id, 1)
       _ <- techVoteRepository.vote(javaId, user1Id, 2)
       _ <- techVoteRepository.vote(javaId, user2Id, 3)
-      user1Votes <- techVoteRepository.all(user1Id)
-      user2Votes <- techVoteRepository.all(user2Id)
-      user3Votes <- techVoteRepository.all(BSONObjectID.generate)
+      user1Votes <- techVoteRepository.all(Some(user1Id))
+      user2Votes <- techVoteRepository.all(Some(user2Id))
+      user3Votes <- techVoteRepository.all(Some(BSONObjectID.generate))
     } yield (user1Votes, user2Votes, user3Votes)
 
     val (user1Votes, user2Votes, user3Votes) = result.futureValue
