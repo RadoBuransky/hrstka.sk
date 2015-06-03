@@ -8,6 +8,7 @@ class RepositorySuitesISpec extends Suites with TestApplication {
     new BaseMongoRepositoryISpec(this),
     new MongoCityRepositoryISpec(this),
     new MongoCompRepositoryISpec(this),
-    new MongoTechRepositoryISpec(this)
+    new MongoTechRepositoryISpec(this),
+    new MongoUserRepositoryISpec(this)
   )
 }
