@@ -17,6 +17,31 @@ import scala.concurrent.Future
 class MongoCompRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCompRepository](testApplication, CompCollection) {
   import MongoCompRepositoryISpec._
+
+  behavior of "upsert"
+
+  it should "not allow to insert a company with the same name" in { compRepository =>
+    val result = for {
+      inserted1 <-compRepository.upsert(avitech)
+      inserted2 <-compRepository.upsert(resco.copy(name = avitech.name))
+    } yield inserted2
+
+    whenReady(result.failed) { ex =>
+      assert(ex.isInstanceOf[HEException])
+    }
+  }
+
+  it should "not allow to insert a company with the same website" in { compRepository =>
+    val result = for {
+      inserted1 <-compRepository.upsert(avitech)
+      inserted2 <-compRepository.upsert(resco.copy(website = avitech.website))
+    } yield inserted2
+
+    whenReady(result.failed) { ex =>
+      assert(ex.isInstanceOf[HEException])
+    }
+  }
+
   behavior of "all"
 
   it should "return everything if no filtering is used" in { compRepository =>
