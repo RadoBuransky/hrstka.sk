@@ -7,82 +7,82 @@ sealed trait TechCategory {
   /**
    * Human-friendly identifier.
    */
-  def handle: Handle = Handle.fromHumanName(sk)
+  def handle: Handle = Handle.fromHumanName(en)
 
   /**
    * Slovak name.
    */
-  def sk: String
+  def en: String
 }
 
 /**
  * Java, .NET, ARM, x86, Linux, Windows, ...
  */
 object Platform extends TechCategory {
-  override val sk = "Platforma"
+  override val en = "Platform"
 }
 
 /**
  * Spring, ASP.NET, Play Framework, Rails, ...
  */
 object Framework extends TechCategory {
-  override val sk = "Framework"
+  override val en = "Framework"
 }
 
 /**
  * Akka, SLF4J, Joda time, ...
  */
 object Library extends TechCategory {
-  override val sk = "Knižnica"
+  override val en = "Library"
 }
 
 /**
  * Scala, Java, C#, PHP, ...
  */
 object Language extends TechCategory {
-  override val sk = "Programovací jazyk"
+  override val en = "Language"
 }
 
 /**
  * Oracle, MS SQL, MongoDB, Redis, FileNet, ...
  */
 object Database extends TechCategory {
-  override val sk = "Databáza"
+  override val en = "Database"
 }
 
 /**
  * Apache, Netty, JBoss, WebSphere, IIS, ...
  */
 object Server extends TechCategory {
-  override val sk = "Server"
+  override val en = "Server"
 }
 
 /**
  * Jenkins, Gradle, Sonar, GitLab, Artifactory, Subversion, ...
  */
 object Tool extends TechCategory {
-  override val sk = "Nástroj"
+  override val en = "Tool"
 }
 
 /**
  * Scrum, Kanban, RUP, ITIL, ...
  */
 object Methodology extends TechCategory {
-  override val sk = "Metodológia"
+  override val en = "Methodology"
 }
 
 /**
  * Aviation, Insurance, Internet, Game, ...
  */
 object Domain extends TechCategory {
-  override val sk = "Doména"
+  override val en = "Domain"
 }
 
 /**
  * If nothing else fits...
  */
 object Other extends TechCategory {
-  override val sk = "Ostatné"
+  override val en = "Other"
 }
 
 object TechCategory {

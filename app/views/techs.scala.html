@@ -23,13 +23,16 @@
 
     <h2>Technológie</h2>
     <ol>
-        @for(techRating <- techRatings) {
-            <li>
-                <a href="@techRating.tech.website" target="_blank">@techRating.tech.name</a>
-                @techRating.value
-                <a class="btn btn-success" role="button" href="@controllers.auth.routes.AuthTechController.voteUp(techRating.tech.id)">Plus</a>
-                <a class="btn btn-danger" role="button" href="@controllers.auth.routes.AuthTechController.voteDown(techRating.tech.id)">Mínus</a>
-            </li>
+        @for(techCategory <- techCategories) {
+            <h3>@techCategory.en</h3>
+            @for(techRating <- techRatings.filter(_.tech.categoryHandle == techCategory.handle)) {
+                <li>
+                    <a href="@techRating.tech.website" target="_blank">@techRating.tech.name</a>
+                    @techRating.value
+                    <a class="btn btn-success" role="button" href="@controllers.auth.routes.AuthTechController.voteUp(techRating.tech.id)">Plus</a>
+                    <a class="btn btn-danger" role="button" href="@controllers.auth.routes.AuthTechController.voteDown(techRating.tech.id)">Mínus</a>
+                </li>
+            }
         }
     </ol>
 }
