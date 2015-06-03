@@ -32,14 +32,35 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
   }
 
   it should "update an existing vote" in { techVoteRepository =>
-    val result = techVoteRepository.vote(scalaId, user1Id, 42).flatMap { changed1 =>
-      assert(changed1)
-      techVoteRepository.vote(scalaId, user1Id, -13).flatMap { changed2 =>
-        assert(changed2)
-        techVoteRepository.findValue(scalaId, user1Id)
-      }
-    }
-    assert(result.futureValue.contains(-13))
+    val result = for {
+      changed1 <- techVoteRepository.vote(scalaId, user1Id, 42)
+      all1 <- techVoteRepository.all(user1Id)
+      changed2 <- techVoteRepository.vote(scalaId, user1Id, -13)
+      all2 <- techVoteRepository.all(user1Id)
+    } yield (changed1, all1, changed2, all2)
+    val (changed1, all1, changed2, all2) = result.futureValue
+    assert(changed1)
+    assert(emptyIds(all1).toSet ==
+      Set(
+        TechVote(
+          _id     = Identifiable.empty,
+          userId  = user1Id,
+          techId  = scalaId,
+          value   = 42
+        )
+      )
+    )
+    assert(changed2)
+    assert(all2.toSet ==
+      Set(
+        TechVote(
+          _id     = all1.head._id,
+          userId  = user1Id,
+          techId  = scalaId,
+          value   = -13
+        )
+      )
+    )
   }
 
   it should "return false if value has not changed" in { techVoteRepository =>
@@ -66,7 +87,7 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
     } yield (user1Votes, user2Votes, user3Votes)
 
     val (user1Votes, user2Votes, user3Votes) = result.futureValue
-    assert(user1Votes.map(_.copy(_id = Identifiable.empty)).toSet ==
+    assert(emptyIds(user1Votes).toSet ==
       Set(
         TechVote(
         _id = Identifiable.empty,
@@ -92,6 +113,9 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
 
     assert(user3Votes.isEmpty)
   }
+
+  private def emptyIds(techVotes: Iterable[TechVote]) = techVotes.map(emptyId)
+  private def emptyId(techVote: TechVote) = techVote.copy(_id = Identifiable.empty)
 }
 
 object MongoTechVoteRepositoryISpec {

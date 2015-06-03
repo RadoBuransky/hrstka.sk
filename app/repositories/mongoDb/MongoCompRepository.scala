@@ -20,7 +20,7 @@ final class MongoCompRepository @Inject() (protected val reactiveMongoApi: React
     }
 
     val techQuery = tech match {
-      case Some(techHandle) => Json.obj("techs" -> Json.obj(MongoOperators.in -> Json.arr(techHandle)))
+      case Some(techHandle) => Json.obj("techs" -> Json.obj("$in" -> Json.arr(techHandle)))
       case None => Json.obj()
     }
 
