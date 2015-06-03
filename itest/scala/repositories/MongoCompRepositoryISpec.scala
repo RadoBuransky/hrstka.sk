@@ -17,68 +17,6 @@ import scala.concurrent.Future
 class MongoCompRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCompRepository](testApplication, CompCollection) {
   import MongoCompRepositoryISpec._
-
-  behavior of "get"
-
-  it should "get inserted company" in { compRepository =>
-    val result = compRepository.upsert(avitech).flatMap { _ =>
-      compRepository.get(avitech._id)
-    }
-    assert(result.futureValue == avitech)
-  }
-
-  it should "fail if company doesn't exit" in { compRepository =>
-    val result = compRepository.upsert(avitech).flatMap { _ =>
-      compRepository.get(BSONObjectID.generate)
-    }
-    whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
-    }
-  }
-
-  behavior of "upsert"
-
-  it should "insert new company" in { compRepository =>
-    val result = compRepository.upsert(avitech.copy(_id = Identifiable.empty)).flatMap { avitechId =>
-      compRepository.get(avitechId)
-    }
-    val insertedAvitech = result.futureValue
-    assert(insertedAvitech == avitech.copy(_id = insertedAvitech._id))
-  }
-
-  it should "update existing company" in { compRepository =>
-    val changedAvitech = avitech.copy(
-      name              = "Avitech++",
-      website           = "https://avitech.aero/",
-      city              = "kosice",
-      employeeCount     = Some(61),
-      codersCount       = Some(25),
-      femaleCodersCount = Some(3),
-      note              = "notes",
-      products          = false,
-      services          = false,
-      internal          = true,
-      techs             = Seq("scala", "c#"),
-      joel              = Set(1, 5)
-    )
-
-    val result = compRepository.upsert(avitech).flatMap { _ =>
-      compRepository.upsert(changedAvitech).flatMap { _ =>
-        compRepository.get(changedAvitech._id)
-      }
-    }
-    assert(result.futureValue == changedAvitech)
-  }
-
-  it should "fail if a company with the same name aleady exists" in { compRepository =>
-    val result = compRepository.upsert(avitech.copy(_id = Identifiable.empty)).flatMap { _ =>
-      compRepository.upsert(resco.copy(_id = Identifiable.empty, name = avitech.name))
-    }
-    whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
-    }
-  }
-
   behavior of "all"
 
   it should "return everything if no filtering is used" in { compRepository =>

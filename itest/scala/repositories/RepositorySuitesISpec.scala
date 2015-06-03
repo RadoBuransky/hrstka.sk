@@ -5,6 +5,7 @@ import org.scalatest.Suites
 
 class RepositorySuitesISpec extends Suites with TestApplication {
   override val nestedSuites = Vector(
+    new BaseMongoRepositoryISpec(this),
     new MongoCompRepositoryISpec(this),
     new MongoTechRepositoryISpec(this)
   )

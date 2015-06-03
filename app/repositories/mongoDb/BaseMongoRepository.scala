@@ -111,7 +111,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
     }
   }
 
-  protected def remove(id: Id): Future[LastError] = collection.remove(Json.obj("_id" -> id))
+  private[repositories] def remove(id: Id): Future[LastError] = collection.remove(Json.obj("_id" -> id))
 
   protected def collection = db.collection[JSONCollection](coll.name)
   protected def db = reactiveMongoApi.db

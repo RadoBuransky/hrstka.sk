@@ -12,6 +12,7 @@ import repositories.mongoDb.{CityCollection, MongoCityRepository}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@DoNotDiscover
 class StandaloneBaseMongoRepositoryISpec extends Suites with TestApplication {
   override val nestedSuites = Vector(new BaseMongoRepositoryISpec(this))
 }
@@ -77,44 +78,47 @@ class BaseMongoRepositoryISpec(testApplication: TestApplication)
     assert(result.futureValue.copy(_id = Identifiable.empty) == kosice)
   }
 
-//  behavior of "all"
-//
-//  it should "get all inserted cities" in { cityRepository =>
-//    val result = insertAll(cityRepository).flatMap { _ =>
-//      cityRepository.all()
-//    }
-//    assert(result.futureValue.toSet == Set(kosice, noveZamky))
-//  }
-//
-//  behavior of "get"
-//
-//  it should "return inserted city" in { cityRepository =>
-//    val result = cityRepository.insert(noveZamky).flatMap { _ =>
-//      cityRepository.getByHandle(noveZamky.handle)
-//    }
-//    assert(result.futureValue == noveZamky)
-//  }
-//
-//  behavior of "find"
-//
-//  it should "find one city" in { cityRepository =>
-//    val result = insertAll(cityRepository).flatMap { _ =>
-//      cityRepository.findByHandle(kosice.handle)
-//    }
-//    assert(result.futureValue.contains(kosice))
-//  }
-//
-//  it should "find no city" in { cityRepository =>
-//    val result = insertAll(cityRepository).flatMap { _ =>
-//      cityRepository.findByHandle("a")
-//    }
-//    assert(result.futureValue.isEmpty)
-//  }
-//
-  private def insertAll(cityRepository: CityRepository): Future[_] = for {
+  behavior of "findByHandle"
+
+  it should "not fail if entity with such handle does not exist" in { baseMongoRepository =>
+    val result = baseMongoRepository.findByHandle("x")
+    assert(result.futureValue.isEmpty)
+  }
+
+  it should "return entity for the handle" in { baseMongoRepository =>
+    val result = insertAll(baseMongoRepository).flatMap { _ =>
+      baseMongoRepository.findByHandle(kosice.handle)
+    }
+    assert(result.futureValue.map(_.copy(_id = Identifiable.empty)).contains(kosice))
+  }
+
+  behavior of "all"
+
+  it should "return all entities" in { cityRepository =>
+    val result = insertAll(cityRepository).flatMap { _ =>
+      cityRepository.all()
+    }
+    assert(result.futureValue.map(_.copy(_id = Identifiable.empty)).toSet == Set(kosice, noveZamky))
+  }
+
+  behavior of "remove"
+
+  it should "remove entity by _id" in { cityRepository =>
+    val result = for {
+      kosiceId <- cityRepository.insert(kosice)
+      noveZamkyFuture <- cityRepository.insert(noveZamky)
+      _ <- cityRepository.remove(kosiceId)
+      allCities <- cityRepository.all()
+    } yield allCities
+
+    assert(result.futureValue.map(_.copy(_id = Identifiable.empty)).toSet == Set(noveZamky))
+  }
+
+
+  private def insertAll(cityRepository: CityRepository): Future[Seq[Identifiable.Id]] = for {
       kosiceFuture <- cityRepository.insert(kosice)
       noveZamkyFuture <- cityRepository.insert(noveZamky)
-    } yield ()
+    } yield Seq(kosiceFuture, noveZamkyFuture)
 }
 
 private object BaseMongoRepositoryISpec {
