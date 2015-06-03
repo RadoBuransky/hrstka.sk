@@ -114,6 +114,39 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
     assert(user3Votes.isEmpty)
   }
 
+  it should "return all votes" in { techVoteRepository =>
+    val result = for {
+      _ <- techVoteRepository.vote(scalaId, user1Id, 1)
+      _ <- techVoteRepository.vote(javaId, user1Id, 2)
+      _ <- techVoteRepository.vote(javaId, user2Id, 3)
+      allVotes <- techVoteRepository.all(None)
+    } yield allVotes
+
+    val allVotes = result.futureValue
+    assert(emptyIds(allVotes).toSet ==
+      Set(
+        TechVote(
+          _id = Identifiable.empty,
+          userId = user1Id,
+          techId = scalaId,
+          value = 1
+        ),
+        TechVote(
+          _id = Identifiable.empty,
+          userId = user1Id,
+          techId = javaId,
+          value = 2
+        ),
+        TechVote(
+          _id = Identifiable.empty,
+          userId = user2Id,
+          techId = javaId,
+          value = 3
+        )
+      )
+    )
+  }
+
   private def emptyIds(techVotes: Iterable[TechVote]) = techVotes.map(emptyId)
   private def emptyId(techVote: TechVote) = techVote.copy(_id = Identifiable.empty)
 }
