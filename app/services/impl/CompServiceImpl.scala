@@ -49,8 +49,6 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
-  override def find(query: CompQuery): Future[Seq[Comp]] = ???
-
   override def topCities(): Future[Seq[City]] = {
     locationService.all().flatMap { cities =>
       all().map { comps =>

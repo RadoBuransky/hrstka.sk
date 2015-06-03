@@ -108,6 +108,9 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="@controllers.auth.routes.AuthCompController.addForm">Pridať firmu</a></li>
                             <li><a href="@controllers.auth.routes.AuthTechController.all">Technológie</a></li>
+                            @if(mainModel.user.isDefined && mainModel.user.get.role.isA(models.domain.Admin)) {
+                                <li><a href="@controllers.routes.AuthController.register">Pridať eminenta</a></li>
+                            }
                             <li class="divider"></li>
                             <li><a href="@controllers.routes.AuthController.logout">Odhlásiť</a></li>
                         </ul>
