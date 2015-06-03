@@ -20,7 +20,7 @@ class StandaloneBaseMongoRepositoryISpec extends Suites with TestApplication {
 @DoNotDiscover
 class BaseMongoRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCityRepository](testApplication, CityCollection) {
-  import BaseMongoRepositoryISpec._
+  import MongoCityRepositoryISpec._
 
   behavior of "insert"
 
@@ -119,15 +119,4 @@ class BaseMongoRepositoryISpec(testApplication: TestApplication)
       kosiceFuture <- cityRepository.insert(kosice)
       noveZamkyFuture <- cityRepository.insert(noveZamky)
     } yield Seq(kosiceFuture, noveZamkyFuture)
-}
-
-private object BaseMongoRepositoryISpec {
-  val kosice = createCity("Košice")
-  val noveZamky = createCity("Nové Zámky")
-
-  private def createCity(sk: String) = City(
-    _id     = Identifiable.empty,
-    handle  = Handle.fromHumanName(sk).value,
-    sk      = sk
-  )
 }
