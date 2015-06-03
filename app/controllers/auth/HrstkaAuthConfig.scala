@@ -1,6 +1,8 @@
 package controllers.auth
 
-import jp.t2v.lab.play2.auth.{AuthConfig, CookieTokenAccessor}
+import java.util.Base64
+
+import jp.t2v.lab.play2.auth._
 import models.domain.{Admin, Eminent, Role}
 import play.api.mvc.{Controller, RequestHeader, Result}
 import services.AuthService
@@ -44,7 +46,7 @@ trait HrstkaAuthConfig extends AuthConfig {
   /**
    * The session timeout in seconds
    */
-  val sessionTimeoutInSeconds: Int = 3600
+  val sessionTimeoutInSeconds: Int = HrstkaAuthConfig.sessionTimeoutInSeconds
 
   /**
    * A function that returns a `User` object from an `Id`.
@@ -105,12 +107,22 @@ trait HrstkaAuthConfig extends AuthConfig {
    * You can custom SessionID Token handler.
    * Default implemntation use Cookie.
    */
-  override lazy val tokenAccessor = new CookieTokenAccessor(
-    /*
-     * Whether use the secure option or not use it in the cookie.
-     * However default is false, I strongly recommend using true in a production.
-     */
-    cookieSecureOption = play.api.Play.isProd(play.api.Play.current),
-    cookieMaxAge       = Some(sessionTimeoutInSeconds)
-  )
+  override lazy val tokenAccessor = new Base64CookieTokenAccessor
+}
+
+object HrstkaAuthConfig {
+  val sessionTimeoutInSeconds: Int = 3600
+}
+
+/**
+ * Encode cookie to base 64 due to some validation issues.
+ */
+class Base64CookieTokenAccessor extends CookieTokenAccessor(
+  cookieSecureOption = play.api.Play.isProd(play.api.Play.current),
+  cookieMaxAge       = Some(HrstkaAuthConfig.sessionTimeoutInSeconds)) {
+  override protected def verifyHmac(token: SignedToken): Option[AuthenticityToken] =
+    super.verifyHmac(new String(Base64.getDecoder.decode(token)))
+
+  override protected def sign(token: AuthenticityToken): SignedToken =
+    Base64.getEncoder.encodeToString(super.sign(token).getBytes)
 }

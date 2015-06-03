@@ -1,6 +1,6 @@
 package repositories.mongoDb
 
-import common.HEException
+import common.HrstkaException
 import models.db.Identifiable
 import models.db.Identifiable.Id
 import play.api.libs.json._
@@ -34,10 +34,10 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
    */
   def insert(value: T): Future[Id] = {
     if (value._id != Identifiable.empty)
-      throw new HEException(s"Value to be inserted cannot have ID set! [$value]")
+      throw new HrstkaException(s"Value to be inserted cannot have ID set! [$value]")
     val id = BSONObjectID.generate
     collection.insert(Json.toJson(value).as[JsObject] ++ Json.obj("_id" -> id)).recover {
-      case ex: Exception => throw new HEException(s"Could not insert ${coll.name}! [$value]", ex)
+      case ex: Exception => throw new HrstkaException(s"Could not insert ${coll.name}! [$value]", ex)
     }.map(_ => id)
   }
 
@@ -52,7 +52,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
        case Identifiable.empty => insert(value)
        case _ =>
          collection.update(Json.obj("_id" -> value._id), value, upsert = true).recover {
-           case ex: Exception => throw new HEException(s"Could not upsert ${coll.name}! [$value]", ex)
+           case ex: Exception => throw new HrstkaException(s"Could not upsert ${coll.name}! [$value]", ex)
          }.map(_ => value._id)
      }
   }
@@ -107,7 +107,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
   protected def get(selector: JsValue): Future[T] = find(selector).map {
     _.headOption match {
       case Some(result) => result
-      case None => throw new HEException(s"No ${coll.name} for $selector!")
+      case None => throw new HrstkaException(s"No ${coll.name} for $selector!")
     }
   }
 

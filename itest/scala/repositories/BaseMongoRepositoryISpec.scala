@@ -1,7 +1,7 @@
 package repositories
 
 import _root_.itest.TestApplication
-import common.HEException
+import common.HrstkaException
 import models.db.{City, Identifiable}
 import models.domain.Handle
 import org.scalatest.{DoNotDiscover, Suites}
@@ -25,7 +25,7 @@ class BaseMongoRepositoryISpec(testApplication: TestApplication)
   behavior of "insert"
 
   it should "fail if _id is already set" in { baseMongoRepository =>
-    intercept[HEException] { baseMongoRepository.insert(kosice.copy(_id = BSONObjectID.generate)) }
+    intercept[HrstkaException] { baseMongoRepository.insert(kosice.copy(_id = BSONObjectID.generate)) }
   }
 
   behavior of "insert and get"
@@ -67,7 +67,7 @@ class BaseMongoRepositoryISpec(testApplication: TestApplication)
   it should "fail if entity with such handle does not exist" in { baseMongoRepository =>
     val result = baseMongoRepository.getByHandle("x")
     whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
+      assert(ex.isInstanceOf[HrstkaException])
     }
   }
 

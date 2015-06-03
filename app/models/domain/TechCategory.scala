@@ -86,7 +86,7 @@ object Other extends TechCategory {
 }
 
 object TechCategory {
-  private val allCategories = Set(
+  val allCategories = Seq(
     Platform,
     Framework,
     Library,

@@ -1,6 +1,6 @@
 package repositories.scripts.mongoDb
 
-import common.HEException
+import common.HrstkaException
 import itest.TestApplication
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{DoNotDiscover, FlatSpec, Suites}
@@ -34,7 +34,7 @@ class MongoDbManagerISpec(testApplication: TestApplication) extends FlatSpec wit
           i.index.copy(version = None, name = None) == nsIndex.index.copy(version = None, name = None)
         }
       }
-      case _ => Future.failed(new HEException("Not a DBMetaCommands instance!"))
+      case _ => Future.failed(new HrstkaException("Not a DBMetaCommands instance!"))
     }
   }
 }

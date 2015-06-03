@@ -2,7 +2,7 @@ package services
 
 import com.google.inject.ImplementedBy
 import models.domain.Identifiable.Id
-import models.domain.{TechRating, Handle, Tech, TechVote}
+import models.domain._
 import services.impl.TechServiceImpl
 
 import scala.concurrent.Future
@@ -15,4 +15,5 @@ trait TechService {
   def votesFor(userId: Id):Future[Seq[TechVote]]
   def voteUp(id: Id, userId: Id): Future[Unit]
   def voteDown(id: Id, userId: Id): Future[Unit]
+  def allCategories(): Future[Seq[TechCategory]]
 }

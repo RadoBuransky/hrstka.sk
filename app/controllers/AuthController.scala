@@ -4,6 +4,7 @@ import com.google.inject._
 import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
 import models.domain.Admin
+import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
@@ -30,6 +31,7 @@ case class RegisterForm(email: String, password: String, passwordAgain: String)
 class AuthControllerImpl @Inject() (protected val authService: AuthService,
                                     protected val locationService: LocationService,
                                     protected val techService: TechService,
+                                    protected val application: Application,
                                     val messagesApi: MessagesApi)
   extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   val loginForm = Form(mapping("email" -> email, "password" -> text)(LoginForm.apply)(LoginForm.unapply))

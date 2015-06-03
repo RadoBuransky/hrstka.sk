@@ -5,7 +5,7 @@ import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import models.domain.Handle
 import models.{domain, ui}
-import play.api.Logger
+import play.api.{Application, Logger}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import services.{AuthService, CompService, LocationService, TechService}
@@ -26,6 +26,7 @@ class CompControllerImpl @Inject() (compService: CompService,
                                     protected val authService: AuthService,
                                     protected val techService: TechService,
                                     protected val locationService: LocationService,
+                                    protected val application: Application,
                                     val messagesApi: MessagesApi)
   extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 

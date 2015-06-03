@@ -3,6 +3,7 @@ package controllers
 import models.domain.User
 import models.ui
 import models.ui.MainModel
+import play.api.Application
 import play.api.mvc.Request
 import services.{LocationService, TechService}
 
@@ -20,7 +21,8 @@ trait MainModelProvider {
           techs   = techRatings.map(techRating => ui.Tech(techRating.tech)),
           city    = city,
           tech    = tech,
-          user    = user
+          user    = user,
+          mode    = application.mode
         ))
       }
     }
@@ -28,4 +30,5 @@ trait MainModelProvider {
 
   protected def locationService: LocationService
   protected def techService: TechService
+  protected def application: Application
 }

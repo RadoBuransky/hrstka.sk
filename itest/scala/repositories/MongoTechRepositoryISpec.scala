@@ -1,7 +1,7 @@
 package repositories
 
 import _root_.itest.TestApplication
-import common.HEException
+import common.HrstkaException
 import models.db.{Identifiable, Tech}
 import models.domain.Language
 import org.scalatest.DoNotDiscover
@@ -24,7 +24,7 @@ class MongoTechRepositoryISpec(testApplication: TestApplication)
     } yield insertedScala2
 
     whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
+      assert(ex.isInstanceOf[HrstkaException])
     }
   }
 }

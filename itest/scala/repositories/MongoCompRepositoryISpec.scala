@@ -3,7 +3,7 @@ package repositories
 import java.net.URL
 
 import _root_.itest.TestApplication
-import common.HEException
+import common.HrstkaException
 import models.db.{Comp, Identifiable}
 import org.scalatest.DoNotDiscover
 import reactivemongo.bson.BSONObjectID
@@ -27,7 +27,7 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
     } yield inserted2
 
     whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
+      assert(ex.isInstanceOf[HrstkaException])
     }
   }
 
@@ -38,7 +38,7 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
     } yield inserted2
 
     whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
+      assert(ex.isInstanceOf[HrstkaException])
     }
   }
 

@@ -1,7 +1,7 @@
 package repositories
 
 import _root_.itest.TestApplication
-import common.HEException
+import common.HrstkaException
 import models.db.{Identifiable, User}
 import org.scalatest.DoNotDiscover
 import repositories.itest.BaseRepositoryISpec
@@ -23,7 +23,7 @@ class MongoUserRepositoryISpec(testApplication: TestApplication)
     } yield inserted2
 
     whenReady(result.failed) { ex =>
-      assert(ex.isInstanceOf[HEException])
+      assert(ex.isInstanceOf[HrstkaException])
     }
   }
 }

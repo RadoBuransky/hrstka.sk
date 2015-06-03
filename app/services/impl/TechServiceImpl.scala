@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import models._
 import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
-import models.domain.{Handle, Tech, TechRating, TechVote}
+import models.domain._
 import repositories._
 import services.TechService
 
@@ -31,7 +31,11 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
 
   override def voteUp(id: Id, userId: Id) = voteDelta(id, userId, 1)
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)
-  
+  override def votesFor(userId: Id): Future[Seq[TechVote]] =
+    techVoteRepository.all(userId).map(_.map(TechVote(_)))
+
+  override def allCategories(): Future[Seq[TechCategory]] = Future.successful(TechCategory.allCategories)
+
   private def voteDelta(id: Id, userId: Id, delta: Int): Future[Unit] = {
     techVoteRepository.findValue(id, userId).map { latestVoteOption =>
       val newVoteValue = latestVoteOption.getOrElse(0) + delta
@@ -40,8 +44,5 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
         techVoteRepository.vote(id, userId, newVoteValue)
     }
   }
-
-  override def votesFor(userId: Id): Future[Seq[TechVote]] =
-    techVoteRepository.all(userId).map(_.map(TechVote(_)))
 
 }

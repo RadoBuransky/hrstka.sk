@@ -1,7 +1,7 @@
 package repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import common.HEException
+import common.HrstkaException
 import models.db.Identifiable.Id
 import models.db.JsonFormats._
 import models.db.TechVote
@@ -34,7 +34,7 @@ final class MongoTechVoteRepository @Inject()(protected val reactiveMongoApi: Re
     db.connection.ask(findAndModify.apply(db.name).maker).map(FindAndModify(_)).map {
       case Right(Some(findAndModifyResult)) => findAndModifyResult.getAs[Int](valueField).getOrElse(value + 1) != value
       case Right(None) => true
-      case Left(error) => throw new HEException(s"Tech vote error! [$error]")
+      case Left(error) => throw new HrstkaException(s"Tech vote error! [$error]")
     }
   }
 

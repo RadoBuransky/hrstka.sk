@@ -6,9 +6,8 @@ import com.google.inject.{ImplementedBy, Inject, Singleton}
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
-import models.domain
-import models.domain.{Handle, Identifiable, Other}
-import models.ui.Tech
+import models.{domain, ui}
+import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
@@ -18,7 +17,9 @@ import services.{AuthService, LocationService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-case class AddTechForm(techName: String)
+case class AddTechForm(categoryHandle: String,
+                       name: String,
+                       website: String)
 
 @ImplementedBy(classOf[AuthTechControllerImpl])
 trait AuthTechController {
@@ -31,7 +32,9 @@ trait AuthTechController {
 object AuthTechController {
   val addTechForm = Form(
     mapping(
-      "techName" -> text
+      "categoryHandle" -> text,
+      "name" -> text,
+      "website" -> text
     )(AddTechForm.apply)(AddTechForm.unapply)
   )
 }
@@ -40,36 +43,37 @@ object AuthTechController {
 class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
                                         protected val locationService: LocationService,
                                         protected val techService: TechService,
+                                        protected val application: Application,
                                         val messagesApi: MessagesApi)
   extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechController._
 
   override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     val serviceResult = for {
-      techRatings <- techService.allRatings()
+      allRatings <- techService.allRatings()
+      allCategories <- techService.allCategories()
       userVotes <- techService.votesFor(userId)
-    } yield (techRatings, userVotes)
+    } yield (allRatings, allCategories, userVotes)
 
     serviceResult.flatMap {
-      case (techRatings, userVotes) =>
+      case (techRatings, allCategories, userVotes) =>
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-          Ok(views.html.techs(None, techRatings.map { techRating =>
-            // TODO: ui.TechRating ...
-            Tech(techRating.tech)
-          }))
+          Ok(views.html.techs(
+            None,
+            techRatings.map(techRatingForUser(_, userVotes)),
+            allCategories.map(ui.TechCategory.apply)))
         }
     }
   }
 
   override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     withForm(addTechForm) { form =>
-      // TODO: Get proper values ...
       techService.upsert(domain.Tech(
-        id        = Identifiable.empty,
-        handle    = Handle.fromHumanName(form.techName),
-        category  = Other,
-        name      = form.techName,
-        website   = new URL("http://www.google.com/")
+        id        = domain.Identifiable.empty,
+        handle    = domain.Handle.fromHumanName(form.name),
+        category  = domain.TechCategory(form.categoryHandle),
+        name      = form.name,
+        website   = new URL(form.website)
       )).map { techId =>
         Redirect(controllers.auth.routes.AuthTechController.all())
       }
@@ -81,6 +85,14 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
   }
   override def voteDown(id: String) = AsyncStack(AuthorityKey -> domain.Admin) { implicit request =>
     vote(techService.voteDown(id, userId))
+  }
+
+  private def techRatingForUser(techRating: domain.TechRating, userVotes: Iterable[domain.TechVote]): ui.TechRating = {
+    val value = userVotes.find(_.techId == techRating.tech.id).map(_.value).getOrElse(0)
+    ui.TechRating(
+      tech  = ui.Tech(techRating.tech),
+      value= value
+    )
   }
 
   private def vote[A](action: Future[Unit])(implicit request: RequestWithAttributes[A]) =

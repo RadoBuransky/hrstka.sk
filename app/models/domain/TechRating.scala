@@ -1,6 +1,6 @@
 package models.domain
 
-import common.HEException
+import common.HrstkaException
 
 /**
  * Technology rating.
@@ -11,9 +11,9 @@ import common.HEException
 case class TechRating(tech: Tech,
                       value: Double) {
   if (value > 100.0)
-    throw new HEException(s"Tech rating cannot be greater than 100 [$value]")
+    throw new HrstkaException(s"Tech rating cannot be greater than 100 [$value]")
   if (value < 0.0)
-    throw new HEException(s"Tech rating cannot be less than 0 [$value]")
+    throw new HrstkaException(s"Tech rating cannot be less than 0 [$value]")
 }
 
 object TechRating {

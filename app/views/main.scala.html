@@ -113,7 +113,11 @@
                         </ul>
                     </li>
                     } else {
-                    <li><a href="#">+ Pridať firmu</a></li>
+                        @if(mainModel.mode == play.api.Mode.Dev) {
+                            <li><a href="@controllers.routes.AuthController.login">Prihlásiť</a></li>
+                        } else {
+                            <li><a href="#">+ Pridať firmu</a></li>
+                        }
                     }
                 </ul>
             </div>

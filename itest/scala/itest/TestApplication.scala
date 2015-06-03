@@ -1,6 +1,6 @@
 package itest
 
-import common.HEException
+import common.HrstkaException
 import org.scalatest.{BeforeAndAfterAll, Suite, SuiteMixin}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Logger, Mode}
@@ -46,7 +46,7 @@ trait TestApplication extends SuiteMixin with BeforeAndAfterAll {
           logger.info(s"Testing DB dropped. [${db.name}]")
         }
       }
-      case _ => Future.failed(new HEException("No a DBMetaCommands instance!"))
+      case _ => Future.failed(new HrstkaException("No a DBMetaCommands instance!"))
     }
   }
 }

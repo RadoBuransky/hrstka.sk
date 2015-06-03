@@ -1,22 +1,35 @@
-@(msg: Option[String], techs: Seq[models.ui.Tech])(implicit mainModel: models.ui.MainModel)
+@(msg: Option[String], techRatings: Seq[models.ui.TechRating], techCategories: Seq[models.ui.TechCategory])(implicit mainModel: models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
-    <h2>Technológie</h2>
-
-    <form action="@controllers.auth.routes.AuthTechController.add" method="post" class="form-inline">
+    <form action="@controllers.auth.routes.AuthTechController.add" method="post">
         <div class="form-group">
-            <input type="text" class="form-control" id="techName" name="techName">
+            <label for="categoryHandle">Kategória:</label>
+            <select class="form-control" id="categoryHandle" name="categoryHandle" required>
+                @for(techCategory <- techCategories) {
+                    <option value="@techCategory.handle">@techCategory.sk</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="name">Názov:</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="website">Website:</label>
+            <input type="url" class="form-control" id="website" name="website" required>
         </div>
         <button type="submit" class="btn btn-default">Pridať</button>
     </form>
 
-    <div>
-    @for(tech <- techs) {
-        <div>
-            @tech.handle
-            <a href="@controllers.auth.routes.AuthTechController.voteUp(tech.id)">+</a>
-            <a href="@controllers.auth.routes.AuthTechController.voteDown(tech.id)">-</a>
-        </div>
-    }
-    </div>
+    <h2>Technológie</h2>
+    <ol>
+        @for(techRating <- techRatings) {
+            <li>
+                <a href="@techRating.tech.website" target="_blank">@techRating.tech.name</a>
+                @techRating.value
+                <a class="btn btn-success" role="button" href="@controllers.auth.routes.AuthTechController.voteUp(techRating.tech.id)">Plus</a>
+                <a class="btn btn-danger" role="button" href="@controllers.auth.routes.AuthTechController.voteDown(techRating.tech.id)">Mínus</a>
+            </li>
+        }
+    </ol>
 }

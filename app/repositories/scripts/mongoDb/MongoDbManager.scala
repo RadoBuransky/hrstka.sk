@@ -1,7 +1,7 @@
 package repositories.scripts.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import common.HEException
+import common.HrstkaException
 import play.api.Logger
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.DBMetaCommands
@@ -21,7 +21,7 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbMa
   override def applicationInit(): Future[_] = {
     reactiveMongoApi.db match {
       case dbMetaCommands: DBMetaCommands => applicationInit(dbMetaCommands)
-      case _ => Future.failed(new HEException("Not a DBMetaCommands instance!"))
+      case _ => Future.failed(new HrstkaException("Not a DBMetaCommands instance!"))
     }
   }
 

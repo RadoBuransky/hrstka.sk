@@ -8,6 +8,7 @@ import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import models.domain.{Admin, Handle, Identifiable}
 import models.{domain, ui}
+import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
@@ -83,6 +84,7 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
                                         protected val authService: AuthService,
                                         protected val techService: TechService,
                                         protected val locationService: LocationService,
+                                        protected val application: Application,
                                         val messagesApi: MessagesApi)
   extends BaseController with AuthCompController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthCompController._
