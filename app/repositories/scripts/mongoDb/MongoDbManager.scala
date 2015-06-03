@@ -57,6 +57,7 @@ private object MongoDbManager {
   lazy val techHandleIndex = createUniqueIndex(TechCollection, "handle")
   lazy val userEmailIndex = createUniqueIndex(UserCollection, "email")
   lazy val cityHandleIndex = createUniqueIndex(CityCollection, "handle")
+  // TODO: TechVote index
 
   private def createUniqueIndex(coll: MongoCollection, fieldName: String): NSIndex = NSIndex("db." + coll.name,
     Index(

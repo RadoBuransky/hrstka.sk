@@ -13,8 +13,7 @@ import scala.concurrent.Future
 
 @Singleton
 final class TechServiceImpl @Inject() (techRepository: TechRepository,
-                                       techVoteRepository: TechVoteRepository,
-                                       techVoteLogRepository: TechVoteLogRepository) extends TechService {
+                                       techVoteRepository: TechVoteRepository) extends TechService {
   def get(handle: Handle) = techRepository.getByHandle(handle).map(domain.Tech(_))
 
   override def upsert(tech: Tech): Future[Id] =
@@ -34,22 +33,15 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)
   
   private def voteDelta(id: Id, userId: Id, delta: Int): Future[Unit] = {
-    techVoteRepository.getValue(id, userId).map { latestVoteOption =>
+    techVoteRepository.findValue(id, userId).map { latestVoteOption =>
       val newVoteValue = latestVoteOption.getOrElse(0) + delta
       if ((newVoteValue <= TechRating.maxVoteValue) &&
         (newVoteValue >= TechRating.minVoteValue))
-        vote(id, userId, delta, newVoteValue)
-    }
-  }
-
-  private def vote(id: Id, userId: Id, delta: Int, value: Int): Future[Unit] = {
-    techVoteRepository.vote(id, userId, value).map { changed =>
-      if (changed)
-        techVoteLogRepository.logVote(id, userId, value)
+        techVoteRepository.vote(id, userId, newVoteValue)
     }
   }
 
   override def votesFor(userId: Id): Future[Seq[TechVote]] =
-    techVoteRepository.getAll(userId).map(_.map(TechVote(_)))
+    techVoteRepository.all(userId).map(_.map(TechVote(_)))
 
 }
