@@ -4,7 +4,7 @@ import com.github.t3hnar.bcrypt._
 import com.google.inject.{Inject, Singleton}
 import models.db
 import models.db.Identifiable
-import models.domain.{Eminent, Role, User}
+import models.domain.{Eminent, Role, User, UserFactory}
 import play.api.Logger
 import repositories.UserRepository
 import services.AuthService
@@ -22,7 +22,7 @@ final class AuthServiceImpl @Inject() (userRepository: UserRepository) extends A
 
   def findByEmail(email: String): Future[Option[User]] = {
     Logger.debug(s"Find by email. [$email]")
-    userRepository.findByEmail(email).map(_.map(User(_)))
+    userRepository.findByEmail(email).map(_.map(UserFactory(_)))
   }
 
   def authenticate(email: String, password: String): Future[Option[User]] = {

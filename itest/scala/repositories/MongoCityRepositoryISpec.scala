@@ -3,7 +3,7 @@ package repositories
 import _root_.itest.TestApplication
 import common.HrstkaException
 import models.db.{City, Identifiable}
-import models.domain.Handle
+import models.domain.HandleFactory$
 import org.scalatest.DoNotDiscover
 import repositories.itest.BaseRepositoryISpec
 import repositories.mongoDb.{CityCollection, MongoCityRepository}
@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @DoNotDiscover
 class MongoCityRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCityRepository](testApplication, CityCollection) {
-  import MongoCityRepositoryISpec._
+  import models.db.CitySpec._
 
   behavior of "upsert"
 
@@ -27,15 +27,4 @@ class MongoCityRepositoryISpec(testApplication: TestApplication)
       assert(ex.isInstanceOf[HrstkaException])
     }
   }
-}
-
-object MongoCityRepositoryISpec {
-  val kosice = createCity("Košice")
-  val noveZamky = createCity("Nové Zámky")
-
-  private def createCity(sk: String) = City(
-    _id     = Identifiable.empty,
-    handle  = Handle.fromHumanName(sk).value,
-    sk      = sk
-  )
 }

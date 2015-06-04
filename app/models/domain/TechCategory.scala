@@ -7,7 +7,7 @@ sealed trait TechCategory {
   /**
    * Human-friendly identifier.
    */
-  def handle: Handle = Handle.fromHumanName(en)
+  def handle: Handle = HandleFactory.fromHumanName(en)
 
   /**
    * Slovak name.

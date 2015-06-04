@@ -11,7 +11,7 @@ import models.domain
 case class TechCategory(handle: String,
                         en: String)
 
-object TechCategory {
+object TechCategoryFactory {
   def apply(techCategory: domain.TechCategory): TechCategory =
     TechCategory(
       handle  = techCategory.handle.value,

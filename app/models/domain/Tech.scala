@@ -20,7 +20,7 @@ case class Tech(id: Id,
                 name: String,
                 website: URL) extends Identifiable
 
-object Tech {
+object TechFactory {
   def apply(src: db.Tech): Tech =
     domain.Tech(
       id        = src._id.stringify,

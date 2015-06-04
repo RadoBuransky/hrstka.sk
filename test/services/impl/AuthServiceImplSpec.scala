@@ -46,7 +46,7 @@ class AuthServiceImplSpec extends FlatSpec with MockitoSugar with ScalaFutures {
     when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
 
     // Execute
-    assert(authService.findByEmail(rado.email).futureValue.contains(domain.User(rado)))
+    assert(authService.findByEmail(rado.email).futureValue.contains(domain.UserFactory(rado)))
   }
 
   behavior of "authenticate"
@@ -56,7 +56,7 @@ class AuthServiceImplSpec extends FlatSpec with MockitoSugar with ScalaFutures {
     when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
 
     // Execute
-    assert(authService.authenticate(rado.email, radoPassword).futureValue.contains(domain.User(rado)))
+    assert(authService.authenticate(rado.email, radoPassword).futureValue.contains(domain.UserFactory(rado)))
   }
 
   it should "return none if user exists but the password is wrong" in new TestScope {

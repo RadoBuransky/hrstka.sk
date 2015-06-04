@@ -16,7 +16,7 @@ case class TechRating(tech: Tech,
     throw new HrstkaException(s"Tech rating cannot be less than 0 [$value]")
 }
 
-object TechRating {
+object TechRatingFactory {
   val maxVoteValue = 3
   val minVoteValue = -1
 
@@ -24,5 +24,5 @@ object TechRating {
     if (voteCount == 0)
       TechRating(tech, 0)
     else
-      TechRating(tech, upVotesValue.toDouble / (voteCount.toDouble * maxVoteValue))
+      TechRating(tech, (upVotesValue.toDouble * 100.0) / (voteCount.toDouble * maxVoteValue.toDouble))
 }

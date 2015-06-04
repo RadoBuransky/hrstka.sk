@@ -13,7 +13,7 @@ case class User(id: Identifiable.Id,
                 email: String,
                 role: Role)
 
-object User {
+object UserFactory {
   def apply(user: db.User): User =
     User(
       id    = user._id.stringify,

@@ -1,13 +1,13 @@
 package controllers
 
-import com.google.inject.{Inject, Singleton, ImplementedBy}
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import models.domain.Handle
 import models.{domain, ui}
-import play.api.{Application, Logger}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
+import play.api.{Application, Logger}
 import services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,7 +33,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     compService.get(compId).flatMap { comp =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(views.html.comp(ui.Comp(comp)))
+        Ok(views.html.comp(ui.CompFactory(comp)))
       }
     }
   }
@@ -41,7 +41,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   override def women: Action[AnyContent] = AsyncStack { implicit request =>
     compService.topWomen().flatMap { topWomen =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(views.html.women(topWomen.map(ui.Comp(_))))
+        Ok(views.html.women(topWomen.map(ui.CompFactory(_))))
       }
     }
   }
@@ -57,7 +57,7 @@ class CompControllerImpl @Inject() (compService: CompService,
             withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
               Ok(views.html.index(
                 headline(city, tech),
-                comps.sortBy(_.rank). map(ui.Comp(_))))
+                comps.sortBy(_.rank). map(ui.CompFactory(_))))
           }
         }.recover {
           case t =>

@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @DoNotDiscover
 class MongoTechRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoTechRepository](testApplication, TechCollection) {
-  import MongoTechRepositoryISpec._
+  import models.db.TechSpec._
 
   behavior of "upsert"
 
@@ -27,22 +27,4 @@ class MongoTechRepositoryISpec(testApplication: TestApplication)
       assert(ex.isInstanceOf[HrstkaException])
     }
   }
-}
-
-object MongoTechRepositoryISpec {
-  val scala = Tech(
-    _id             = Identifiable.empty,
-    handle          = "scala",
-    categoryHandle  = Language.handle.value,
-    name            = "Scala",
-    website         = "http://www.scala-lang.org/"
-  )
-
-  val java = Tech(
-    _id             = Identifiable.empty,
-    handle          = "java",
-    categoryHandle  = Language.handle.value,
-    name            = "Java",
-    website         = "https://www.java.com/en/"
-  )
 }

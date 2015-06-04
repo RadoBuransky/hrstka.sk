@@ -14,7 +14,7 @@ case class TechVote(techId: Id,
                     userId: Id,
                     value: Int)
 
-object TechVote {
+object TechVoteFactory {
   def apply(techVote: db.TechVote): TechVote =
     new TechVote(
       techId  = techVote.techId.stringify,

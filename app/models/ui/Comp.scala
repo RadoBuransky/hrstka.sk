@@ -13,15 +13,15 @@ case class Comp(id: String,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techs: Seq[String],
+                techs: Set[String],
                 joel: Set[Int])
 
-object Comp {
+object CompFactory {
   def apply(comp: domain.Comp) = new Comp(
     id                = comp.id,
     name              = comp.name,
     website           = comp.website.toString,
-    city              = City(comp.city),
+    city              = CityFactory(comp.city),
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,

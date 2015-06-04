@@ -10,7 +10,7 @@ case class Tech(id: String,
                 name: String,
                 website: URL)
 
-object Tech {
+object TechFactory {
   def apply(tech: domain.Tech) = new Tech(
     id              = tech.id,
     handle          = tech.handle.value,

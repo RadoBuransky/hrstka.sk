@@ -11,10 +11,10 @@ case class Comp(id: String,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techs: Seq[String],
+                techs: Set[String],
                 joel: Set[Int])
 
-object Comp {
+object CompFactory {
   def fromDomain(comp: models.domain.Comp) = Comp(
     id                = comp.id.toString,
     name              = comp.name,

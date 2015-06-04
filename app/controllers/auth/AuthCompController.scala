@@ -6,7 +6,7 @@ import com.google.inject._
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
-import models.domain.{Eminent, Admin, Handle, Identifiable}
+import models.domain.{Eminent, Handle, Identifiable}
 import models.{domain, ui}
 import play.api.Application
 import play.api.data.Form
@@ -115,10 +115,10 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
             products = form.products,
             services = form.services,
             internal = form.internal,
-            techRatings = Nil,
+            techRatings = Set.empty,
             joel = form.joel.toSet
           ),
-          form.techs.map(Handle(_)),
+          form.techs.map(Handle.apply).toSet,
           loggedIn.email
         ).map { _ =>
           Redirect(controllers.routes.CompController.all())
@@ -131,7 +131,7 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
     techService.allRatings().flatMap { techRatings =>
       val ts = techRatings.map(t => (t.tech.handle.value, comp.exists(_.techRatings.exists(_.tech.handle == t.tech.handle))))
       withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(views.html.compEdit(comp.map(ui.Comp.apply), ts, joelQuestions, action))
+        Ok(views.html.compEdit(comp.map(ui.CompFactory.apply), ts, joelQuestions, action))
       }
     }
 }

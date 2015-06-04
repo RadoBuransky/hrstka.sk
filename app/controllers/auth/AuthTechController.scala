@@ -60,9 +60,9 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
           Ok(views.html.techs(
             None,
-            techRatings.map(ui.TechRating.apply),
+            techRatings.map(ui.TechRatingFactory.apply),
             userVotes.map(uv => uv.techId -> uv.value).toMap,
-            allCategories.map(ui.TechCategory.apply)))
+            allCategories.map(ui.TechCategoryFactory.apply)))
         }
     }
   }
@@ -71,7 +71,7 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
     withForm(addTechForm) { form =>
       techService.upsert(domain.Tech(
         id        = domain.Identifiable.empty,
-        handle    = domain.Handle.fromHumanName(form.name),
+        handle    = domain.HandleFactory.fromHumanName(form.name),
         category  = domain.TechCategory(form.categoryHandle),
         name      = form.name,
         website   = new URL(form.website)

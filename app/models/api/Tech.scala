@@ -7,7 +7,7 @@ case class Tech(id: String,
                 website: String,
                 rating: Double)
 
-object Tech {
+object TechFactory {
   def fromDomain(techRating: models.domain.TechRating) = Tech(
     id        = techRating.tech.id,
     handle    = techRating.tech.handle.value,

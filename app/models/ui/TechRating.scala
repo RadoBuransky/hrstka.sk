@@ -11,7 +11,7 @@ import models.domain
 case class TechRating(tech: Tech,
                       value: Double)
 
-object TechRating {
+object TechRatingFactory {
   def apply(techRating: domain.TechRating): TechRating =
-    TechRating(Tech(techRating.tech), techRating.value)
+    TechRating(TechFactory(techRating.tech), techRating.value)
 }

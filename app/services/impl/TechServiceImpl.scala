@@ -14,7 +14,7 @@ import scala.concurrent.Future
 @Singleton
 final class TechServiceImpl @Inject() (techRepository: TechRepository,
                                        techVoteRepository: TechVoteRepository) extends TechService {
-  def get(handle: Handle) = techRepository.getByHandle(handle).map(domain.Tech(_))
+  def get(handle: Handle) = techRepository.getByHandle(handle).map(domain.TechFactory(_))
 
   override def upsert(tech: Tech): Future[Id] =
     techRepository.upsert(db.Tech(
@@ -27,10 +27,10 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
 
   override def allRatings(): Future[Seq[TechRating]] =
     techVoteRepository.all(None).flatMap { dbTechVotes =>
-      val allTechVotes = dbTechVotes.map(TechVote.apply)
+      val allTechVotes = dbTechVotes.map(TechVoteFactory.apply)
       techRepository.all().map { techs =>
         techs.map { dbTech =>
-          val tech = Tech(dbTech)
+          val tech = TechFactory(dbTech)
           TechRating(tech, techRatingValue(tech, allTechVotes))
         }
       }
@@ -39,7 +39,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
   override def voteUp(id: Id, userId: Id) = voteDelta(id, userId, 1)
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)
   override def votesFor(userId: Id): Future[Seq[TechVote]] =
-    techVoteRepository.all(Some(userId)).map(_.map(TechVote(_)))
+    techVoteRepository.all(Some(userId)).map(_.map(TechVoteFactory.apply))
 
   override def allCategories(): Future[Seq[TechCategory]] = Future.successful(TechCategory.allCategories)
 
@@ -55,14 +55,14 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
     if (techVotes.isEmpty)
       0.0
     else
-      techVotes.filter(_ > 0).sum.toDouble / (techVotes.size * TechRating.maxVoteValue).toDouble
+      techVotes.filter(_ > 0).sum.toDouble / (techVotes.size * TechRatingFactory.maxVoteValue).toDouble
   }
 
   private def voteDelta(id: Id, userId: Id, delta: Int): Future[Unit] = {
     techVoteRepository.findValue(id, userId).map { latestVoteOption =>
       val newVoteValue = latestVoteOption.getOrElse(0) + delta
-      if ((newVoteValue <= TechRating.maxVoteValue) &&
-        (newVoteValue >= TechRating.minVoteValue))
+      if ((newVoteValue <= TechRatingFactory.maxVoteValue) &&
+        (newVoteValue >= TechRatingFactory.minVoteValue))
         techVoteRepository.vote(id, userId, newVoteValue)
     }
   }

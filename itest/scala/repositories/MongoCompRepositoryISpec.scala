@@ -1,12 +1,8 @@
 package repositories
 
-import java.net.URL
-
 import _root_.itest.TestApplication
 import common.HrstkaException
-import models.db.{Comp, Identifiable}
 import org.scalatest.DoNotDiscover
-import reactivemongo.bson.BSONObjectID
 import repositories.itest.BaseRepositoryISpec
 import repositories.mongoDb.{CompCollection, MongoCompRepository}
 
@@ -16,14 +12,14 @@ import scala.concurrent.Future
 @DoNotDiscover
 class MongoCompRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCompRepository](testApplication, CompCollection) {
-  import MongoCompRepositoryISpec._
+  import models.db.CompSpec._
 
   behavior of "upsert"
 
   it should "not allow to insert a company with the same name" in { compRepository =>
     val result = for {
       inserted1 <-compRepository.upsert(avitech)
-      inserted2 <-compRepository.upsert(resco.copy(name = avitech.name))
+      inserted2 <-compRepository.upsert(borci.copy(name = avitech.name))
     } yield inserted2
 
     whenReady(result.failed) { ex =>
@@ -34,7 +30,7 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
   it should "not allow to insert a company with the same website" in { compRepository =>
     val result = for {
       inserted1 <-compRepository.upsert(avitech)
-      inserted2 <-compRepository.upsert(resco.copy(website = avitech.website))
+      inserted2 <-compRepository.upsert(borci.copy(website = avitech.website))
     } yield inserted2
 
     whenReady(result.failed) { ex =>
@@ -48,7 +44,7 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
     val result = insertComps(compRepository).flatMap { _ =>
       compRepository.all()
     }
-    assert(result.futureValue.toSet == Set(avitech, resco))
+    assert(result.futureValue.toSet == Set(avitech, borci))
   }
 
   it should "return companies for a city" in { compRepository =>
@@ -60,51 +56,15 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
 
   it should "return companies for a tech" in { compRepository =>
     val result = insertComps(compRepository).flatMap { _ =>
-      compRepository.all(tech = resco.techs.headOption)
+      compRepository.all(tech = borci.techs.headOption)
     }
-    assert(result.futureValue == Seq(resco))
+    assert(result.futureValue == Seq(borci))
   }
 
   private def insertComps(compRepository: CompRepository): Future[_] = {
     for {
       avitechFuture <- compRepository.upsert(avitech)
-      rescoFuture <- compRepository.upsert(resco)
+      rescoFuture <- compRepository.upsert(borci)
     } yield ()
   }
-}
-
-object MongoCompRepositoryISpec {
-  lazy val avitech = Comp(
-    _id               = BSONObjectID.generate,
-    authorId          = BSONObjectID.generate,
-    name              = "Avitech",
-    website           = new URL("http://avitech.aero/").toString,
-    city              = "bratislava",
-    employeeCount     = Some(60),
-    codersCount       = Some(30),
-    femaleCodersCount = Some(5),
-    note              = "note",
-    products          = true,
-    services          = true,
-    internal          = false,
-    techs             = Seq("scala", "java"),
-    joel              = Set(3, 5, 7)
-  )
-
-  lazy val resco = Comp(
-    _id               = BSONObjectID.generate,
-    authorId          = BSONObjectID.generate,
-    name              = "Resco",
-    website           = new URL("http://resco.net/").toString,
-    city              = "nitra",
-    employeeCount     = Some(23),
-    codersCount       = Some(23),
-    femaleCodersCount = Some(5),
-    note              = "",
-    products          = true,
-    services          = false,
-    internal          = false,
-    techs             = Seq("c#", "c++"),
-    joel              = Set(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
-  )
 }
