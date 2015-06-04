@@ -6,13 +6,13 @@ import com.google.inject._
 import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
-import models.domain.{Eminent, Handle, Identifiable}
-import models.{domain, ui}
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc._
+import sk.hrstka.models.domain.{Eminent, Identifiable, Handle, Comp}
+import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -103,7 +103,7 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
     withForm(addCompForm) { form =>
       locationService.getOrCreateCity(form.city).flatMap { city =>
         compService.upsert(
-          domain.Comp(
+          Comp(
             id = compId.getOrElse(Identifiable.empty),
             name = form.name,
             website = new URL(form.website),
@@ -127,11 +127,11 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
     }
   }
 
-  private def edit[A](comp: Option[domain.Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
+  private def edit[A](comp: Option[Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
     techService.allRatings().flatMap { techRatings =>
       val ts = techRatings.map(t => (t.tech.handle.value, comp.exists(_.techRatings.exists(_.tech.handle == t.tech.handle))))
       withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(views.html.compEdit(comp.map(ui.CompFactory.apply), ts, joelQuestions, action))
+        Ok(views.html.compEdit(comp.map(CompFactory.apply), ts, joelQuestions, action))
       }
     }
 }

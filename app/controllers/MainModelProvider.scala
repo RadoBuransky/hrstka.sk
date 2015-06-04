@@ -1,10 +1,9 @@
 package controllers
 
-import models.domain.User
-import models.ui
-import models.ui.MainModel
 import play.api.Application
 import play.api.mvc.Request
+import sk.hrstka.models.domain.User
+import sk.hrstka.models.ui.{CityFactory, MainModel, TechFactory}
 import sk.hrstka.services.{LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,8 +16,8 @@ trait MainModelProvider {
     locationService.all().flatMap { cities =>
       techService.allRatings().map { techRatings =>
         action(MainModel(
-          cities  = cities.map(ui.CityFactory(_)),
-          techs   = techRatings.map(techRating => ui.TechFactory(techRating.tech)),
+          cities  = cities.map(CityFactory(_)),
+          techs   = techRatings.map(techRating => TechFactory(techRating.tech)),
           city    = city,
           tech    = tech,
           user    = user,

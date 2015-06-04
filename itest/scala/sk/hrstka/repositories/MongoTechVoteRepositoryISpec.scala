@@ -1,9 +1,9 @@
 package sk.hrstka.repositories
 
 import _root_.itest.TestApplication
-import models.db.{Identifiable, TechVote}
 import org.scalatest.{DoNotDiscover, Suites}
 import reactivemongo.bson.BSONObjectID
+import sk.hrstka.models.db.{Identifiable, TechVote}
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{MongoTechVoteRepository, TechVoteCollection}
 

@@ -3,6 +3,7 @@ package sk.hrstka.repositories
 import _root_.itest.TestApplication
 import common.HrstkaException
 import org.scalatest.DoNotDiscover
+import sk.hrstka.models.db.CompSpec
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{CompCollection, MongoCompRepository}
 
@@ -12,7 +13,7 @@ import scala.concurrent.Future
 @DoNotDiscover
 class MongoCompRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCompRepository](testApplication, CompCollection) {
-  import models.db.CompSpec._
+  import CompSpec._
 
   behavior of "upsert"
 

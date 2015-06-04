@@ -1,7 +1,6 @@
 package sk.hrstka.repositories.itest
 
 import itest.TestApplication
-import models.db.Identifiable
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Outcome, fixture}
 import play.api.libs.json.Json

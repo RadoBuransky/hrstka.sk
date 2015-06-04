@@ -1,8 +1,8 @@
 package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
-import models.domain.Identifiable.Id
-import models.domain._
+import sk.hrstka.models.domain.Identifiable.Id
+import sk.hrstka.models.domain._
 import sk.hrstka.services.impl.TechServiceImpl
 
 import scala.concurrent.Future

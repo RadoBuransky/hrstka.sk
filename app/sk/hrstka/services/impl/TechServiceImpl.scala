@@ -1,10 +1,9 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
-import models._
-import models.db.Identifiable
-import models.domain.Identifiable.{Id, _}
-import models.domain._
+import sk.hrstka
+import sk.hrstka.models.db.{Identifiable, Tech}
+import sk.hrstka.models.domain._
 import sk.hrstka.repositories._
 import sk.hrstka.services.TechService
 
@@ -14,10 +13,12 @@ import scala.concurrent.Future
 @Singleton
 final class TechServiceImpl @Inject() (techRepository: TechRepository,
                                        techVoteRepository: TechVoteRepository) extends TechService {
-  def get(handle: Handle) = techRepository.getByHandle(handle).map(domain.TechFactory(_))
+  import sk.hrstka.models.domain.Identifiable._
 
-  override def upsert(tech: Tech): Future[Id] =
-    techRepository.upsert(db.Tech(
+  def get(handle: hrstka.models.domain.Handle) = techRepository.getByHandle(handle).map(TechFactory(_))
+
+  override def upsert(tech: hrstka.models.domain.Tech): Future[Id] =
+    techRepository.upsert(Tech(
       _id             = Identifiable.empty,
       handle          = tech.handle,
       categoryHandle  = tech.category.handle,
@@ -50,7 +51,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
    * @param allTechVotes Votes for all users and technologies.
    * @return Rating value, a number between 0.0 and 100.0
    */
-  private def techRatingValue(tech: Tech, allTechVotes: Iterable[TechVote]): Double = {
+  private def techRatingValue(tech: hrstka.models.domain.Tech, allTechVotes: Iterable[TechVote]): Double = {
     val techVotes = allTechVotes.filter(tv => tv.techId == tech.id && tv.value != 0).map(_.value)
     if (techVotes.isEmpty)
       0.0

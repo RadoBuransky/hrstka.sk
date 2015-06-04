@@ -1,10 +1,8 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
-import models.db.Identifiable
-import models.domain.Identifiable.{Id, _}
-import models.domain._
-import models.{db, domain}
+import sk.hrstka
+import sk.hrstka.models.domain.{Handle, _}
 import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
@@ -15,8 +13,10 @@ import scala.concurrent.Future
 final class CompServiceImpl @Inject() (compRepository: CompRepository,
                                        techService: TechService,
                                        locationService: LocationService) extends CompService {
-  override def upsert(comp: Comp, techHandles: Set[Handle], userId: Id): Future[Id] = {
-    compRepository.upsert(db.Comp(
+  import sk.hrstka.models.domain.Identifiable._
+
+  override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[Id] = {
+    compRepository.upsert(hrstka.models.db.Comp(
       _id = if (comp.id.isEmpty) Identifiable.empty else comp.id,
       authorId = userId,
       name = comp.name,
@@ -34,7 +34,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     )).map(_.stringify)
   }
 
-  override def all(city: Option[Handle], tech: Option[Handle]): Future[Seq[Comp]] = {
+  override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[Comp]] = {
     techService.allRatings().flatMap { techRatings =>
       val techRatingsSet = techRatings.toSet
       compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { comps =>
@@ -64,9 +64,9 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
-  private def dbCompToDomain(techRatings: Set[TechRating], comp: db.Comp): Future[domain.Comp] = {
+  private def dbCompToDomain(techRatings: Set[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
     locationService.get(Handle(comp.city)).map { city =>
-      domain.CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
+      CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
     }
   }
 }

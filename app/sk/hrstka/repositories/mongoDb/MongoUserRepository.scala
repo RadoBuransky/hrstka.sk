@@ -1,16 +1,14 @@
 package sk.hrstka.repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import models.db.{JsonFormats, User}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.bson.BSONObjectID
-import reactivemongo.core.commands.LastError
+import sk.hrstka.models.db.JsonFormats._
+import sk.hrstka.models.db.{JsonFormats, User}
 import sk.hrstka.repositories.UserRepository
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import JsonFormats._
+import scala.concurrent.Future
 
 @Singleton
 final class MongoUserRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)

@@ -2,15 +2,15 @@ package sk.hrstka.repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
 import common.HrstkaException
-import models.db.Identifiable.Id
-import models.db.JsonFormats._
-import models.db.TechVote
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import play.modules.reactivemongo.json.BSONFormats._
 import reactivemongo.bson.{BSONDocument, _}
 import reactivemongo.core.commands.{FindAndModify, Update}
+import sk.hrstka.models.db.Identifiable.Id
+import sk.hrstka.models.db.JsonFormats._
+import sk.hrstka.models.db.{Identifiable, JsonFormats, TechVote}
 import sk.hrstka.repositories.TechVoteRepository
-import play.modules.reactivemongo.json.BSONFormats._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -1,17 +1,19 @@
 package sk.hrstka.services.impl
 
-import models.{db, domain}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
+import sk.hrstka
+import sk.hrstka.models.db.{Identifiable, User, UserSpec}
+import sk.hrstka.models.domain.UserFactory
 import sk.hrstka.repositories.UserRepository
 import test.BaseSpec
 
 import scala.concurrent.Future
 
 class AuthServiceImplSpec extends BaseSpec {
-  import models.db.UserSpec._
+  import UserSpec._
 
   behavior of "createUser"
 
@@ -20,18 +22,18 @@ class AuthServiceImplSpec extends BaseSpec {
     val id = BSONObjectID.generate
     val email = rado.email
     val password = radoPassword
-    when(userRepository.insert(any[db.User])).thenReturn(Future.successful(id))
+    when(userRepository.insert(any[User])).thenReturn(Future.successful(id))
 
     // Execute
     authService.createUser(email, password)
 
     // Verify
-    val userCaptor = ArgumentCaptor.forClass(classOf[db.User])
+    val userCaptor = ArgumentCaptor.forClass(classOf[User])
     verify(userRepository).insert(userCaptor.capture())
     val user = userCaptor.getValue
 
     // Assert
-    assert(user._id == db.Identifiable.empty)
+    assert(user._id == Identifiable.empty)
     assert(user.email == email)
     assert(user.encryptedPassword.nonEmpty)
     assert(user.encryptedPassword != password)
@@ -44,7 +46,7 @@ class AuthServiceImplSpec extends BaseSpec {
     when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
 
     // Execute
-    assert(authService.findByEmail(rado.email).futureValue.contains(domain.UserFactory(rado)))
+    assert(authService.findByEmail(rado.email).futureValue.contains(UserFactory(rado)))
   }
 
   behavior of "authenticate"
@@ -54,7 +56,7 @@ class AuthServiceImplSpec extends BaseSpec {
     when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
 
     // Execute
-    assert(authService.authenticate(rado.email, radoPassword).futureValue.contains(domain.UserFactory(rado)))
+    assert(authService.authenticate(rado.email, radoPassword).futureValue.contains(hrstka.models.domain.UserFactory(rado)))
   }
 
   it should "return none if user exists but the password is wrong" in new TestScope {

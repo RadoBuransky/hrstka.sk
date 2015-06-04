@@ -3,12 +3,12 @@ package controllers
 import com.google.inject._
 import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
-import models.domain.Admin
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Controller}
+import sk.hrstka.models.domain.Admin
 import sk.hrstka.services.{AuthService, LocationService, TechService}
 import views.html
 

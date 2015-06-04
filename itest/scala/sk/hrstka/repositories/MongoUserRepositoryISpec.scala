@@ -2,8 +2,8 @@ package sk.hrstka.repositories
 
 import _root_.itest.TestApplication
 import common.HrstkaException
-import models.db.{Identifiable, User}
 import org.scalatest.DoNotDiscover
+import sk.hrstka.models.db.UserSpec
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{MongoUserRepository, UserCollection}
 
@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @DoNotDiscover
 class MongoUserRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoUserRepository](testApplication, UserCollection) {
-  import models.db.UserSpec._
+  import UserSpec._
 
   behavior of "upsert"
 

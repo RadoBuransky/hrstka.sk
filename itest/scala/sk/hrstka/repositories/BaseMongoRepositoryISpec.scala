@@ -2,10 +2,9 @@ package sk.hrstka.repositories
 
 import _root_.itest.TestApplication
 import common.HrstkaException
-import models.db.{City, Identifiable}
-import models.domain.HandleFactory$
 import org.scalatest.{DoNotDiscover, Suites}
 import reactivemongo.bson.BSONObjectID
+import sk.hrstka.models.db.{CitySpec, Identifiable}
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{CityCollection, MongoCityRepository}
 
@@ -20,7 +19,7 @@ class StandaloneBaseMongoRepositoryISpec extends Suites with TestApplication {
 @DoNotDiscover
 class BaseMongoRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoCityRepository](testApplication, CityCollection) {
-  import models.db.CitySpec._
+  import CitySpec._
 
   behavior of "insert"
 

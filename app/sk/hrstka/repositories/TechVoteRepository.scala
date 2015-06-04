@@ -1,8 +1,8 @@
 package sk.hrstka.repositories
 
 import com.google.inject.ImplementedBy
-import models.db.Identifiable.Id
-import models.db.TechVote
+import sk.hrstka.models.db.Identifiable.Id
+import sk.hrstka.models.db.{Identifiable, TechVote}
 import sk.hrstka.repositories.mongoDb.MongoTechVoteRepository
 
 import scala.concurrent.Future

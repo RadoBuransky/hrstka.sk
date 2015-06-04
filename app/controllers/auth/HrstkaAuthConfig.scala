@@ -3,8 +3,9 @@ package controllers.auth
 import java.util.Base64
 
 import jp.t2v.lab.play2.auth._
-import models.domain.{Admin, Eminent, Role}
 import play.api.mvc.{Controller, RequestHeader, Result}
+import sk.hrstka.models.domain
+import sk.hrstka.models.domain.Role
 import sk.hrstka.services.AuthService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,7 +26,7 @@ trait HrstkaAuthConfig extends AuthConfig {
    * A type that represents a user in your application.
    * `User`, `Account` and so on.
    */
-  type User = models.domain.User
+  type User = domain.User
 
   /**
    * A type that is defined by every action for authorization.

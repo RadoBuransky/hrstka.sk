@@ -1,4 +1,4 @@
-@(form: Form[controllers.LoginForm])(implicit mainModel: models.ui.MainModel)
+@(form: Form[controllers.LoginForm])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
     <form class="form-signin" action="@controllers.routes.AuthController.authenticate()" method="post">

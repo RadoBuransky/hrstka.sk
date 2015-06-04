@@ -3,11 +3,12 @@ package controllers
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.OptionalAuthElement
-import models.domain.Handle
-import models.{domain, ui}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Application, Logger}
+import sk.hrstka
+import sk.hrstka.models.domain.{Tech, City, Handle}
+import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,7 +34,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     compService.get(compId).flatMap { comp =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(views.html.comp(ui.CompFactory(comp)))
+        Ok(views.html.comp(CompFactory(comp)))
       }
     }
   }
@@ -41,7 +42,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   override def women: Action[AnyContent] = AsyncStack { implicit request =>
     compService.topWomen().flatMap { topWomen =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(views.html.women(topWomen.map(ui.CompFactory(_))))
+        Ok(views.html.women(topWomen.map(hrstka.models.ui.CompFactory(_))))
       }
     }
   }
@@ -57,7 +58,7 @@ class CompControllerImpl @Inject() (compService: CompService,
             withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
               Ok(views.html.index(
                 headline(city, tech),
-                comps.sortBy(_.rank). map(ui.CompFactory(_))))
+                comps.sortBy(_.rank). map(hrstka.models.ui.CompFactory(_))))
           }
         }.recover {
           case t =>
@@ -82,7 +83,7 @@ class CompControllerImpl @Inject() (compService: CompService,
     }
   }
 
-  private def headline(city: Option[domain.City], tech: Option[domain.Tech]): String = {
+  private def headline(city: Option[City], tech: Option[Tech]): String = {
     val cityHeadline = city.map { c =>
       " v meste " + c.sk
     }
@@ -95,13 +96,13 @@ class CompControllerImpl @Inject() (compService: CompService,
       "Firmy" + cityHeadline.getOrElse("") + techHeadline.getOrElse("")
   }
 
-  private def techForHandle(techHandle: Option[String]): Future[Option[domain.Tech]] = techHandle match {
+  private def techForHandle(techHandle: Option[String]): Future[Option[Tech]] = techHandle match {
     case Some(handle) => techService.get(Handle(handle)).map(Some(_))
     case None => Future.successful(None)
   }
 
 
-  private def cityForHandle(cityHandle: Option[String]): Future[Option[domain.City]] = cityHandle match {
+  private def cityForHandle(cityHandle: Option[String]): Future[Option[City]] = cityHandle match {
     case Some(handle) => locationService.get(Handle(handle)).map(Some(_))
     case None => Future.successful(None)
   }

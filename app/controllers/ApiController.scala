@@ -3,6 +3,7 @@ package controllers
 import com.google.inject._
 import play.api.libs.json.Json
 import play.api.mvc._
+import sk.hrstka.models.api.{CompFactory, JsonFormats, TechFactory}
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,17 +19,17 @@ trait ApiController {
 final class ApiControllerImpl @Inject() (compService: CompService,
                                          techService: TechService,
                                          locationService: LocationService) extends Controller with ApiController {
-  import models.api.JsonFormats._
+  import JsonFormats._
 
   override def comps(): Action[AnyContent] = Action.async { implicit request =>
     compService.all().map { comps =>
-      Ok(Json.toJson(comps.map(models.api.CompFactory.fromDomain)))
+      Ok(Json.toJson(comps.map(CompFactory.fromDomain)))
     }
   }
 
   override def techs(): Action[AnyContent] = Action.async { implicit request =>
     techService.allRatings().map { techRatings =>
-      Ok(Json.toJson(techRatings.map(models.api.TechFactory.fromDomain)))
+      Ok(Json.toJson(techRatings.map(TechFactory.fromDomain)))
     }
   }
 

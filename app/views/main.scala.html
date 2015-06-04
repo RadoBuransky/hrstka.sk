@@ -1,4 +1,4 @@
-@(title: String, description: String)(content: Html)(implicit mainModel: models.ui.MainModel)
+@(title: String, description: String)(content: Html)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 <!DOCTYPE html>
 
@@ -100,7 +100,7 @@
                     <li><a href="">O hŕstke</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    @if(mainModel.user.isDefined && mainModel.user.get.role.isA(models.domain.Eminent)) {
+                    @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             @mainModel.user.get.email<span class="caret"></span>
@@ -108,7 +108,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="@controllers.auth.routes.AuthCompController.addForm">Pridať firmu</a></li>
                             <li><a href="@controllers.auth.routes.AuthTechController.all">Technológie</a></li>
-                            @if(mainModel.user.isDefined && mainModel.user.get.role.isA(models.domain.Admin)) {
+                            @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Admin)) {
                                 <li><a href="@controllers.routes.AuthController.register">Pridať eminenta</a></li>
                             }
                             <li class="divider"></li>

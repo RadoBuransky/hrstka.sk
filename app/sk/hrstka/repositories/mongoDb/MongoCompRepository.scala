@@ -1,11 +1,11 @@
 package sk.hrstka.repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import models.db.Comp
-import models.db.Identifiable._
-import models.db.JsonFormats._
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import sk.hrstka.models.db.Identifiable._
+import sk.hrstka.models.db.JsonFormats._
+import sk.hrstka.models.db.{Comp, Identifiable, JsonFormats}
 import sk.hrstka.repositories.CompRepository
 
 import scala.concurrent.Future

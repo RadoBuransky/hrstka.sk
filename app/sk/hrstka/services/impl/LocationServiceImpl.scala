@@ -1,9 +1,10 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
-import models.db
-import models.domain.{HandleFactory, City, CityFactory, Handle}
 import reactivemongo.bson.BSONObjectID
+import sk.hrstka.models.db.City
+import sk.hrstka.models.domain
+import sk.hrstka.models.domain.{CityFactory, Handle, HandleFactory}
 import sk.hrstka.repositories.CityRepository
 import sk.hrstka.services.LocationService
 
@@ -12,14 +13,14 @@ import scala.concurrent.Future
 
 @Singleton
 final class LocationServiceImpl @Inject() (cityRepository: CityRepository) extends LocationService {
-  override def all(): Future[Seq[City]] = cityRepository.all().map(_.map(CityFactory.apply))
-  override def get(handle: Handle): Future[City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
-  override def getOrCreateCity(humanName: String): Future[City] = {
+  override def all(): Future[Seq[domain.City]] = cityRepository.all().map(_.map(CityFactory.apply))
+  override def get(handle: Handle): Future[domain.City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
+  override def getOrCreateCity(humanName: String): Future[domain.City] = {
     val handle = HandleFactory.fromHumanName(humanName)
     cityRepository.findByHandle(handle.value).map {
       case Some(city) => CityFactory(city)
       case None =>
-        val newCity = db.City(
+        val newCity = City(
         _id     = BSONObjectID.generate,
         handle  = handle.value,
         sk      = humanName)

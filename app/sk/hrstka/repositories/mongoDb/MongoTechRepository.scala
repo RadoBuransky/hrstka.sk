@@ -1,10 +1,10 @@
 package sk.hrstka.repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import models.db.JsonFormats._
-import models.db.Tech
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import sk.hrstka.models.db.JsonFormats._
+import sk.hrstka.models.db.{JsonFormats, Tech}
 import sk.hrstka.repositories.TechRepository
 
 @Singleton
