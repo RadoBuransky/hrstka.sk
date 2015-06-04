@@ -5,7 +5,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
-import repositories.UserRepository
+import sk.hrstka.repositories.UserRepository
 import test.BaseSpec
 
 import scala.concurrent.Future

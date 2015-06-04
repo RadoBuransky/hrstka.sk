@@ -30,4 +30,4 @@ libraryDependencies ++= Seq(
   "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test"
 )
 
-ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "repositories.*"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "sk.hrstka.repositories.*"

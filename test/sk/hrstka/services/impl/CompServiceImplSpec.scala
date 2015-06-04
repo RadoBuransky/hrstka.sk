@@ -7,7 +7,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
-import repositories.CompRepository
+import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.{LocationService, TechService}
 import test.BaseSpec
 

@@ -6,7 +6,7 @@ import common.Logging
 import models.db
 import models.db.Identifiable
 import models.domain.{Eminent, Role, User, UserFactory}
-import repositories.UserRepository
+import sk.hrstka.repositories.UserRepository
 import sk.hrstka.services.AuthService
 
 import scala.concurrent.ExecutionContext.Implicits.global

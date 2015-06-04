@@ -1,7 +1,7 @@
 import _root_.itest.TestApplication
 import org.scalatest.Suites
-import repositories._
-import repositories.scripts.mongoDb.MongoDbManagerISpec
+import sk.hrstka.repositories._
+import sk.hrstka.repositories.scripts.mongoDb.MongoDbManagerISpec
 
 /**
  * Includes all integration tests that require running application.

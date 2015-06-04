@@ -6,7 +6,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Logger, Mode}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{DB, DBMetaCommands}
-import repositories.scripts.DbManager
+import sk.hrstka.repositories.scripts.DbManager
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._

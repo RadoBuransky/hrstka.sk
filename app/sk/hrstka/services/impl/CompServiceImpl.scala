@@ -5,7 +5,7 @@ import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
 import models.domain._
 import models.{db, domain}
-import repositories.CompRepository
+import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global

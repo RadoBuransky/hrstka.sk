@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import models.db
 import models.domain.{HandleFactory, City, CityFactory, Handle}
 import reactivemongo.bson.BSONObjectID
-import repositories.CityRepository
+import sk.hrstka.repositories.CityRepository
 import sk.hrstka.services.LocationService
 
 import scala.concurrent.ExecutionContext.Implicits.global
