@@ -1,7 +1,7 @@
 package sk.hrstka.repositories.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import common.HrstkaException
+import sk.hrstka.common.HrstkaException
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.BSONFormats._

@@ -34,7 +34,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     compService.get(compId).flatMap { comp =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(views.html.comp(CompFactory(comp)))
+        Ok(sk.hrstka.views.html.comp(CompFactory(comp)))
       }
     }
   }
@@ -42,7 +42,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   override def women: Action[AnyContent] = AsyncStack { implicit request =>
     compService.topWomen().flatMap { topWomen =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(views.html.women(topWomen.map(hrstka.models.ui.CompFactory(_))))
+        Ok(sk.hrstka.views.html.women(topWomen.map(hrstka.models.ui.CompFactory(_))))
       }
     }
   }
@@ -56,7 +56,7 @@ class CompControllerImpl @Inject() (compService: CompService,
       techForHandle(techHandle).flatMap { tech =>
         compService.all(city.map(_.handle), tech.map(_.handle)).flatMap { comps =>
             withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
-              Ok(views.html.index(
+              Ok(sk.hrstka.views.html.index(
                 headline(city, tech),
                 comps.sortBy(_.rank). map(hrstka.models.ui.CompFactory(_))))
           }

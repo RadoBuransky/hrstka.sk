@@ -2,7 +2,7 @@ package sk.hrstka.services.impl
 
 import com.github.t3hnar.bcrypt._
 import com.google.inject.{Inject, Singleton}
-import common.Logging
+import sk.hrstka.common.Logging
 import sk.hrstka.models.db.{Identifiable, User}
 import sk.hrstka.models.domain
 import sk.hrstka.models.domain.{Eminent, Role, UserFactory}

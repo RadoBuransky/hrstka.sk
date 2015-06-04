@@ -1,6 +1,6 @@
 package sk.hrstka.repositories.mongoDb
 
-import common.HrstkaException
+import sk.hrstka.common.HrstkaException
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.BSONFormats._

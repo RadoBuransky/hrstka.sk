@@ -1,6 +1,6 @@
 package sk.hrstka.repositories.scripts.mongoDb
 
-import common.HrstkaException
+import sk.hrstka.common.HrstkaException
 import itest.TestApplication
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{DoNotDiscover, FlatSpec, Suites}

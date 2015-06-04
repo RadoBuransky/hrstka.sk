@@ -60,7 +60,7 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
     serviceResult.flatMap {
       case (techRatings, allCategories, userVotes) =>
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-          Ok(views.html.techs(
+          Ok(sk.hrstka.views.html.techs(
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),
             userVotes.map(uv => uv.techId -> uv.value).toMap,

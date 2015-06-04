@@ -10,7 +10,6 @@ import play.api.mvc.{Action, AnyContent, Controller}
 import sk.hrstka.controllers.auth.HrstkaAuthConfig
 import sk.hrstka.models.domain.Admin
 import sk.hrstka.services.{AuthService, LocationService, TechService}
-import views.html
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,7 +41,7 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
 
   def login = Action.async { implicit request =>
     withMainModel() { implicit mainModel =>
-      Ok(html.login(loginForm))
+      Ok(sk.hrstka.views.html.login(loginForm))
     }
   }
 
@@ -53,7 +52,7 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
   def authenticate = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => withMainModel() { implicit mainModel =>
-        BadRequest(html.login(formWithErrors))
+        BadRequest(sk.hrstka.views.html.login(formWithErrors))
       },
       loginForm => {
         authService.authenticate(loginForm.email, loginForm.password).flatMap {
@@ -77,7 +76,7 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
 
   override def registerView: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
     withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-      Ok(html.register())
+      Ok(sk.hrstka.views.html.register())
     }
   }
 }

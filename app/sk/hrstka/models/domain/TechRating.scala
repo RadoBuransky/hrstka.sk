@@ -1,6 +1,6 @@
 package sk.hrstka.models.domain
 
-import common.HrstkaException
+import sk.hrstka.common.HrstkaException
 
 /**
  * Technology rating.

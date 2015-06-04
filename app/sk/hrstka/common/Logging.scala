@@ -1,4 +1,4 @@
-package common
+package sk.hrstka.common
 
 import org.slf4j.LoggerFactory
 

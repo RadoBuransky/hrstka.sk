@@ -1,6 +1,6 @@
 package itest
 
-import common.HrstkaException
+import sk.hrstka.common.HrstkaException
 import org.scalatest.{BeforeAndAfterAll, Suite, SuiteMixin}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Logger, Mode}

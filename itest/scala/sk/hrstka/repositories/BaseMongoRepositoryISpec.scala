@@ -1,7 +1,7 @@
 package sk.hrstka.repositories
 
 import _root_.itest.TestApplication
-import common.HrstkaException
+import sk.hrstka.common.HrstkaException
 import org.scalatest.{DoNotDiscover, Suites}
 import reactivemongo.bson.BSONObjectID
 import sk.hrstka.models.db.{CitySpec, Identifiable}

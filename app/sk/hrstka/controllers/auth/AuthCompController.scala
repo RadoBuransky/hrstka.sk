@@ -131,7 +131,7 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
     techService.allRatings().flatMap { techRatings =>
       val ts = techRatings.map(t => (t.tech.handle.value, comp.exists(_.techRatings.exists(_.tech.handle == t.tech.handle))))
       withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(views.html.compEdit(comp.map(CompFactory.apply), ts, joelQuestions, action))
+        Ok(sk.hrstka.views.html.compEdit(comp.map(CompFactory.apply), ts, joelQuestions, action))
       }
     }
 }
