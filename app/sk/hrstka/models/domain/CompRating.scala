@@ -1,7 +1,5 @@
 package sk.hrstka.models.domain
 
-import sk.hrstka.common.HrstkaException
-
 /**
  * Company rating.
  *
@@ -11,13 +9,12 @@ import sk.hrstka.common.HrstkaException
 case class CompRating(comp: Comp,
                       value: Double) {
   if (value > 1.0)
-    throw new HrstkaException(s"Company rating cannot be greater than 1 [$value]")
+    throw new IllegalArgumentException(s"Company rating cannot be greater than 1 [$value]")
   if (value < 0.0)
-    throw new HrstkaException(s"Company rating cannot be less than 0 [$value]")
+    throw new IllegalArgumentException(s"Company rating cannot be less than 0 [$value]")
 }
 
 object CompRatingFactory {
-  // TODO: Unit test
   /**
    * Computes company rating:
    *   70% technology ratings
@@ -41,7 +38,7 @@ object CompRatingFactory {
       0.1 * codersRatio(comp))
   }
 
-  private def techRating(comp: Comp): Double = {
+  private[domain] def techRating(comp: Comp): Double = {
     val techRatingValues = comp.techRatings.map(_.value)
     if (techRatingValues.isEmpty)
       0.0
@@ -49,9 +46,9 @@ object CompRatingFactory {
       techRatingValues.sum / techRatingValues.size.toDouble
   }
 
-  private def joelsTest(comp: Comp): Double = comp.joel.size / 12.0
+  private[domain] def joelsTest(comp: Comp): Double = comp.joel.size / 12.0
 
-  private def femaleRatio(comp: Comp): Double = {
+  private[domain] def femaleRatio(comp: Comp): Double = {
     val females = comp.femaleCodersCount.getOrElse(0)
     val males = comp.codersCount.getOrElse(0) - females
 
@@ -63,7 +60,7 @@ object CompRatingFactory {
     }
   }
 
-  private def codersRatio(comp: Comp): Double = {
+  private[domain] def codersRatio(comp: Comp): Double = {
     val all = comp.employeeCount.getOrElse(0)
     val coders = comp.codersCount.getOrElse(0)
 
