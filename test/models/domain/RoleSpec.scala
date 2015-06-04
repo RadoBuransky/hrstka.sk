@@ -1,9 +1,8 @@
 package models.domain
 
-import org.scalatest.FlatSpec
-import org.scalatest.mock.MockitoSugar
+import test.BaseSpec
 
-class RoleSpec extends FlatSpec with MockitoSugar {
+class RoleSpec extends BaseSpec {
   behavior of "Visitor"
 
   it should "be a Visitor" in { assert(Visitor.isA(Visitor)) }

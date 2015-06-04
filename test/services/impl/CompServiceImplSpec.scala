@@ -1,24 +1,20 @@
 package services.impl
 
 import models.db
-import models.domain.{Handle, Comp, CompSpec, TechSpec}
+import models.domain.TechSpec
+import models.domain.{Comp, CompSpec, Handle, TechSpec}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.FlatSpec
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.time.{Millis, Seconds, Span}
 import reactivemongo.bson.BSONObjectID
 import repositories.CompRepository
 import services.{LocationService, TechService}
+import test.BaseSpec
 
 import scala.concurrent.Future
 
-class CompServiceImplSpec extends FlatSpec with MockitoSugar with ScalaFutures {
+class CompServiceImplSpec extends BaseSpec {
   import models.domain.CompSpec._
-
-  implicit override val patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(5, Millis))
 
   behavior of "upsert"
 
@@ -49,21 +45,85 @@ class CompServiceImplSpec extends FlatSpec with MockitoSugar with ScalaFutures {
 
   it should "return all companies if no city or tech is provided" in new TestScope {
     // Prepare
-    when(compRepository.all(None, None)).thenReturn(Future.successful(Seq(db.CompSpec.avitech, db.CompSpec.borci)))
-    when(techService.allRatings()).thenReturn(Future.successful(TechSpec.allRatings))
-    when(locationService.get(Handle(db.CompSpec.avitech.city))).thenReturn(Future.successful(CompSpec.avitech.city))
-    when(locationService.get(Handle(db.CompSpec.borci.city))).thenReturn(Future.successful(CompSpec.borci.city))
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(Seq(db.CompSpec.avitech, db.CompSpec.borci)))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechSpec.allRatings))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
+      .thenReturn(Future.successful(CompSpec.avitech.city))
+    when(locationService.get(Handle(db.CompSpec.borci.city)))
+      .thenReturn(Future.successful(CompSpec.borci.city))
 
     // Execute
     val result = compService.all(None, None).futureValue.toSet
     assertComp(avitech, result.find(_.id == avitech.id).get)
     assertComp(borci, result.find(_.id == borci.id).get)
+    assertResult(Set(avitech, borci))(result)
 
     // Verify
     verify(compRepository).all(None, None)
     verify(techService).allRatings()
     verify(locationService).get(Handle(db.CompSpec.avitech.city))
     verify(locationService).get(Handle(db.CompSpec.borci.city))
+    verifyNoMore()
+  }
+
+  it should "return all companies in Bratislava" in new TestScope {
+    // Prepare
+    when(compRepository.all(city = Some(avitech.city.handle.value), None))
+      .thenReturn(Future.successful(Seq(db.CompSpec.avitech)))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechSpec.allRatings))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
+      .thenReturn(Future.successful(CompSpec.avitech.city))
+
+    // Execute
+    val result = futureValue(compService.all(city = Some(avitech.city.handle), None)).toSet
+    assertComp(avitech, result.find(_.id == avitech.id).get)
+    assertResult(Set(avitech))(result)
+
+    // Verify
+    verify(compRepository).all(city = Some(avitech.city.handle.value), None)
+    verify(techService).allRatings()
+    verify(locationService).get(Handle(db.CompSpec.avitech.city))
+    verifyNoMore()
+  }
+
+  it should "return all companies that use PHP" in new TestScope {
+    // Prepare
+    when(compRepository.all(None, tech = Some(TechSpec.phpRating.tech.handle.value)))
+      .thenReturn(Future.successful(Seq(db.CompSpec.borci)))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechSpec.allRatings))
+    when(locationService.get(Handle(db.CompSpec.borci.city)))
+      .thenReturn(Future.successful(CompSpec.borci.city))
+
+    // Execute
+    val result = futureValue(compService.all(None, tech = Some(TechSpec.phpRating.tech.handle))).toSet
+    assertComp(borci, result.find(_.id == borci.id).get)
+    assertResult(Set(borci))(result)
+
+    // Verify
+    verify(compRepository).all(None, tech = Some(TechSpec.phpRating.tech.handle.value))
+    verify(techService).allRatings()
+    verify(locationService).get(Handle(db.CompSpec.borci.city))
+    verifyNoMore()
+  }
+
+  it should "return all companies in Bratislava that use PHP" in new TestScope {
+    // Prepare
+    when(compRepository.all(city = Some(avitech.city.handle.value), tech = Some(TechSpec.phpRating.tech.handle.value)))
+      .thenReturn(Future.successful(Seq.empty))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechSpec.allRatings))
+
+    // Execute
+    val result = futureValue(compService.all(city = Some(avitech.city.handle), tech = Some(TechSpec.phpRating.tech.handle))).toSet
+    assertResult(Set.empty)(result)
+
+    // Verify
+    verify(compRepository).all(city = Some(avitech.city.handle.value), tech = Some(TechSpec.phpRating.tech.handle.value))
+    verify(techService).allRatings()
     verifyNoMore()
   }
 

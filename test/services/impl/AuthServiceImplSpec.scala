@@ -4,15 +4,13 @@ import models.{db, domain}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.FlatSpec
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
 import reactivemongo.bson.BSONObjectID
 import repositories.UserRepository
+import test.BaseSpec
 
 import scala.concurrent.Future
 
-class AuthServiceImplSpec extends FlatSpec with MockitoSugar with ScalaFutures {
+class AuthServiceImplSpec extends BaseSpec {
   import models.db.UserSpec._
 
   behavior of "createUser"

@@ -1,8 +1,8 @@
 package models.domain
 
-import org.scalatest.FlatSpec
+import test.BaseSpec
 
-class HandleSpec extends FlatSpec {
+class HandleSpec extends BaseSpec {
   behavior of "fromHumanName"
 
   it should "replace diacritics in slovak text" in {
