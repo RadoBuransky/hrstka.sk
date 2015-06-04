@@ -11,9 +11,9 @@ import sk.hrstka.common.HrstkaException
 case class TechRating(tech: Tech,
                       value: Double) {
   if (value > 1.0)
-    throw new HrstkaException(s"Tech rating cannot be greater than 1.0 [$value]")
+    throw new IllegalArgumentException(s"Tech rating cannot be greater than 1.0 [$value]")
   if (value < 0.0)
-    throw new HrstkaException(s"Tech rating cannot be less than 0.0 [$value]")
+    throw new IllegalArgumentException(s"Tech rating cannot be less than 0.0 [$value]")
 }
 
 object TechRatingFactory {

@@ -17,6 +17,7 @@ case class CompRating(comp: Comp,
 }
 
 object CompRatingFactory {
+  // TODO: Unit test
   /**
    * Computes company rating:
    *   70% technology ratings
