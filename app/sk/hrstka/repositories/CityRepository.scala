@@ -1,7 +1,7 @@
 package sk.hrstka.repositories
 
 import com.google.inject.ImplementedBy
-import sk.hrstka.models.db.{City, Identifiable}
+import sk.hrstka.models.db.City
 import sk.hrstka.models.db.Identifiable.Id
 import sk.hrstka.repositories.mongoDb.MongoCityRepository
 

@@ -6,9 +6,31 @@ import sk.hrstka.services.impl.LocationServiceImpl
 
 import scala.concurrent.Future
 
+/**
+ * Geographical location service. Currently cities only.
+ */
 @ImplementedBy(classOf[LocationServiceImpl])
 trait LocationService {
+  /**
+   * Gets all cities.
+   * 
+   * @return All cities.
+   */
   def all(): Future[Seq[City]]
+
+  /**
+   * Gets city for the handle if exists, fails otherwise.
+   * 
+   * @param handle Handle to get the city for.
+   * @return The city.
+   */
   def get(handle: Handle): Future[City]
-  def getOrCreateCity(humanName: String): Future[City]
+
+  /**
+   * Get city for the human name if exists or creates a new one.
+   * 
+   * @param sk Slovak name of the city.
+   * @return Existing or newly created city.
+   */
+  def getOrCreateCity(sk: String): Future[City]
 }
