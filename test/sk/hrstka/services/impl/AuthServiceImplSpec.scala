@@ -8,7 +8,7 @@ import sk.hrstka
 import sk.hrstka.models.db.{Identifiable, User, UserSpec}
 import sk.hrstka.models.domain.UserFactory
 import sk.hrstka.repositories.UserRepository
-import test.BaseSpec
+import sk.hrstka.test.BaseSpec
 
 import scala.concurrent.Future
 

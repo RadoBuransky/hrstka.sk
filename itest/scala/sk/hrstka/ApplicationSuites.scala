@@ -1,5 +1,7 @@
-import _root_.itest.TestApplication
+package sk.hrstka
+
 import org.scalatest.Suites
+import sk.hrstka.itest.TestApplication
 import sk.hrstka.repositories._
 import sk.hrstka.repositories.scripts.mongoDb.MongoDbManagerISpec
 

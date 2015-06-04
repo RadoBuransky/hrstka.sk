@@ -1,6 +1,6 @@
 package sk.hrstka.models.domain
 
-import test.BaseSpec
+import sk.hrstka.test.BaseSpec
 
 class RoleSpec extends BaseSpec {
   behavior of "Visitor"

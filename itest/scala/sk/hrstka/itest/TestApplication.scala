@@ -1,11 +1,11 @@
-package itest
+package sk.hrstka.itest
 
-import sk.hrstka.common.HrstkaException
 import org.scalatest.{BeforeAndAfterAll, Suite, SuiteMixin}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Logger, Mode}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{DB, DBMetaCommands}
+import sk.hrstka.common.HrstkaException
 import sk.hrstka.repositories.scripts.DbManager
 
 import scala.concurrent.ExecutionContext.Implicits.global

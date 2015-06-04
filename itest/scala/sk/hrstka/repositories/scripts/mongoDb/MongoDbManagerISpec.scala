@@ -1,11 +1,11 @@
 package sk.hrstka.repositories.scripts.mongoDb
 
-import sk.hrstka.common.HrstkaException
-import itest.TestApplication
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{DoNotDiscover, FlatSpec, Suites}
 import reactivemongo.api.DBMetaCommands
 import reactivemongo.api.indexes.NSIndex
+import sk.hrstka.common.HrstkaException
+import sk.hrstka.itest.TestApplication
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

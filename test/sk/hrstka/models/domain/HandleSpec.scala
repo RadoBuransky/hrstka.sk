@@ -1,6 +1,6 @@
 package sk.hrstka.models.domain
 
-import test.BaseSpec
+import sk.hrstka.test.BaseSpec
 
 class HandleSpec extends BaseSpec {
   behavior of "fromHumanName"

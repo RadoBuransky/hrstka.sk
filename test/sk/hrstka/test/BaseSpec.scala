@@ -1,4 +1,4 @@
-package test
+package sk.hrstka.test
 
 import org.scalatest.FlatSpec
 import org.scalatest.concurrent.ScalaFutures

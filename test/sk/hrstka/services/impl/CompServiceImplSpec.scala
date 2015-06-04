@@ -10,7 +10,7 @@ import sk.hrstka.models.domain
 import sk.hrstka.models.domain.{CompSpec, Handle, TechSpec}
 import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.{LocationService, TechService}
-import test.BaseSpec
+import sk.hrstka.test.BaseSpec
 
 import scala.concurrent.Future
 

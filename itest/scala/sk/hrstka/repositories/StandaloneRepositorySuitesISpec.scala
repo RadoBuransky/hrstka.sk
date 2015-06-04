@@ -1,7 +1,7 @@
 package sk.hrstka.repositories
 
-import _root_.itest.TestApplication
 import org.scalatest.{DoNotDiscover, Suites}
+import sk.hrstka.itest.TestApplication
 
 @DoNotDiscover
 class StandaloneRepositorySuitesISpec extends Suites with TestApplication {

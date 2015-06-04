@@ -1,8 +1,8 @@
 package sk.hrstka.repositories
 
-import _root_.itest.TestApplication
-import sk.hrstka.common.HrstkaException
 import org.scalatest.DoNotDiscover
+import sk.hrstka.common.HrstkaException
+import sk.hrstka.itest.TestApplication
 import sk.hrstka.models.db.CitySpec
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{CityCollection, MongoCityRepository}
