@@ -1,10 +1,11 @@
 package models.db
 
 object UserSpec {
+  val radoPassword = "abc"
   val rado = User(
     _id               = Identifiable.empty,
     email             = "radoburansky@gmail.com",
-    encryptedPassword = "abc",
+    encryptedPassword = "$2a$10$GhhDT6A3pNjFdyK24eqXzODE7rvjROhWe9gpGK.QUOO9j7gvsdme2",
     role              = "slave"
   )
 

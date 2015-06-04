@@ -45,6 +45,5 @@ final class AuthServiceImpl @Inject() (userRepository: UserRepository) extends A
   }
 
   private def encrypt(clear: String): String = clear.bcrypt
-  private def check(candidate: String, encryptedPassword: String): Boolean =
-    candidate.isBcrypted(encryptedPassword)
+  private def check(candidate: String, encryptedPassword: String): Boolean = candidate.isBcrypted(encryptedPassword)
 }

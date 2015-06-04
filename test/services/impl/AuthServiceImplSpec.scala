@@ -1,17 +1,18 @@
 package services.impl
 
-import models.db
+import models.{db, domain}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.FlatSpec
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import reactivemongo.bson.BSONObjectID
 import repositories.UserRepository
 
 import scala.concurrent.Future
 
-class AuthServiceImplSpec extends FlatSpec with MockitoSugar {
+class AuthServiceImplSpec extends FlatSpec with MockitoSugar with ScalaFutures {
   import models.db.UserSpec._
 
   behavior of "createUser"
@@ -19,8 +20,8 @@ class AuthServiceImplSpec extends FlatSpec with MockitoSugar {
   it should "insert eminent with an encrypted password to DB" in new TestScope {
     // Prepare
     val id = BSONObjectID.generate
-    val email = "a@a.com"
-    val password = "123"
+    val email = rado.email
+    val password = radoPassword
     when(userRepository.insert(any[db.User])).thenReturn(Future.successful(id))
 
     // Execute
@@ -40,12 +41,38 @@ class AuthServiceImplSpec extends FlatSpec with MockitoSugar {
 
   behavior of "findByEmail"
 
-  it should "find an user in DB" in new TestScope {
+  it should "find an user in DB and map it to domain" in new TestScope {
     // Prepare
-    when(userRepository.findByEmail("a@a.com")).thenReturn(Future.successful(Some(rado)))
+    when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
 
     // Execute
-    authService.findByEmail("a@a.com")
+    assert(authService.findByEmail(rado.email).futureValue.contains(domain.User(rado)))
+  }
+
+  behavior of "authenticate"
+
+  it should "return the user if exists and the password is correct" in new TestScope {
+    // Prepare
+    when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
+
+    // Execute
+    assert(authService.authenticate(rado.email, radoPassword).futureValue.contains(domain.User(rado)))
+  }
+
+  it should "return none if user exists but the password is wrong" in new TestScope {
+    // Prepare
+    when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(Some(rado)))
+
+    // Execute
+    assert(authService.authenticate(rado.email, "123").futureValue.isEmpty)
+  }
+
+  it should "return none if user does not exist" in new TestScope {
+    // Prepare
+    when(userRepository.findByEmail(rado.email)).thenReturn(Future.successful(None))
+
+    // Execute
+    assert(authService.authenticate(rado.email, radoPassword).futureValue.isEmpty)
   }
 
   private class TestScope {
