@@ -12,5 +12,5 @@ trait CityRepository {
   def insert(city: City): Future[Id]
   def getByHandle(handle: String): Future[City]
   def findByHandle(handle: String): Future[Option[City]]
-  def all(): Future[Seq[City]]
+  def all(): Future[Iterable[City]]
 }

@@ -18,7 +18,23 @@ case class Comp(id: Id,
                 internal: Boolean,
                 techRatings: Set[TechRating],
                 joel: Set[Int]) extends Identifiable {
-  def rank: Double = if (techRatings.isEmpty) 0.0 else techRatings.map(_.value).sum / techRatings.size.toDouble
+  codersCount match {
+    case Some(c) => employeeCount match {
+      case Some(e) if e < c => throw new IllegalArgumentException(s"Number of all employees is lower than number of all coders!")
+      case None => throw new IllegalArgumentException(s"Provide number of all employees!")
+      case _ =>
+    }
+    case None =>
+  }
+
+  femaleCodersCount match {
+    case Some(f) => codersCount match {
+      case Some(c) if c < f => throw new IllegalArgumentException(s"Number of all coders is lower than number of female coders!")
+      case None => throw new IllegalArgumentException(s"Provide number of all coders!")
+      case _ =>
+    }
+    case None =>
+  }
 }
 
 object CompFactory {

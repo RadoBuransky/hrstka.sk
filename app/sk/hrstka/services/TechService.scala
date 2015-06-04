@@ -12,7 +12,7 @@ trait TechService {
   def get(handle: Handle): Future[Tech]
   def upsert(tech: Tech): Future[Id]
   def allRatings(): Future[Seq[TechRating]]
-  def votesFor(userId: Id):Future[Seq[TechVote]]
+  def votesFor(userId: Id):Future[Iterable[TechVote]]
   def voteUp(id: Id, userId: Id): Future[Unit]
   def voteDown(id: Id, userId: Id): Future[Unit]
   def allCategories(): Future[Seq[TechCategory]]

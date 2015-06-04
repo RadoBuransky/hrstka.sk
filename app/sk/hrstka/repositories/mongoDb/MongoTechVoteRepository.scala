@@ -44,7 +44,7 @@ final class MongoTechVoteRepository @Inject()(protected val reactiveMongoApi: Re
       userIdField -> userId))
       .map(_.headOption.map(_.value))
 
-  override def all(userId: Option[Id]): Future[Seq[TechVote]] =
+  override def all(userId: Option[Id]): Future[Iterable[TechVote]] =
     userId match {
       case Some(id) => find(Json.obj(userIdField -> userId))
       case None => all()

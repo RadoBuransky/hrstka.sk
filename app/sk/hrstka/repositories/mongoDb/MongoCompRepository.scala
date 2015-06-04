@@ -13,7 +13,7 @@ import scala.concurrent.Future
 @Singleton
 final class MongoCompRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
   extends BaseMongoRepository[Comp](CompCollection) with CompRepository {
-  override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]] = {
+  override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Iterable[Comp]] = {
     val cityQuery = city match {
       case Some(cityHandle) => Json.obj("city" -> cityHandle)
       case None => Json.obj()

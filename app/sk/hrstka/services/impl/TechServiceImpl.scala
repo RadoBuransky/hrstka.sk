@@ -39,7 +39,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
 
   override def voteUp(id: Id, userId: Id) = voteDelta(id, userId, 1)
   override def voteDown(id: Id, userId: Id) = voteDelta(id, userId, -1)
-  override def votesFor(userId: Id): Future[Seq[TechVote]] =
+  override def votesFor(userId: Id): Future[Iterable[TechVote]] =
     techVoteRepository.all(Some(userId)).map(_.map(TechVoteFactory.apply))
 
   override def allCategories(): Future[Seq[TechCategory]] = Future.successful(TechCategory.allCategories)

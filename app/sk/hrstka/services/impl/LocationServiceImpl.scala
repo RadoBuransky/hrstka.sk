@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 @Singleton
 final class LocationServiceImpl @Inject() (cityRepository: CityRepository) extends LocationService {
-  override def all(): Future[Seq[domain.City]] = cityRepository.all().map(_.map(CityFactory.apply))
+  override def all(): Future[Iterable[domain.City]] = cityRepository.all().map(_.map(CityFactory.apply))
 
   override def get(handle: Handle): Future[domain.City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
 

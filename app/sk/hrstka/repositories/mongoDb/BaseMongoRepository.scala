@@ -86,7 +86,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
    *
    * @return All entities.
    */
-  def all(): Future[Seq[T]] = find(Json.obj())
+  def all(): Future[Iterable[T]] = find(Json.obj())
 
   protected def find(selector: JsValue, sort: JsValue = JsNull, first: Boolean = false): Future[Seq[T]] = {
     val findResult = collection.find(selector)

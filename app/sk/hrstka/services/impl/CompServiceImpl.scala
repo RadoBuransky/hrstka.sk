@@ -35,10 +35,17 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   }
 
   override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[Comp]] = {
+    // Get all technologies with ratings
     techService.allRatings().flatMap { techRatings =>
       val techRatingsSet = techRatings.toSet
-      compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { comps =>
-        Future.sequence(comps.map(dbCompToDomain(techRatingsSet, _)))
+
+      // Get all companies for the city and the technology
+      compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { dbComps =>
+        // Convert DB entities to domain
+        val comps = Future.sequence(dbComps.map(dbCompToDomain(techRatingsSet, _)))
+
+        // Sort by company rating
+        comps.map(_.toSeq.sortBy(CompRatingFactory(_).value))
       }
     }
   }

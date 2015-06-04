@@ -16,7 +16,7 @@ trait MainModelProvider {
     locationService.all().flatMap { cities =>
       techService.allRatings().map { techRatings =>
         action(MainModel(
-          cities  = cities.map(CityFactory(_)),
+          cities  = cities.map(CityFactory(_)).toSeq,
           techs   = techRatings.map(techRating => TechFactory(techRating.tech)),
           city    = city,
           tech    = tech,

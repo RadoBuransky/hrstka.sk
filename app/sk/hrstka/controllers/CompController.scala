@@ -58,7 +58,7 @@ class CompControllerImpl @Inject() (compService: CompService,
             withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
               Ok(sk.hrstka.views.html.index(
                 headline(city, tech),
-                comps.sortBy(_.rank). map(hrstka.models.ui.CompFactory(_))))
+                comps.map(hrstka.models.ui.CompFactory(_))))
           }
         }.recover {
           case t =>

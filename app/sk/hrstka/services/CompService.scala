@@ -13,7 +13,7 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[CompServiceImpl])
 trait CompService {
   /**
-   * Insert or update a company.
+   * Inserts or updates a company.
    *
    * @param comp Company to insert or update.
    * @param techHandles Handles of technologies that the company uses.
@@ -31,7 +31,7 @@ trait CompService {
   def get(compId: Id): Future[Comp]
 
   /**
-   * Gets all companies for the provided city AND tech.
+   * Gets all companies for the provided city AND tech ordered by their rating.
    *
    * @param city Filter companies for the city.
    * @param tech Filter companies for the technology.
