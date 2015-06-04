@@ -1,4 +1,4 @@
-package services.impl
+package sk.hrstka.services.impl
 
 import models.{db, domain}
 import org.mockito.ArgumentCaptor

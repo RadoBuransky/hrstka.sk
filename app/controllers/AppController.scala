@@ -3,7 +3,7 @@ package controllers
 import com.google.inject._
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import services.{LocationService, TechService}
+import sk.hrstka.services.{LocationService, TechService}
 
 @ImplementedBy(classOf[AppControllerImpl])
 trait AppController {

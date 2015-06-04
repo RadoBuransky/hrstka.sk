@@ -3,7 +3,7 @@ package controllers
 import com.google.inject._
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.{CompService, LocationService, TechService}
+import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

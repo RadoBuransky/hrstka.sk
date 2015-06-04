@@ -8,7 +8,7 @@ import models.{domain, ui}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Application, Logger}
-import services.{AuthService, CompService, LocationService, TechService}
+import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

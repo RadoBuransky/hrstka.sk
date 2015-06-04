@@ -12,7 +12,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.{AuthService, LocationService, TechService}
+import sk.hrstka.services.{AuthService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

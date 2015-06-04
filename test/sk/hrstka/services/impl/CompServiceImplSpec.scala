@@ -1,4 +1,4 @@
-package services.impl
+package sk.hrstka.services.impl
 
 import models.db
 import models.domain.TechSpec
@@ -8,7 +8,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
 import repositories.CompRepository
-import services.{LocationService, TechService}
+import sk.hrstka.services.{LocationService, TechService}
 import test.BaseSpec
 
 import scala.concurrent.Future

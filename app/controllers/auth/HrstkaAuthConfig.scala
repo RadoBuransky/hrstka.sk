@@ -5,7 +5,7 @@ import java.util.Base64
 import jp.t2v.lab.play2.auth._
 import models.domain.{Admin, Eminent, Role}
 import play.api.mvc.{Controller, RequestHeader, Result}
-import services.AuthService
+import sk.hrstka.services.AuthService
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._

@@ -1,8 +1,8 @@
-package services
+package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import models.domain.{City, Handle}
-import services.impl.LocationServiceImpl
+import sk.hrstka.services.impl.LocationServiceImpl
 
 import scala.concurrent.Future
 

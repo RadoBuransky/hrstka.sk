@@ -1,4 +1,4 @@
-package services.impl
+package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
 import models._
@@ -6,7 +6,7 @@ import models.db.Identifiable
 import models.domain.Identifiable.{Id, _}
 import models.domain._
 import repositories._
-import services.TechService
+import sk.hrstka.services.TechService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

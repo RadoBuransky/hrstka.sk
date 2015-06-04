@@ -1,9 +1,9 @@
-package services
+package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import models.domain.Identifiable._
 import models.domain._
-import services.impl.CompServiceImpl
+import sk.hrstka.services.impl.CompServiceImpl
 
 import scala.concurrent.Future
 

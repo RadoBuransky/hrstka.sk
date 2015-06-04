@@ -5,7 +5,7 @@ import models.ui
 import models.ui.MainModel
 import play.api.Application
 import play.api.mvc.Request
-import services.{LocationService, TechService}
+import sk.hrstka.services.{LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

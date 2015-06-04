@@ -1,11 +1,11 @@
-package services.impl
+package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
 import models.db
 import models.domain.{HandleFactory, City, CityFactory, Handle}
 import reactivemongo.bson.BSONObjectID
 import repositories.CityRepository
-import services.LocationService
+import sk.hrstka.services.LocationService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

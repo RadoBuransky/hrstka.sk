@@ -1,8 +1,8 @@
-package services
+package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import models.domain.User
-import services.impl.AuthServiceImpl
+import sk.hrstka.services.impl.AuthServiceImpl
 
 import scala.concurrent.Future
 
