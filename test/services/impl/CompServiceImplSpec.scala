@@ -127,6 +127,65 @@ class CompServiceImplSpec extends BaseSpec {
     verifyNoMore()
   }
 
+  behavior of "get"
+
+  it should "return a company" in new TestScope {
+    // Prepare
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechSpec.allRatings))
+    when(compRepository.get(db.CompSpec.avitech._id))
+      .thenReturn(Future.successful(db.CompSpec.avitech))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
+      .thenReturn(Future.successful(CompSpec.avitech.city))
+
+    // Execute
+    val result = futureValue(compService.get(avitech.id))
+    assertResult(avitech)(result)
+
+    // Verify
+    verify(techService).allRatings()
+    verify(compRepository).get(db.CompSpec.avitech._id)
+    verify(locationService).get(Handle(db.CompSpec.avitech.city))
+    verifyNoMore()
+  }
+
+  behavior of "topWomen"
+
+  it should "return sorted list of companies with the most female programmers" in new TestScope {
+    val noCodersSetComp = db.CompSpec.avitech.copy(codersCount = None)
+    val noCodersComp = db.CompSpec.avitech.copy(codersCount = Some(0))
+    val noFemaleCodersSetComp = db.CompSpec.avitech.copy(femaleCodersCount = None)
+    val noFemaleCodersComp = db.CompSpec.avitech.copy(femaleCodersCount = Some(0))
+
+    // Prepare
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(Seq(
+        db.CompSpec.borci,
+        noCodersSetComp,
+        noCodersComp,
+        db.CompSpec.avitech,
+        noFemaleCodersSetComp,
+        noFemaleCodersComp)))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechSpec.allRatings))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
+      .thenReturn(Future.successful(CompSpec.avitech.city))
+    when(locationService.get(Handle(db.CompSpec.borci.city)))
+      .thenReturn(Future.successful(CompSpec.borci.city))
+
+    // Execute
+    assertResult(Seq(borci, avitech)) {
+      futureValue(compService.topWomen())
+    }
+
+    // Verify
+    verify(compRepository).all(None, None)
+    verify(techService).allRatings()
+    verify(locationService, times(5)).get(Handle(db.CompSpec.avitech.city))
+    verify(locationService).get(Handle(db.CompSpec.borci.city))
+    verifyNoMore()
+  }
+
   private def assertComp(expected: Comp, actual: Comp): Unit = {
     // Partial assertions
     assertUnapplied(

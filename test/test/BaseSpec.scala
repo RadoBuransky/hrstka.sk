@@ -13,7 +13,7 @@ import scala.concurrent.Future
  * Common trait for all unit tests.
  */
 trait BaseSpec extends FlatSpec with MockitoSugar with ScalaFutures {
-  protected val logger = LoggerFactory.getLogger(getClass)
+  protected val logger = LoggerFactory.getLogger("SpecLogger")
 
   implicit override val patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(5, Millis))
 
