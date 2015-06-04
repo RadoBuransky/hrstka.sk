@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class AuthServiceImpl @Inject() (userRepository: UserRepository) extends AuthService {
+final class AuthServiceImpl @Inject() (userRepository: UserRepository) extends AuthService {
   def createUser(email: String, password: String): Future[Unit] = {
     userRepository.insert(db.User(Identifiable.empty, email, encrypt(password), Eminent.name)).map { lastError =>
       Logger.info(s"User created. [$email]")

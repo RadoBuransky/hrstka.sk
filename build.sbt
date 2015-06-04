@@ -9,12 +9,14 @@ version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.11.6"
 
+lazy val integrationTest = config("it") extend Test
+
 lazy val root = (project in file(".")).
-  configs(IntegrationTest).
+  configs(integrationTest).
   settings(Defaults.itSettings: _*).
   enablePlugins(PlayScala)
 
-scalaSource in IntegrationTest := baseDirectory.value / "itest" / "scala"
+scalaSource in integrationTest := baseDirectory.value / "itest" / "scala"
 
 routesGenerator := InjectedRoutesGenerator
 

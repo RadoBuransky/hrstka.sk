@@ -6,9 +6,8 @@ import repositories.scripts.mongoDb.MongoDbManagerISpec
 /**
  * Includes all integration tests that require running application.
  */
-class ApplicationSuitesISpec extends Suites with TestApplication {
+class ApplicationSuites extends Suites with TestApplication {
   override val nestedSuites = Vector(
-    new RepositorySuitesISpec(this),
     new MongoDbManagerISpec(this)
-  )
+  ) ++ new RepositorySuites(this).nestedSuites
 }

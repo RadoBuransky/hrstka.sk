@@ -5,11 +5,11 @@ import org.scalatest.{DoNotDiscover, Suites}
 
 @DoNotDiscover
 class StandaloneRepositorySuitesISpec extends Suites with TestApplication {
-  override val nestedSuites = Vector(new RepositorySuitesISpec(this))
+  override val nestedSuites = Vector(new RepositorySuites(this))
 }
 
 @DoNotDiscover
-class RepositorySuitesISpec(testApplication: TestApplication) extends Suites {
+class RepositorySuites(testApplication: TestApplication) extends Suites {
   override val nestedSuites = Vector(
     new BaseMongoRepositoryISpec(testApplication),
     new MongoCityRepositoryISpec(testApplication),

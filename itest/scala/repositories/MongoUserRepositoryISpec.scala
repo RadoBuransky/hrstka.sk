@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @DoNotDiscover
 class MongoUserRepositoryISpec(testApplication: TestApplication)
   extends BaseRepositoryISpec[MongoUserRepository](testApplication, UserCollection) {
-  import MongoUserRepositoryISpec._
+  import models.db.UserSpec._
 
   behavior of "upsert"
 
@@ -26,20 +26,4 @@ class MongoUserRepositoryISpec(testApplication: TestApplication)
       assert(ex.isInstanceOf[HrstkaException])
     }
   }
-}
-
-object MongoUserRepositoryISpec {
-  val rado = User(
-    _id               = Identifiable.empty,
-    email             = "radoburansky@gmail.com",
-    encryptedPassword = "abc",
-    role              = "slave"
-  )
-
-  val johny = User(
-    _id               = Identifiable.empty,
-    email             = "johny@noidea.com",
-    encryptedPassword = "xxx",
-    role              = "master"
-  )
 }
