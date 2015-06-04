@@ -1,13 +1,13 @@
-package controllers
+package sk.hrstka.controllers
 
 import com.google.inject._
-import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Controller}
+import sk.hrstka.controllers.auth.HrstkaAuthConfig
 import sk.hrstka.models.domain.Admin
 import sk.hrstka.services.{AuthService, LocationService, TechService}
 import views.html
@@ -69,7 +69,7 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
     form.password match {
       case form.passwordAgain =>
         authService.createUser(form.email, form.password).map { user =>
-          Redirect(controllers.routes.CompController.all())
+          Redirect(sk.hrstka.controllers.routes.CompController.all())
         }
       case _ => Future.successful(BadRequest("Passwords do not match!"))
     }

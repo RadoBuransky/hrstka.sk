@@ -1,12 +1,12 @@
-package controllers
+package sk.hrstka.controllers
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import controllers.auth.HrstkaAuthConfig
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Application, Logger}
 import sk.hrstka
+import sk.hrstka.controllers.auth.HrstkaAuthConfig
 import sk.hrstka.models.domain.{Tech, City, Handle}
 import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
@@ -69,7 +69,7 @@ class CompControllerImpl @Inject() (compService: CompService,
         case t =>
           Logger.error(s"Cannot get tech for handle! [$techHandle]", t)
           if (techHandle.isDefined)
-            Redirect(controllers.routes.CompController.cityTech(cityHandle.getOrElse(""), ""))
+            Redirect(sk.hrstka.controllers.routes.CompController.cityTech(cityHandle.getOrElse(""), ""))
           else
             BadRequest("Cannot get tech!")
       }
@@ -77,7 +77,7 @@ class CompControllerImpl @Inject() (compService: CompService,
       case t =>
         Logger.error(s"Cannot get city for handle! [$cityHandle]", t)
         if (cityHandle.isDefined)
-          Redirect(controllers.routes.CompController.all())
+          Redirect(sk.hrstka.controllers.routes.CompController.all())
         else
           BadRequest("Cannot get city!")
     }

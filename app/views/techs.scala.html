@@ -4,7 +4,7 @@
   techCategories: Seq[sk.hrstka.models.ui.TechCategory])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @main("Hŕstka Eminencie", "xxx") {
-    <form action="@controllers.auth.routes.AuthTechController.add" method="post">
+    <form action="@sk.hrstka.controllers.auth.routes.AuthTechController.add" method="post">
         <div class="form-group">
             <label for="categoryHandle">Kategória:</label>
             <select class="form-control" id="categoryHandle" name="categoryHandle" required>
@@ -33,8 +33,8 @@
                 <a href="@techRating.tech.website" target="_blank">@techRating.tech.name</a>
                 @techRating.value
                 @techVotes.get(techRating.tech.id).getOrElse(0)
-                <a class="btn btn-success" role="button" href="@controllers.auth.routes.AuthTechController.voteUp(techRating.tech.id)">Plus</a>
-                <a class="btn btn-danger" role="button" href="@controllers.auth.routes.AuthTechController.voteDown(techRating.tech.id)">Mínus</a>
+                <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteUp(techRating.tech.id)">Plus</a>
+                <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteDown(techRating.tech.id)">Mínus</a>
             </li>
         }
         </ul>

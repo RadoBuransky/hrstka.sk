@@ -1,9 +1,8 @@
-package controllers.auth
+package sk.hrstka.controllers.auth
 
 import java.net.URL
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import play.api.Application
@@ -12,6 +11,7 @@ import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import sk.hrstka
+import sk.hrstka.controllers.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain._
 import sk.hrstka.models.ui.TechCategoryFactory
 import sk.hrstka.services.{AuthService, LocationService, TechService}
@@ -78,7 +78,7 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
         name      = form.name,
         website   = new URL(form.website)
       )).map { techId =>
-        Redirect(controllers.auth.routes.AuthTechController.all())
+        Redirect(sk.hrstka.controllers.auth.routes.AuthTechController.all())
       }
     }
   }
@@ -93,6 +93,6 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
 
   private def vote[A](action: Future[Unit])(implicit request: RequestWithAttributes[A]) =
     action.map { Unit =>
-      Redirect(controllers.auth.routes.AuthTechController.all())
+      Redirect(sk.hrstka.controllers.auth.routes.AuthTechController.all())
     }
 }

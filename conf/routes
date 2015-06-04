@@ -1,30 +1,30 @@
-GET     /                           controllers.CompController.all
-GET     /*path/                     controllers.AppController.untrail(path: String)
+GET     /                           sk.hrstka.controllers.CompController.all
+GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
 
-GET     /login                      controllers.AuthController.login
-GET     /logout                     controllers.AuthController.logout
-POST    /authenticate               controllers.AuthController.authenticate
-GET     /register                   controllers.AuthController.registerView
-POST    /register                   controllers.AuthController.register
+GET     /login                      sk.hrstka.controllers.AuthController.login
+GET     /logout                     sk.hrstka.controllers.AuthController.logout
+POST    /authenticate               sk.hrstka.controllers.AuthController.authenticate
+GET     /register                   sk.hrstka.controllers.AuthController.registerView
+POST    /register                   sk.hrstka.controllers.AuthController.register
 
-GET     /technologie                controllers.auth.AuthTechController.all
-POST    /technologia                controllers.auth.AuthTechController.add
-GET     /technologia/:id/voteUp     controllers.auth.AuthTechController.voteUp(id: String)
-GET     /technologia/:id/voteDown   controllers.auth.AuthTechController.voteDown(id: String)
+GET     /technologie                sk.hrstka.controllers.auth.AuthTechController.all
+POST    /technologia                sk.hrstka.controllers.auth.AuthTechController.add
+GET     /technologia/:id/voteUp     sk.hrstka.controllers.auth.AuthTechController.voteUp(id: String)
+GET     /technologia/:id/voteDown   sk.hrstka.controllers.auth.AuthTechController.voteDown(id: String)
 
-GET     /programovanie/firmy                    controllers.CompController.all
-GET     /programovanie/zeny                     controllers.CompController.women
-GET     /programovanie/firmy/:city              controllers.CompController.cityTech(city: String, tech: String = "")
-GET     /programovanie/firmy/:city/:tech        controllers.CompController.cityTech(city: String, tech: String)
-GET     /programovanie/firma/:compId            controllers.CompController.get(compId: String)
+GET     /programovanie/firmy                    sk.hrstka.controllers.CompController.all
+GET     /programovanie/zeny                     sk.hrstka.controllers.CompController.women
+GET     /programovanie/firmy/:city              sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
+GET     /programovanie/firmy/:city/:tech        sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
+GET     /programovanie/firma/:compId            sk.hrstka.controllers.CompController.get(compId: String)
 
-GET     /programovanie/firma/:compId/uprav      controllers.auth.AuthCompController.editForm(compId: String)
-POST    /programovanie/firma                    controllers.auth.AuthCompController.save(compId: Option[String])
-GET     /programovanie/firma-nova               controllers.auth.AuthCompController.addForm
+GET     /programovanie/firma/:compId/uprav      sk.hrstka.controllers.auth.AuthCompController.editForm(compId: String)
+POST    /programovanie/firma                    sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
+GET     /programovanie/firma-nova               sk.hrstka.controllers.auth.AuthCompController.addForm
 
-GET     /api/companies              controllers.ApiController.comps
-GET     /api/technologies           controllers.ApiController.techs
-GET     /api/cities                 controllers.ApiController.cities
+GET     /api/companies              sk.hrstka.controllers.ApiController.comps
+GET     /api/technologies           sk.hrstka.controllers.ApiController.techs
+GET     /api/cities                 sk.hrstka.controllers.ApiController.cities
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")

@@ -1,9 +1,8 @@
-package controllers.auth
+package sk.hrstka.controllers.auth
 
 import java.net.URL
 
 import com.google.inject._
-import controllers.{BaseController, MainModelProvider}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import play.api.Application
@@ -11,7 +10,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import sk.hrstka.models.domain.{Eminent, Identifiable, Handle, Comp}
+import sk.hrstka.controllers.{BaseController, MainModelProvider}
+import sk.hrstka.models.domain.{Comp, Eminent, Handle, Identifiable}
 import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
@@ -90,12 +90,12 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
   import AuthCompController._
 
   override def addForm: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    edit(None, controllers.auth.routes.AuthCompController.save(None))
+    edit(None, sk.hrstka.controllers.auth.routes.AuthCompController.save(None))
   }
 
   override def editForm(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     compService.get(compId).flatMap { comp =>
-      edit(Some(comp), controllers.auth.routes.AuthCompController.save(Some(compId)))
+      edit(Some(comp), sk.hrstka.controllers.auth.routes.AuthCompController.save(Some(compId)))
     }
   }
 
@@ -121,7 +121,7 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
           form.techs.map(Handle.apply).toSet,
           loggedIn.email
         ).map { _ =>
-          Redirect(controllers.routes.CompController.all())
+          Redirect(sk.hrstka.controllers.routes.CompController.all())
         }
       }
     }

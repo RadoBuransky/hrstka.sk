@@ -1,4 +1,4 @@
-package controllers
+package sk.hrstka.controllers
 
 import com.google.inject._
 import play.api.i18n.MessagesApi
