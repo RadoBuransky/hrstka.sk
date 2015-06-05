@@ -1,14 +1,14 @@
-package sk.hrstka.controllers.impl
+package sk.hrstka.controllers.auth.impl
 
 import com.google.inject.{Inject, Singleton}
-import jp.t2v.lab.play2.auth.AuthElement
+import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import sk.hrstka.controllers._
-import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
+import sk.hrstka.controllers.auth.{AuthController, LoginForm, RegisterForm}
+import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain.Admin
 import sk.hrstka.services.{AuthService, LocationService, TechService}
 
@@ -21,7 +21,7 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
                                     protected val techService: TechService,
                                     protected val application: Application,
                                     val messagesApi: MessagesApi)
-  extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with AuthElement {
+  extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with AuthElement with LoginLogout with AuthConfig {
   val loginForm = Form(mapping("email" -> email, "password" -> text)(LoginForm.apply)(LoginForm.unapply))
   val registerForm = Form(mapping(
     "email" -> email,

@@ -109,15 +109,15 @@
                             <li><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.addForm">Pridať firmu</a></li>
                             <li><a href="@sk.hrstka.controllers.auth.routes.AuthTechController.all">Technológie</a></li>
                             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Admin)) {
-                                <li><a href="@sk.hrstka.controllers.routes.AuthController.register">Pridať eminenta</a></li>
+                                <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.register">Pridať eminenta</a></li>
                             }
                             <li class="divider"></li>
-                            <li><a href="@sk.hrstka.controllers.routes.AuthController.logout">Odhlásiť</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.logout">Odhlásiť</a></li>
                         </ul>
                     </li>
                     } else {
                         @if(mainModel.mode == play.api.Mode.Dev) {
-                            <li><a href="@sk.hrstka.controllers.routes.AuthController.login">Prihlásiť</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.login">Prihlásiť</a></li>
                         } else {
                             <li><a href="#">+ Pridať firmu</a></li>
                         }

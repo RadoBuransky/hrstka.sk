@@ -1,11 +1,11 @@
 GET     /                           sk.hrstka.controllers.CompController.all
 GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
 
-GET     /login                      sk.hrstka.controllers.AuthController.login
-GET     /logout                     sk.hrstka.controllers.AuthController.logout
-POST    /authenticate               sk.hrstka.controllers.AuthController.authenticate
-GET     /register                   sk.hrstka.controllers.AuthController.registerView
-POST    /register                   sk.hrstka.controllers.AuthController.register
+GET     /login                      sk.hrstka.controllers.auth.AuthController.login
+GET     /logout                     sk.hrstka.controllers.auth.AuthController.logout
+POST    /authenticate               sk.hrstka.controllers.auth.AuthController.authenticate
+GET     /register                   sk.hrstka.controllers.auth.AuthController.registerView
+POST    /register                   sk.hrstka.controllers.auth.AuthController.register
 
 GET     /technologie                sk.hrstka.controllers.auth.AuthTechController.all
 POST    /technologia                sk.hrstka.controllers.auth.AuthTechController.add
