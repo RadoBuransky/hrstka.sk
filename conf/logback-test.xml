@@ -8,6 +8,9 @@
     </appender>
 
     <logger name="SpecLogger" level="DEBUG" />
+    <!--
+    <logger name="sk.hrstka.services.impl.TechServiceImpl" level="DEBUG" />
+    -->
 
     <root level="OFF">
         <appender-ref ref="STDOUT" />

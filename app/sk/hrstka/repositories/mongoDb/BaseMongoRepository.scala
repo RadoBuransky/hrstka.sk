@@ -1,6 +1,5 @@
 package sk.hrstka.repositories.mongoDb
 
-import sk.hrstka.common.HrstkaException
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.BSONFormats._
@@ -8,6 +7,7 @@ import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.QueryOpts
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.core.commands.LastError
+import sk.hrstka.common.HrstkaException
 import sk.hrstka.models.db.Identifiable
 import sk.hrstka.models.db.Identifiable.Id
 
@@ -86,7 +86,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
    *
    * @return All entities.
    */
-  def all(): Future[Iterable[T]] = find(Json.obj())
+  def all(): Future[Traversable[T]] = find(Json.obj())
 
   protected def find(selector: JsValue, sort: JsValue = JsNull, first: Boolean = false): Future[Seq[T]] = {
     val findResult = collection.find(selector)

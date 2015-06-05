@@ -64,7 +64,8 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),
             userVotes.map(uv => uv.techId -> uv.value).toMap,
-            allCategories.map(TechCategoryFactory.apply)))
+            // TODO: Order categories somehow
+            allCategories.toSeq.map(TechCategoryFactory.apply)))
         }
     }
   }

@@ -7,7 +7,7 @@ import reactivemongo.bson.BSONObjectID
 import sk.hrstka.models
 import sk.hrstka.models.db.Comp
 import sk.hrstka.models.domain
-import sk.hrstka.models.domain.{CompSpec, Handle, TechSpec}
+import sk.hrstka.models.domain.{CompSpec, Handle, TechRatingSpec}
 import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
@@ -44,22 +44,22 @@ class CompServiceImplSpec extends BaseSpec {
 
   behavior of "all"
 
-  it should "return all companies if no city or tech is provided" in new TestScope {
+  it should "return all companies sorted by rating if no city or tech is provided" in new TestScope {
     // Prepare
     when(compRepository.all(None, None))
       .thenReturn(Future.successful(Seq(models.db.CompSpec.avitech, models.db.CompSpec.borci)))
     when(techService.allRatings())
-      .thenReturn(Future.successful(TechSpec.allRatings))
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
     when(locationService.get(Handle(models.db.CompSpec.borci.city)))
       .thenReturn(Future.successful(CompSpec.borci.city))
 
     // Execute
-    val result = compService.all(None, None).futureValue.toSet
+    val result = compService.all(None, None).futureValue
     assertComp(avitech, result.find(_.id == avitech.id).get)
     assertComp(borci, result.find(_.id == borci.id).get)
-    assertResult(Set(avitech, borci))(result)
+    assertResult(Seq(borci, avitech))(result)
 
     // Verify
     verify(compRepository).all(None, None)
@@ -74,7 +74,7 @@ class CompServiceImplSpec extends BaseSpec {
     when(compRepository.all(city = Some(avitech.city.handle.value), None))
       .thenReturn(Future.successful(Seq(models.db.CompSpec.avitech)))
     when(techService.allRatings())
-      .thenReturn(Future.successful(TechSpec.allRatings))
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
 
@@ -92,20 +92,20 @@ class CompServiceImplSpec extends BaseSpec {
 
   it should "return all companies that use PHP" in new TestScope {
     // Prepare
-    when(compRepository.all(None, tech = Some(TechSpec.phpRating.tech.handle.value)))
+    when(compRepository.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
       .thenReturn(Future.successful(Seq(models.db.CompSpec.borci)))
     when(techService.allRatings())
-      .thenReturn(Future.successful(TechSpec.allRatings))
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(locationService.get(Handle(models.db.CompSpec.borci.city)))
       .thenReturn(Future.successful(CompSpec.borci.city))
 
     // Execute
-    val result = futureValue(compService.all(None, tech = Some(TechSpec.phpRating.tech.handle))).toSet
+    val result = futureValue(compService.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
     assertComp(borci, result.find(_.id == borci.id).get)
     assertResult(Set(borci))(result)
 
     // Verify
-    verify(compRepository).all(None, tech = Some(TechSpec.phpRating.tech.handle.value))
+    verify(compRepository).all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value))
     verify(techService).allRatings()
     verify(locationService).get(Handle(models.db.CompSpec.borci.city))
     verifyNoMore()
@@ -113,17 +113,17 @@ class CompServiceImplSpec extends BaseSpec {
 
   it should "return all companies in Bratislava that use PHP" in new TestScope {
     // Prepare
-    when(compRepository.all(city = Some(avitech.city.handle.value), tech = Some(TechSpec.phpRating.tech.handle.value)))
+    when(compRepository.all(city = Some(avitech.city.handle.value), tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
       .thenReturn(Future.successful(Seq.empty))
     when(techService.allRatings())
-      .thenReturn(Future.successful(TechSpec.allRatings))
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
     // Execute
-    val result = futureValue(compService.all(city = Some(avitech.city.handle), tech = Some(TechSpec.phpRating.tech.handle))).toSet
+    val result = futureValue(compService.all(city = Some(avitech.city.handle), tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
     assertResult(Set.empty)(result)
 
     // Verify
-    verify(compRepository).all(city = Some(avitech.city.handle.value), tech = Some(TechSpec.phpRating.tech.handle.value))
+    verify(compRepository).all(city = Some(avitech.city.handle.value), tech = Some(TechRatingSpec.phpRating.tech.handle.value))
     verify(techService).allRatings()
     verifyNoMore()
   }
@@ -133,7 +133,7 @@ class CompServiceImplSpec extends BaseSpec {
   it should "return a company" in new TestScope {
     // Prepare
     when(techService.allRatings())
-      .thenReturn(Future.successful(TechSpec.allRatings))
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(compRepository.get(models.db.CompSpec.avitech._id))
       .thenReturn(Future.successful(models.db.CompSpec.avitech))
     when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
@@ -168,7 +168,7 @@ class CompServiceImplSpec extends BaseSpec {
         noFemaleCodersSetComp,
         noFemaleCodersComp)))
     when(techService.allRatings())
-      .thenReturn(Future.successful(TechSpec.allRatings))
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
     when(locationService.get(Handle(models.db.CompSpec.borci.city)))

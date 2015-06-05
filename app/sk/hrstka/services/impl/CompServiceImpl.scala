@@ -17,7 +17,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
 
   override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[Id] = {
     compRepository.upsert(hrstka.models.db.Comp(
-      _id = if (comp.id.isEmpty) Identifiable.empty else comp.id,
+      _id = comp.id,
       authorId = userId,
       name = comp.name,
       website = comp.website.toString,

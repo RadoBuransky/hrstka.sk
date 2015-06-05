@@ -147,7 +147,7 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
     )
   }
 
-  private def emptyIds(techVotes: Iterable[TechVote]) = techVotes.map(emptyId)
+  private def emptyIds(techVotes: Traversable[TechVote]) = techVotes.map(emptyId)
   private def emptyId(techVote: TechVote) = techVote.copy(_id = Identifiable.empty)
 }
 

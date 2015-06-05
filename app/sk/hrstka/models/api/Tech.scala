@@ -7,7 +7,7 @@ case class Tech(id: String,
                 name: String,
                 category: String,
                 website: String,
-                rating: Double)
+                rating: BigDecimal)
 
 object TechFactory {
   def fromDomain(techRating: TechRating) = Tech(

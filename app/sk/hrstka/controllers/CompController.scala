@@ -97,7 +97,7 @@ class CompControllerImpl @Inject() (compService: CompService,
   }
 
   private def techForHandle(techHandle: Option[String]): Future[Option[Tech]] = techHandle match {
-    case Some(handle) => techService.get(Handle(handle)).map(Some(_))
+    case Some(handle) => techService.getByHandle(Handle(handle)).map(Some(_))
     case None => Future.successful(None)
   }
 

@@ -1,7 +1,5 @@
 package sk.hrstka.models.domain
 
-import sk.hrstka.common.HrstkaException
-
 /**
  * Technology rating.
  *
@@ -9,7 +7,7 @@ import sk.hrstka.common.HrstkaException
  * @param value Number value between 0.0 and 1.0. The more the better.
  */
 case class TechRating(tech: Tech,
-                      value: Double) {
+                      value: BigDecimal) {
   if (value > 1.0)
     throw new IllegalArgumentException(s"Tech rating cannot be greater than 1.0 [$value]")
   if (value < 0.0)
@@ -32,6 +30,9 @@ object TechRatingFactory {
   def apply(tech: Tech, upVotesValue: Int, voteCount: Int): TechRating =
     if (voteCount == 0)
       TechRating(tech, 0)
-    else
+    else {
+      if (upVotesValue > voteCount * maxVoteValue)
+        throw new IllegalArgumentException(s"Illegal vote value! [${tech.handle}, $upVotesValue, $voteCount]")
       TechRating(tech, upVotesValue.toDouble / (voteCount.toDouble * maxVoteValue.toDouble))
+    }
 }

@@ -16,7 +16,7 @@ trait LocationService {
    * 
    * @return All cities.
    */
-  def all(): Future[Iterable[City]]
+  def all(): Future[Traversable[City]]
 
   /**
    * Gets city for the handle if exists, fails otherwise.

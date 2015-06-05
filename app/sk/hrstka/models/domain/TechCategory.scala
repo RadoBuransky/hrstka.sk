@@ -10,9 +10,16 @@ sealed trait TechCategory {
   def handle: Handle = HandleFactory.fromHumanName(en)
 
   /**
-   * Slovak name.
+   * English name.
    */
   def en: String
+
+  /**
+   * Nice string representation.
+   *
+   * @return
+   */
+  override def toString = handle.value
 }
 
 /**

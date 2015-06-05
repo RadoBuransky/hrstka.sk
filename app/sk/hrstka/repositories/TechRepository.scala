@@ -7,9 +7,31 @@ import sk.hrstka.repositories.mongoDb.MongoTechRepository
 
 import scala.concurrent.Future
 
+/**
+ * Technology repository.
+ */
 @ImplementedBy(classOf[MongoTechRepository])
 trait TechRepository {
+  /**
+   * Inserts or updates a technology.
+   *
+   * @param tech Technology to insert or update.
+   * @return Identifier of the technology.
+   */
   def upsert(tech: Tech): Future[Id]
-  def all(): Future[Seq[Tech]]
+
+  /**
+   * Gets technology for the handle if exists, fails otherwiswe.
+   *
+   * @param handle Handle to get the technology for.
+   * @return Found technology.
+   */
   def getByHandle(handle: String): Future[Tech]
+
+  /**
+   * Gets all technologies unordered.
+   *
+   * @return Found technologies.
+   */
+  def all(): Future[Traversable[Tech]]
 }

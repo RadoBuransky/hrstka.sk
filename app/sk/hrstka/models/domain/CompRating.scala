@@ -7,7 +7,7 @@ package sk.hrstka.models.domain
  * @param value Number value between 0.0 and 1.0. The more the better.
  */
 case class CompRating(comp: Comp,
-                      value: Double) {
+                      value: BigDecimal) {
   if (value > 1.0)
     throw new IllegalArgumentException(s"Company rating cannot be greater than 1 [$value]")
   if (value < 0.0)
@@ -38,29 +38,29 @@ object CompRatingFactory {
       0.1 * codersRatio(comp))
   }
 
-  private[domain] def techRating(comp: Comp): Double = {
+  private[domain] def techRating(comp: Comp): BigDecimal = {
     val techRatingValues = comp.techRatings.map(_.value)
     if (techRatingValues.isEmpty)
       0.0
     else
-      techRatingValues.sum / techRatingValues.size.toDouble
+      techRatingValues.sum / techRatingValues.size
   }
 
-  private[domain] def joelsTest(comp: Comp): Double = comp.joel.size / 12.0
+  private[domain] def joelsTest(comp: Comp): BigDecimal = comp.joel.size / 12.0
 
-  private[domain] def femaleRatio(comp: Comp): Double = {
+  private[domain] def femaleRatio(comp: Comp): BigDecimal = {
     val females = comp.femaleCodersCount.getOrElse(0)
     val males = comp.codersCount.getOrElse(0) - females
 
     if (females == 0 || males == 0)
       0.0
     else {
-      val opt = (females + males).toDouble / 2.0
+      val opt = (females + males) / 2.0
       1.0 - (Math.abs(females - opt) / opt)
     }
   }
 
-  private[domain] def codersRatio(comp: Comp): Double = {
+  private[domain] def codersRatio(comp: Comp): BigDecimal = {
     val all = comp.employeeCount.getOrElse(0)
     val coders = comp.codersCount.getOrElse(0)
 

@@ -9,9 +9,9 @@ import sk.hrstka.models
  * @param value Percentage between 0 and 100.
  */
 case class TechRating(tech: Tech,
-                      value: Double)
+                      value: Int)
 
 object TechRatingFactory {
   def apply(techRating: models.domain.TechRating): TechRating =
-    TechRating(TechFactory(techRating.tech), techRating.value)
+    TechRating(TechFactory(techRating.tech), (techRating.value.toDouble * 100.0).round.toInt)
 }
