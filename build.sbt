@@ -1,4 +1,3 @@
-import sbt.Tests.Setup
 import sbt._
 
 organization := "sk.hrstka"
@@ -30,4 +29,4 @@ libraryDependencies ++= Seq(
   "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test"
 )
 
-ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "sk.hrstka.repositories.*"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;router.*;sk.hrstka.controllers.*;sk.hrstka.views.*;sk.hrstka.models.ui.*;sk.hrstka.repositories.*"
