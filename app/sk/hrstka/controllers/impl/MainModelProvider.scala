@@ -1,4 +1,4 @@
-package sk.hrstka.controllers
+package sk.hrstka.controllers.impl
 
 import play.api.Application
 import play.api.mvc.Request

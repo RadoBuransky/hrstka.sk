@@ -1,4 +1,4 @@
-package sk.hrstka.controllers
+package sk.hrstka.controllers.impl
 
 import play.api.data.Form
 import play.api.i18n.I18nSupport

@@ -1,4 +1,4 @@
-package sk.hrstka.controllers.auth
+package sk.hrstka.controllers.auth.impl
 
 import java.util.Base64
 
