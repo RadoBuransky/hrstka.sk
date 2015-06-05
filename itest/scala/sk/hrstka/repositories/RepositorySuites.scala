@@ -4,7 +4,7 @@ import org.scalatest.{DoNotDiscover, Suites}
 import sk.hrstka.itest.TestApplication
 
 @DoNotDiscover
-class StandaloneRepositorySuitesISpec extends Suites with TestApplication {
+class StandaloneRepositorySuites extends Suites with TestApplication {
   override val nestedSuites = Vector(new RepositorySuites(this))
 }
 

@@ -21,13 +21,14 @@ routesGenerator := InjectedRoutesGenerator
 
 libraryDependencies ++= Seq(
   cache,
+  ws,
   "org.webjars"       %   "bootstrap"             % "3.3.2",
   "org.reactivemongo" %%  "play2-reactivemongo"   % "0.10.5.0.akka23.play24-SNAPSHOT",
   "jp.t2v"            %%  "play2-auth"            % "0.13.2",
   "com.github.t3hnar" %%  "scala-bcrypt"          % "2.4",
   "org.scalatest"     %%  "scalatest"             % "2.2.4"             % "it,test",
   "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test",
-  "org.scalatestplus" %%  "play"                  % "1.2.0"             % "test"
+  "org.scalatestplus" %%  "play"                  % "1.4.0-M3"          % "test"
 )
 
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;router.*;sk.hrstka.controllers.*;sk.hrstka.views.*;sk.hrstka.models.ui.*;sk.hrstka.repositories.*"
