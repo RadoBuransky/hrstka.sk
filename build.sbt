@@ -26,7 +26,8 @@ libraryDependencies ++= Seq(
   "jp.t2v"            %%  "play2-auth"            % "0.13.2",
   "com.github.t3hnar" %%  "scala-bcrypt"          % "2.4",
   "org.scalatest"     %%  "scalatest"             % "2.2.4"             % "it,test",
-  "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test"
+  "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test",
+  "org.scalatestplus" %%  "play"                  % "1.2.0"             % "test"
 )
 
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;router.*;sk.hrstka.controllers.*;sk.hrstka.views.*;sk.hrstka.models.ui.*;sk.hrstka.repositories.*"

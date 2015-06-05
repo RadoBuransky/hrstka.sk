@@ -16,7 +16,7 @@ final class ApiControllerImpl @Inject() (compService: CompService,
   import JsonFormats._
 
   override def comps(): Action[AnyContent] = Action.async { implicit request =>
-    compService.all().map { comps =>
+    compService.all(None, None).map { comps =>
       Ok(Json.toJson(comps.map(CompFactory.fromDomain)))
     }
   }

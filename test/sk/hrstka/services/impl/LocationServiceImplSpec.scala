@@ -17,7 +17,7 @@ class LocationServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(db.CitySpec.all))
 
     // Execute
-    assert(locationService.all().futureValue.toSet == CitySpec.allCities.toSet)
+    assert(locationService.all().futureValue.toSet == CitySpec.all.toSet)
 
     // Verify
     verify(cityRepository).all()
