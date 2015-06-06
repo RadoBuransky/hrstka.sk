@@ -24,7 +24,7 @@ class CompControllerImpl @Inject() (compService: CompService,
                                     val messagesApi: MessagesApi)
   extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 
-  def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
+  override def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     compService.get(compId).flatMap { comp =>
       withMainModel(None, None, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.comp(CompFactory(comp)))

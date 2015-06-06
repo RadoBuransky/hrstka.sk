@@ -3,6 +3,7 @@ package sk.hrstka.controllers.auth.impl
 import java.util.Base64
 
 import jp.t2v.lab.play2.auth._
+import play.api.Application
 import play.api.mvc.{Controller, RequestHeader, Result}
 import sk.hrstka.models.domain
 import sk.hrstka.models.domain.Role
@@ -15,6 +16,7 @@ trait HrstkaAuthConfig extends AuthConfig {
   self: Controller =>
   
   protected def authService: AuthService
+  protected def application: Application
   
   /**
    * A type that is used to identify a user.
@@ -103,7 +105,7 @@ trait HrstkaAuthConfig extends AuthConfig {
    * You can custom SessionID Token handler.
    * Default implemntation use Cookie.
    */
-  override lazy val tokenAccessor = new Base64CookieTokenAccessor
+  override lazy val tokenAccessor = new Base64CookieTokenAccessor(application)
 }
 
 object HrstkaAuthConfig {
@@ -113,8 +115,8 @@ object HrstkaAuthConfig {
 /**
  * Encode cookie to base 64 due to some validation issues.
  */
-class Base64CookieTokenAccessor extends CookieTokenAccessor(
-  cookieSecureOption = play.api.Play.isProd(play.api.Play.current),
+class Base64CookieTokenAccessor(application: Application) extends CookieTokenAccessor(
+  cookieSecureOption = play.api.Play.isProd(application),
   cookieMaxAge       = Some(HrstkaAuthConfig.sessionTimeoutInSeconds)) {
   override protected def verifyHmac(token: SignedToken): Option[AuthenticityToken] =
     super.verifyHmac(new String(Base64.getDecoder.decode(token)))
