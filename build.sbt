@@ -31,4 +31,4 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" %%  "play"                  % "1.4.0-M3"          % "test"
 )
 
-ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;router.*;sk.hrstka.controllers.*;sk.hrstka.views.*;sk.hrstka.models.ui.*;sk.hrstka.repositories.*"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;.*Reverse.*Controller;router.*;sk.hrstka.repositories.*"

@@ -2,9 +2,9 @@ package sk.hrstka.controllers.impl
 
 import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.OptionalAuthElement
+import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import play.api.{Application, Logger}
 import sk.hrstka
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
@@ -25,19 +25,21 @@ class CompControllerImpl @Inject() (compService: CompService,
   extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 
   override def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
-    compService.get(compId).flatMap { comp =>
-      withMainModel(None, None, loggedIn) { implicit mainModel =>
+    for {
+      comp    <- compService.get(compId)
+      result  <- withMainModel(None, None, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.comp(CompFactory(comp)))
       }
-    }
+    } yield result
   }
 
   override def women: Action[AnyContent] = AsyncStack { implicit request =>
-    compService.topWomen().flatMap { topWomen =>
-      withMainModel(None, None, loggedIn) { implicit mainModel =>
+    for {
+      topWomen  <- compService.topWomen()
+      result    <- withMainModel(None, None, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.women(topWomen.map(hrstka.models.ui.CompFactory(_))))
       }
-    }
+    } yield result
   }
 
   override def all = cityTech("", "")
@@ -45,35 +47,16 @@ class CompControllerImpl @Inject() (compService: CompService,
     cityTechAction(Option(cityHandle).filter(_.trim.nonEmpty), Option(techHandle).filter(_.trim.nonEmpty))
 
   private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = AsyncStack { implicit request =>
-    cityForHandle(cityHandle).flatMap { city =>
-      techForHandle(techHandle).flatMap { tech =>
-        compService.all(city.map(_.handle), tech.map(_.handle)).flatMap { comps =>
-            withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
-              Ok(sk.hrstka.views.html.index(
-                headline(city, tech),
-                comps.map(hrstka.models.ui.CompFactory(_))))
-          }
-        }.recover {
-          case t =>
-            Logger.error(s"Cannot get companies for city/tech! [$cityHandle, $techHandle]", t)
-            InternalServerError("Oh shit!")
-        }
-      }.recover {
-        case t =>
-          Logger.error(s"Cannot get tech for handle! [$techHandle]", t)
-          if (techHandle.isDefined)
-            Redirect(sk.hrstka.controllers.routes.CompController.cityTech(cityHandle.getOrElse(""), ""))
-          else
-            BadRequest("Cannot get tech!")
+    for {
+      city    <- cityForHandle(cityHandle)
+      tech    <- techForHandle(techHandle)
+      comps   <- compService.all(city.map(_.handle), tech.map(_.handle))
+      result  <- withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
+        Ok(sk.hrstka.views.html.index(
+          headline(city, tech),
+          comps.map(hrstka.models.ui.CompFactory(_))))
       }
-    }.recover {
-      case t =>
-        Logger.error(s"Cannot get city for handle! [$cityHandle]", t)
-        if (cityHandle.isDefined)
-          Redirect(sk.hrstka.controllers.routes.CompController.all())
-        else
-          BadRequest("Cannot get city!")
-    }
+    } yield result
   }
 
   private def headline(city: Option[City], tech: Option[Tech]): String = {
