@@ -4,7 +4,7 @@ import org.mockito.Mockito._
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results
 import play.api.test.FakeRequest
-import sk.hrstka.controllers.impl.test.BaseControllerSpec
+import sk.hrstka.controllers.test.BaseControllerSpec
 import sk.hrstka.models.domain.{CompSpec, TechRatingSpec}
 import sk.hrstka.services.{AuthService, CompService}
 

@@ -1,4 +1,4 @@
-package sk.hrstka.controllers.impl.test
+package sk.hrstka.controllers.test
 
 import play.api.{Mode, Application}
 import play.api.mvc.Result
