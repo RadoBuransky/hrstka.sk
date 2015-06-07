@@ -71,7 +71,7 @@ abstract class BaseControllerISpec extends BaseControllerSpec with Results {
     protected def assertAuthResult(hrstkaAuthConfig: HrstkaAuthConfig,
                                    action: Action[AnyContent],
                                    form: Map[String, String] = Map.empty)(f: (Future[Result]) => Unit): Unit = {
-      val reuestWithUser = FakeRequest().withLoggedIn(hrstkaAuthConfig)(authUser.email)
+      val reuestWithUser = FakeRequest().withLoggedIn(hrstkaAuthConfig)(authUser.email.value)
       val requestWithForm = if (form.isEmpty)
         reuestWithUser
       else

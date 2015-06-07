@@ -10,14 +10,19 @@ import sk.hrstka.models
  * @param role User role.
  */
 case class User(id: Id,
-                email: String,
+                email: Email,
                 role: Role)
+
+case class Email(value: String) {
+  if (!value.contains("@"))
+    throw new IllegalArgumentException(s"This does not look like an email address! [$value]")
+}
 
 object UserFactory {
   def apply(user: models.db.User): User =
     User(
       id    = Identifiable.fromBSON(user._id),
-      email = user.email,
+      email = Email(user.email),
       role  = Role(user.role)
     )
 }

@@ -9,7 +9,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.auth.{AuthController, LoginForm, RegisterForm}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
-import sk.hrstka.models.domain.Admin
+import sk.hrstka.models.domain.{Admin, Email}
 import sk.hrstka.services.{AuthService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -44,8 +44,8 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
         BadRequest(sk.hrstka.views.html.login(formWithErrors))
       },
       loginForm => {
-        authService.authenticate(loginForm.email, loginForm.password).flatMap {
-          case Some(user) => gotoLoginSucceeded(user.email)
+        authService.authenticate(Email(loginForm.email), loginForm.password).flatMap {
+          case Some(user) => gotoLoginSucceeded(user.email.value)
           case _ => Future.successful(Unauthorized)
         }
       }
@@ -56,7 +56,7 @@ class AuthControllerImpl @Inject() (protected val authService: AuthService,
     val form = registerForm.bindFromRequest.get
     form.password match {
       case form.passwordAgain =>
-        authService.createUser(form.email, form.password).map { user =>
+        authService.createUser(Email(form.email), form.password).map { user =>
           Redirect(sk.hrstka.controllers.routes.CompController.all())
         }
       case _ => Future.successful(BadRequest("Passwords do not match!"))

@@ -6,7 +6,6 @@ import play.api.Application
 import play.api.mvc.{Controller, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import sk.hrstka.models.db
 import sk.hrstka.models.domain.{Admin, Eminent, UserSpec}
 import sk.hrstka.services.AuthService
 import sk.hrstka.test.BaseSpec
@@ -15,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect._
 
-class HrstkaAuthConfigSpec extends BaseSpec with ScalaFutures with Results {
+class HrstkaAuthConfigISpec extends BaseSpec with ScalaFutures with Results {
   behavior of "idTag"
 
   it should "be a String" in new TestScope {
@@ -32,14 +31,14 @@ class HrstkaAuthConfigSpec extends BaseSpec with ScalaFutures with Results {
 
   it should "find user by email" in new TestScope {
     // Prepare
-    when(authService.findByEmail(db.UserSpec.rado.email))
+    when(authService.findByEmail(UserSpec.rado.email))
       .thenReturn(Future.successful(Some(UserSpec.rado)))
 
     // Execute
-    assert(controller.resolveUser(db.UserSpec.rado.email).futureValue.contains(UserSpec.rado))
+    assert(controller.resolveUser(UserSpec.rado.email.value).futureValue.contains(UserSpec.rado))
 
     // Verify
-    verify(authService).findByEmail(db.UserSpec.rado.email)
+    verify(authService).findByEmail(UserSpec.rado.email)
     verifyNoMore()
   }
 

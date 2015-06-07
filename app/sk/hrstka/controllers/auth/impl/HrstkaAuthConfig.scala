@@ -6,7 +6,7 @@ import jp.t2v.lab.play2.auth._
 import play.api.Application
 import play.api.mvc.{Controller, RequestHeader, Result}
 import sk.hrstka.models.domain
-import sk.hrstka.models.domain.Role
+import sk.hrstka.models.domain.{Email, Role}
 import sk.hrstka.services.AuthService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,7 +55,7 @@ trait HrstkaAuthConfig extends AuthConfig {
    * A function that returns a `User` object from an `Id`.
    * You can alter the procedure to suit your application.
    */
-  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = authService.findByEmail(id)
+  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = authService.findByEmail(Email(id))
 
   /**
    * Where to redirect the user after a successful login.
