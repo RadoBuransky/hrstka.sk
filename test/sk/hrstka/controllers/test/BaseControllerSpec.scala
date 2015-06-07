@@ -2,7 +2,8 @@ package sk.hrstka.controllers.test
 
 import org.mockito.Mockito._
 import org.mockito.internal.util.MockUtil
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Mode}
 import sk.hrstka.models.domain.{CitySpec, TechRatingSpec}
@@ -34,6 +35,18 @@ abstract class BaseControllerSpec extends BaseSpec {
           .thenReturn(Mode.Test)
       }
     }
+
+    protected def assertResult(action: Action[AnyContent],
+                               form: Map[String, String] = Map.empty)(f: (Future[Result]) => Unit): Unit = {
+      val requestWithForm = if (form.isEmpty)
+        FakeRequest()
+      else
+        FakeRequest().withFormUrlEncodedBody(form.toSeq:_*)
+
+      val result = action(requestWithForm)
+      f(result)
+    }
+
     def verifyMainModel(): Unit = {
       verify(locationService, atLeastOnce()).all()
       verify(techService, atLeastOnce()).allRatings()

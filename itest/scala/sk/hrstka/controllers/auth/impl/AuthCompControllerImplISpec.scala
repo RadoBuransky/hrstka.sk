@@ -28,8 +28,8 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
   }
 
   it should "get HTML view with a form to add a company" in new TestScope {
-    withAuthorisedUser {
-      assertAuthView(authCompController, authCompController.addForm()) { content =>
+    withEminentUser() {
+      assertAuthView(eminentUser, authCompController, authCompController.addForm()) { content =>
         assert(content.contains("<form action=\"/programovanie/firma\" method=\"post\">"))
       }
     }
@@ -42,13 +42,13 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
   }
 
   it should "get HTML view with a form to edit a company" in new TestScope {
-    withAuthorisedUser {
+    withEminentUser() {
       // Prepare
       when(compService.get(CompSpec.avitech.id))
         .thenReturn(Future.successful(CompSpec.avitech))
 
       // Execute
-      assertAuthView(authCompController, authCompController.editForm(CompSpec.avitech.id.value)) { content =>
+      assertAuthView(eminentUser, authCompController, authCompController.editForm(CompSpec.avitech.id.value)) { content =>
         assert(content.contains("<form action=\"/programovanie/firma?compId="))
       }
 
@@ -67,33 +67,17 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
     assertAnonymousUser(authCompController.save(Some(CompSpec.avitech.id.value)))
   }
 
-  it should "handle sumbitted form with a company to add" in new TestScope {
+  it should "handle sumbitted form with a company to add" in new SaveTestScope {
     save(None)
   }
 
-  it should "handle sumbitted form with a company to edit" in new TestScope {
+  it should "handle sumbitted form with a company to edit" in new SaveTestScope {
     save(Some(BSONObjectID.generate.stringify))
   }
 
-  private class TestScope extends BaseAuthTestScope(application) {
-    val compService = mock[CompService]
-
-    val authCompController = new AuthCompControllerImpl(
-      compService,
-      authService,
-      techService,
-      locationService,
-      application,
-      messagesApi
-    )
-
-    override def verifyNoMore(): Unit = {
-      verifyNoMoreInteractions(compService)
-      super.verifyNoMore()
-    }
-
+  private class SaveTestScope extends TestScope {
     def save(compId: Option[String]): Unit = {
-      postWithAuthorisedUser {
+      withEminentUser(mainModel = false) {
         val comp = Comp(
           id = compId.map(Id).getOrElse(Identifiable.empty),
           name = "New comp",
@@ -118,7 +102,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         val newCompId = compId.map(Id).getOrElse(Identifiable.fromBSON(BSONObjectID.generate))
         when(locationService.getOrCreateCity(CitySpec.noveZamky.sk))
           .thenReturn(Future.successful(CitySpec.noveZamky))
-        when(compService.upsert(comp, techHandles, authUser.id))
+        when(compService.upsert(comp, techHandles, eminentUser.id))
           .thenReturn(Future.successful(newCompId))
 
         // Execute
@@ -140,14 +124,32 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           "joel[1]" -> "5",
           "joel[2]" -> "11"
         )
-        assertAuthResult(authCompController, authCompController.save(compId), form) { result =>
+        assertAuthResult(eminentUser, authCompController, authCompController.save(compId), form) { result =>
           assert(status(result) == SEE_OTHER)
         }
 
         // Verify
         verify(locationService).getOrCreateCity(CitySpec.noveZamky.sk)
-        verify(compService).upsert(comp, techHandles, authUser.id)
+        verify(compService).upsert(comp, techHandles, eminentUser.id)
       }
+    }
+  }
+
+  private class TestScope extends BaseAuthTestScope(application) {
+    val compService = mock[CompService]
+
+    val authCompController = new AuthCompControllerImpl(
+      compService,
+      authService,
+      techService,
+      locationService,
+      application,
+      messagesApi
+    )
+
+    override def verifyNoMore(): Unit = {
+      verifyNoMoreInteractions(compService)
+      super.verifyNoMore()
     }
   }
 }

@@ -10,7 +10,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
 import sk.hrstka.controllers.test.BaseControllerSpec
-import sk.hrstka.models.domain.UserSpec
+import sk.hrstka.models.domain.{User, UserSpec}
 import sk.hrstka.services.AuthService
 
 import scala.concurrent.ExecutionContext.Implicits._
@@ -37,41 +37,37 @@ abstract class BaseControllerISpec extends BaseControllerSpec with Results {
   protected class BaseAuthTestScope(application: Application) extends BaseTestScope(application) {
     val authService = mock[AuthService]
     lazy val messagesApi = application.injector.instanceOf[MessagesApi]
-    lazy val authUser = UserSpec.rado
+    lazy val eminentUser = UserSpec.johny
+    lazy val adminUser = UserSpec.rado
 
-    def withAuthorisedUser(testBody: => Unit): Unit = {
+    def withEminentUser(mainModel: Boolean = true)(testBody: => Unit): Unit = withUser(eminentUser, mainModel)(testBody)
+    def withAdminUser(mainModel: Boolean = true)(testBody: => Unit): Unit = withUser(adminUser, mainModel)(testBody)
+
+    def withUser(user: User, mainModel: Boolean = true)(testBody: => Unit): Unit = {
       // Prepare
-      prepareAuth()
-      prepareMainModel()
+      prepareAuth(user)
+      if (mainModel)
+        prepareMainModel()
 
       testBody
 
       // Verify
-      verifyMainModel()
-      verifyAuth()
+      if (mainModel)
+        verifyMainModel()
+      verifyAuth(user)
       verifyNoMore()
     }
 
-    def postWithAuthorisedUser(testBody: => Unit): Unit = {
-      // Prepare
-      prepareAuth()
-
-      testBody
-
-      // Verify
-      verifyAuth()
-      verifyNoMore()
+    private def prepareAuth(user: User): Unit = {
+      when(authService.findByEmail(user.email))
+        .thenReturn(Future.successful(Some(user)))
     }
 
-    def prepareAuth(): Unit = {
-      when(authService.findByEmail(authUser.email))
-        .thenReturn(Future.successful(Some(authUser)))
-    }
-
-    protected def assertAuthResult(hrstkaAuthConfig: HrstkaAuthConfig,
+    protected def assertAuthResult(user: User,
+                                   hrstkaAuthConfig: HrstkaAuthConfig,
                                    action: Action[AnyContent],
                                    form: Map[String, String] = Map.empty)(f: (Future[Result]) => Unit): Unit = {
-      val reuestWithUser = FakeRequest().withLoggedIn(hrstkaAuthConfig)(authUser.email.value)
+      val reuestWithUser = FakeRequest().withLoggedIn(hrstkaAuthConfig)(user.email.value)
       val requestWithForm = if (form.isEmpty)
         reuestWithUser
       else
@@ -81,8 +77,10 @@ abstract class BaseControllerISpec extends BaseControllerSpec with Results {
       f(result)
     }
 
-    protected def assertAuthView(hrstkaAuthConfig: HrstkaAuthConfig, action: Action[AnyContent])(f: (String) => Unit): Unit = {
-      assertAuthResult(hrstkaAuthConfig, action) { result =>
+    protected def assertAuthView(user: User,
+                                 hrstkaAuthConfig: HrstkaAuthConfig,
+                                 action: Action[AnyContent])(f: (String) => Unit): Unit = {
+      assertAuthResult(user, hrstkaAuthConfig, action) { result =>
         assert(status(result) == OK)
         assert(contentType(result).contains("text/html"))
         f(contentAsString(result))
@@ -91,11 +89,21 @@ abstract class BaseControllerISpec extends BaseControllerSpec with Results {
 
     protected def assertAnonymousUser(action: Action[AnyContent]): Unit = {
       assert(status(action.apply(FakeRequest())) == UNAUTHORIZED)
+      verifyNoMore()
     }
 
+    protected def assertEminentUser(hrstkaAuthConfig: HrstkaAuthConfig,
+                                    action: Action[AnyContent]): Unit = {
+      withUser(eminentUser, mainModel = false) {
+        assertAuthResult(eminentUser, hrstkaAuthConfig, action) { result =>
+          assert(status(result) == FORBIDDEN)
+        }
+      }
+      verifyNoMore()
+    }
 
-    def verifyAuth(): Unit = {
-      verify(authService).findByEmail(authUser.email)
+    def verifyAuth(user: User): Unit = {
+      verify(authService).findByEmail(user.email)
     }
 
     override def verifyNoMore(): Unit = {
