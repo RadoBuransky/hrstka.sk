@@ -33,4 +33,10 @@ libraryDependencies ++= Seq(
   "jp.t2v"            %%  "play2-auth-test"       % "0.13.2"            % "test"
 )
 
-ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;.*Reverse.*Controller;router.*;sk.hrstka.repositories.*"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages :=
+  "controllers.*;" +
+  ".*Reverse.*Controller;" +
+  "router.*;" +
+  "sk.hrstka.repositories.*;" +
+  "sk.hrstka.controllers.auth.impl.*;" +
+  "sk.hrstka.views.html.auth.*"

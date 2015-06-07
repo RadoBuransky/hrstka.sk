@@ -26,7 +26,7 @@ final class AuthControllerImpl @Inject() (protected val authService: AuthService
 
   def login = Action.async { implicit request =>
     withMainModel() { implicit mainModel =>
-      Ok(sk.hrstka.views.html.login(loginForm))
+      Ok(sk.hrstka.views.html.auth.login(loginForm))
     }
   }
 
@@ -48,7 +48,7 @@ final class AuthControllerImpl @Inject() (protected val authService: AuthService
 
   override def registerView: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
     withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-      Ok(sk.hrstka.views.html.register())
+      Ok(sk.hrstka.views.html.auth.register())
     }
   }
 

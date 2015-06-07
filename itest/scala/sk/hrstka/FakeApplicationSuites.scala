@@ -4,13 +4,14 @@ import org.scalatest.Suites
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.test.FakeApplication
 import sk.hrstka.conf.RoutesISpec
-import sk.hrstka.controllers.auth.impl.{AuthControllerImplISpec, AuthCompControllerImplISpec}
+import sk.hrstka.controllers.auth.impl.{AuthCompControllerImplISpec, AuthControllerImplISpec, AuthTechControllerImplISpec}
 
 class FakeApplicationSuites extends BaseStandaloneFakeApplicationSuites {
   override val nestedSuites = Vector(
     new RoutesISpec(app),
     new AuthCompControllerImplISpec(app),
-    new AuthControllerImplISpec(app)
+    new AuthControllerImplISpec(app),
+    new AuthTechControllerImplISpec(app)
   )
 }
 

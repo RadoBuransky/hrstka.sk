@@ -74,7 +74,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.compEdit(comp.map(CompFactory.apply), companyTechnologies, joelQuestions, action))
+        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(CompFactory.apply), companyTechnologies, joelQuestions, action))
       }
     } yield result
 }

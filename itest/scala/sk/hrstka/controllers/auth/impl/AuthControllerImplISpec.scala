@@ -38,7 +38,6 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
 
   it should "not authorize anonymous user" in new TestScope {
     assertAnonymousUser(authController.logout())
-    verifyNoMore()
   }
 
   it should "log out an eminent user and redirect somewhere" in new LogoutTestScope {

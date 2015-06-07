@@ -1,6 +1,6 @@
 @()(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
-@main("Hŕstka Eminencie", "xxx") {
+@sk.hrstka.views.html.main("Hŕstka Eminencie", "xxx") {
     <h2>Registrácia eminenta</h2>
     <form action="@sk.hrstka.controllers.auth.routes.AuthController.register" method="post">
         <div class="form-group">

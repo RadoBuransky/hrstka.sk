@@ -21,11 +21,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
-                                        protected val locationService: LocationService,
-                                        protected val techService: TechService,
-                                        protected val application: Application,
-                                        val messagesApi: MessagesApi)
+final class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
+                                              protected val locationService: LocationService,
+                                              protected val techService: TechService,
+                                              protected val application: Application,
+                                              val messagesApi: MessagesApi)
   extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechControllerImpl._
 
@@ -39,7 +39,7 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
     serviceResult.flatMap {
       case (techRatings, allCategories, userVotes) =>
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-          Ok(sk.hrstka.views.html.techs(
+          Ok(sk.hrstka.views.html.auth.techs(
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),
             userVotes.map(uv => uv.techId.value -> uv.value).toMap,
@@ -49,7 +49,7 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
     }
   }
 
-  override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> hrstka.models.domain.Eminent) { implicit request =>
+  override def add: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     withForm(addTechForm) { form =>
       techService.upsert(Tech(
         id        = Identifiable.empty,
@@ -63,11 +63,11 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
     }
   }
 
-  override def voteUp(id: String) = AsyncStack(AuthorityKey -> hrstka.models.domain.Eminent) { implicit request =>
+  override def voteUp(id: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     vote(techService.voteUp(Id(id), loggedIn.id))
   }
 
-  override def voteDown(id: String) = AsyncStack(AuthorityKey -> hrstka.models.domain.Eminent) { implicit request =>
+  override def voteDown(id: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     vote(techService.voteDown(Id(id), loggedIn.id))
   }
 
