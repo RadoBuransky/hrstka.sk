@@ -1,7 +1,9 @@
 package sk.hrstka.controllers.test
 
+import org.mockito.internal.util.MockUtil
+import play.api.test.FakeRequest
 import play.api.{Mode, Application}
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import sk.hrstka.models.domain.{TechRatingSpec, CitySpec}
 import sk.hrstka.services.{LocationService, TechService}
@@ -17,24 +19,33 @@ abstract class BaseControllerSpec extends BaseSpec {
     f(contentAsString(result))
   }
 
-  protected abstract class BaseTestScope {
+  protected def assertVisitorUnauthorised(action: Action[AnyContent]): Unit = {
+    assert(status(action.apply(FakeRequest())) == UNAUTHORIZED)
+  }
+
+  protected abstract class BaseTestScope(val application: Application) {
+    def this() = this(mock[Application])
     val techService = mock[TechService]
     val locationService = mock[LocationService]
-    val application = mock[Application]
+    private lazy val applicationIsAMock = new MockUtil().isMock(application)
 
     def prepareMainModel(): Unit = {
       when(locationService.all())
         .thenReturn(Future.successful(CitySpec.all))
       when(techService.allRatings())
         .thenReturn(Future.successful(TechRatingSpec.allRatings))
-      when(application.mode)
-        .thenReturn(Mode.Test)
+      if (applicationIsAMock) {
+        when(application.mode)
+          .thenReturn(Mode.Test)
+      }
     }
 
     def verifyMainModel(): Unit = {
       verify(locationService).all()
       verify(techService).allRatings()
-      verify(application, times(2)).mode
+      if (applicationIsAMock) {
+        verify(application, times(2)).mode
+      }
     }
 
     def verifyNoMore(): Unit = {

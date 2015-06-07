@@ -28,7 +28,8 @@ libraryDependencies ++= Seq(
   "com.github.t3hnar" %%  "scala-bcrypt"          % "2.4",
   "org.scalatest"     %%  "scalatest"             % "2.2.4"             % "it,test",
   "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test",
-  "org.scalatestplus" %%  "play"                  % "1.4.0-M3"          % "test"
+  "org.scalatestplus" %%  "play"                  % "1.4.0-M3"          % "test",
+  "jp.t2v"            %%  "play2-auth-test"       % "0.13.2"            % "test"
 )
 
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "controllers.*;.*Reverse.*Controller;router.*;sk.hrstka.repositories.*"

@@ -10,7 +10,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import sk.hrstka.controllers.auth.{AddCompForm, AddTechToCompForm, AuthCompController}
+import sk.hrstka.controllers.auth.{AddCompForm, AuthCompController}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain.{Comp, Eminent, Handle, Identifiable}
 import sk.hrstka.models.ui.CompFactory
@@ -20,16 +20,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class AuthCompControllerImpl @Inject() (compService: CompService,
-                                        protected val authService: AuthService,
-                                        protected val techService: TechService,
-                                        protected val locationService: LocationService,
-                                        protected val application: Application,
-                                        val messagesApi: MessagesApi)
+final class AuthCompControllerImpl @Inject() (compService: CompService,
+                                              protected val authService: AuthService,
+                                              protected val techService: TechService,
+                                              protected val locationService: LocationService,
+                                              protected val application: Application,
+                                              val messagesApi: MessagesApi)
   extends BaseController with AuthCompController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthCompControllerImpl._
 
-  override def addForm: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+  override def addForm(): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     edit(None, sk.hrstka.controllers.auth.routes.AuthCompController.save(None))
   }
 
@@ -68,12 +68,15 @@ class AuthCompControllerImpl @Inject() (compService: CompService,
   }
 
   private def edit[A](comp: Option[Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
-    techService.allRatings().flatMap { techRatings =>
-      val ts = techRatings.map(t => (t.tech.handle.value, comp.exists(_.techRatings.exists(_.tech.handle == t.tech.handle))))
-      withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.compEdit(comp.map(CompFactory.apply), ts, joelQuestions, action))
+    for {
+      techRatings <- techService.allRatings()
+      companyTechnologies = techRatings.map { techRating =>
+        techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
-    }
+      result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
+        Ok(sk.hrstka.views.html.compEdit(comp.map(CompFactory.apply), companyTechnologies, joelQuestions, action))
+      }
+    } yield result
 }
 
 object AuthCompControllerImpl {
@@ -92,12 +95,6 @@ object AuthCompControllerImpl {
       "techs" -> list(text),
       "joel" -> list(number)
     )(AddCompForm.apply)(AddCompForm.unapply)
-  )
-
-  val addTechToCompForm = Form(
-    mapping(
-      "techName" -> text
-    )(AddTechToCompForm.apply)(AddTechToCompForm.unapply)
   )
 
   val joelQuestions = List(

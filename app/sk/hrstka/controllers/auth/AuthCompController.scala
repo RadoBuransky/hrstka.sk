@@ -16,12 +16,33 @@ case class AddCompForm(name: String,
                        internal: Boolean,
                        techs: List[String],
                        joel: List[Int])
-case class AddTechToCompForm(techName: String)
 
+/**
+ * Authorized company controller.
+ */
 @ImplementedBy(classOf[AuthCompControllerImpl])
 trait AuthCompController {
-  def addForm: Action[AnyContent]
+  /**
+   * Gets HTML view with a form to add a company.
+   *
+   * @return HTML view.
+   */
+  def addForm(): Action[AnyContent]
+
+  /**
+   * Gets HTML view with a form to edit a company.
+   *
+   * @param compId Company identifier.
+   * @return HTML view.
+   */
   def editForm(compId: String): Action[AnyContent]
+
+  /**
+   * Handles sumbitted form with a company to add or update.
+   *
+   * @param compId Company identifier.
+   * @return Redirects to index page.
+   */
   def save(compId: Option[String]): Action[AnyContent]
 }
 
