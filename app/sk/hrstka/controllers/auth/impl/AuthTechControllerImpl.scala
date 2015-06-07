@@ -42,7 +42,7 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
           Ok(sk.hrstka.views.html.techs(
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),
-            userVotes.map(uv => uv.techId -> uv.value).toMap,
+            userVotes.map(uv => uv.techId.value -> uv.value).toMap,
             // TODO: Order categories somehow
             allCategories.toSeq.map(TechCategoryFactory.apply)))
         }
@@ -64,11 +64,11 @@ class AuthTechControllerImpl @Inject() (protected val authService: AuthService,
   }
 
   override def voteUp(id: String) = AsyncStack(AuthorityKey -> hrstka.models.domain.Eminent) { implicit request =>
-    vote(techService.voteUp(id, loggedIn.id))
+    vote(techService.voteUp(Id(id), loggedIn.id))
   }
 
   override def voteDown(id: String) = AsyncStack(AuthorityKey -> hrstka.models.domain.Eminent) { implicit request =>
-    vote(techService.voteDown(id, loggedIn.id))
+    vote(techService.voteDown(Id(id), loggedIn.id))
   }
 
   private def vote[A](action: Future[Unit])(implicit request: RequestWithAttributes[A]) =

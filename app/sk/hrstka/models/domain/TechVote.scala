@@ -1,7 +1,6 @@
 package sk.hrstka.models.domain
 
 import sk.hrstka.models
-import sk.hrstka.models.domain.Identifiable.Id
 
 /**
  * Technology vote value of an user.
@@ -17,7 +16,7 @@ case class TechVote(techId: Id,
 object TechVoteFactory {
   def apply(techVote: models.db.TechVote): TechVote =
     new TechVote(
-      techId  = techVote.techId.stringify,
-      userId  = techVote.userId.stringify,
+      techId  = Identifiable.fromBSON(techVote.techId),
+      userId  = Identifiable.fromBSON(techVote.userId),
       value   = techVote.value)
 }

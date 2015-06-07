@@ -3,7 +3,6 @@ package sk.hrstka.models.domain
 import java.net.URL
 
 import sk.hrstka.models
-import sk.hrstka.models.domain.Identifiable.Id
 
 case class Comp(id: Id,
                 name: String,
@@ -39,7 +38,7 @@ case class Comp(id: Id,
 
 object CompFactory {
   def apply(comp: models.db.Comp, techRatings: Set[TechRating], city: City): Comp = Comp(
-    id                = comp._id.stringify,
+    id                = Identifiable.fromBSON(comp._id),
     name              = comp.name,
     website           = new URL(comp.website),
     city              = city,

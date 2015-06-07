@@ -20,7 +20,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel()
 
     // Execute
-    assertView(compController.get(CompSpec.avitech.id).apply(FakeRequest())) { result =>
+    assertView(compController.get(CompSpec.avitech.id.value).apply(FakeRequest())) { result =>
       assert(result.contains("<h2><a href=\"http://avitech.aero/\" target=\"_blank\">Avitech</a></h2>"))
     }
 

@@ -7,7 +7,7 @@ import reactivemongo.bson.BSONObjectID
 import sk.hrstka.models
 import sk.hrstka.models.db.Comp
 import sk.hrstka.models.domain
-import sk.hrstka.models.domain.{CompSpec, Handle, TechRatingSpec}
+import sk.hrstka.models.domain.{CompSpec, Handle, Identifiable, TechRatingSpec}
 import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
@@ -29,8 +29,8 @@ class CompServiceImplSpec extends BaseSpec {
     assert(compService.upsert(
       comp        = avitech,
       techHandles = avitech.techRatings.map(_.tech.handle),
-      userId      = models.db.CompSpec.avitech.authorId.stringify
-    ).futureValue == compId.stringify)
+      userId      = Identifiable.fromBSON(models.db.CompSpec.avitech.authorId)
+    ).futureValue == Identifiable.fromBSON(compId))
 
     // Verify
     val compCaptor = ArgumentCaptor.forClass(classOf[Comp])

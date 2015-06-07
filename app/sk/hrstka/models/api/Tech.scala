@@ -11,7 +11,7 @@ case class Tech(id: String,
 
 object TechFactory {
   def fromDomain(techRating: TechRating) = Tech(
-    id        = techRating.tech.id,
+    id        = techRating.tech.id.value,
     handle    = techRating.tech.handle.value,
     name      = techRating.tech.name,
     category  = techRating.tech.category.handle.value,

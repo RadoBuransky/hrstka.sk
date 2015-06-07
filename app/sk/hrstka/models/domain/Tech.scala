@@ -3,7 +3,6 @@ package sk.hrstka.models.domain
 import java.net.URL
 
 import sk.hrstka
-import sk.hrstka.models.domain.Identifiable.Id
 
 /**
  * Technology
@@ -23,7 +22,7 @@ case class Tech(id: Id,
 object TechFactory {
   def apply(src: hrstka.models.db.Tech): Tech =
     hrstka.models.domain.Tech(
-      id        = src._id.stringify,
+      id        = Identifiable.fromBSON(src._id),
       handle    = Handle(src.handle),
       category  = TechCategory(src.categoryHandle),
       name      = src.name,

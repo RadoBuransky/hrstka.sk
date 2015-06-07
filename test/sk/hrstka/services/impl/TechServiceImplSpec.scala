@@ -5,9 +5,8 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
 import sk.hrstka.models.db
-import sk.hrstka.models.db.UserSpec
 import sk.hrstka.models.domain.Identifiable._
-import sk.hrstka.models.domain.{TechCategory, TechVoteSpec, TechRatingSpec}
+import sk.hrstka.models.domain._
 import sk.hrstka.repositories.{TechRepository, TechVoteRepository}
 import sk.hrstka.test.BaseSpec
 
@@ -23,7 +22,7 @@ class TechServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(techId))
 
     // Execute
-    assert(techService.upsert(TechRatingSpec.akkaRating.tech).futureValue == techId.stringify)
+    assert(techService.upsert(TechRatingSpec.akkaRating.tech).futureValue == Identifiable.fromBSON(techId))
 
     // Verify
     val techCaptor = ArgumentCaptor.forClass(classOf[db.Tech])
@@ -93,7 +92,7 @@ class TechServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(db.TechVoteSpec.all.filter(_.userId == db.UserSpec.rado._id)))
 
     // Execute
-    assertSet(TechVoteSpec.radosVotes.toSet, techService.votesFor(db.UserSpec.rado._id.stringify).futureValue.toSet)
+    assertSet(TechVoteSpec.radosVotes.toSet, techService.votesFor(db.UserSpec.rado._id).futureValue.toSet)
 
     // Verify
     verify(techVoteRepository).all(Some(db.UserSpec.rado._id))
@@ -113,15 +112,15 @@ class TechServiceImplSpec extends BaseSpec {
 
     private def testVote(original: Option[Int], expected: Int, f: (Id, Id) => Future[Unit]): Unit = {
       // Prepare
-      when(techVoteRepository.findValue(db.TechSpec.php._id, UserSpec.rado._id))
+      when(techVoteRepository.findValue(db.TechSpec.php._id, db.UserSpec.rado._id))
         .thenReturn(Future.successful(original))
 
       // Execute
-      whenReady(f(TechRatingSpec.phpRating.tech.id, UserSpec.rado._id.stringify)) { _ =>
+      whenReady(f(TechRatingSpec.phpRating.tech.id, db.UserSpec.rado._id)) { _ =>
         // Verify
-        verify(techVoteRepository).findValue(db.TechSpec.php._id, UserSpec.rado._id)
+        verify(techVoteRepository).findValue(db.TechSpec.php._id, db.UserSpec.rado._id)
         if (!original.contains(expected))
-          verify(techVoteRepository).vote(db.TechSpec.php._id, UserSpec.rado._id, expected)
+          verify(techVoteRepository).vote(db.TechSpec.php._id, db.UserSpec.rado._id, expected)
         verifyNoMore()
       }
     }

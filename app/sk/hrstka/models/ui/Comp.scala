@@ -18,7 +18,7 @@ case class Comp(id: String,
 
 object CompFactory {
   def apply(comp: models.domain.Comp) = new Comp(
-    id                = comp.id,
+    id                = comp.id.value,
     name              = comp.name,
     website           = comp.website.toString,
     city              = CityFactory(comp.city),

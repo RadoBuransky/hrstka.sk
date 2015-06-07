@@ -13,7 +13,7 @@ import scala.concurrent.Future
 final class CompServiceImpl @Inject() (compRepository: CompRepository,
                                        techService: TechService,
                                        locationService: LocationService) extends CompService {
-  import sk.hrstka.models.domain.Identifiable._
+  import Identifiable._
 
   override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[Id] = {
     compRepository.upsert(hrstka.models.db.Comp(
@@ -31,7 +31,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       internal = comp.internal,
       techs = techHandles.map(_.value),
       joel = comp.joel
-    )).map(_.stringify)
+    )).map(Identifiable.fromBSON)
   }
 
   override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[Comp]] = {

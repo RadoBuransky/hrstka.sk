@@ -12,7 +12,7 @@ case class Tech(id: String,
 
 object TechFactory {
   def apply(tech: hrstka.models.domain.Tech) = new Tech(
-    id              = tech.id,
+    id              = tech.id.value,
     handle          = tech.handle.value,
     categoryHandle  = tech.category.handle.value,
     name            = tech.name,

@@ -3,9 +3,8 @@ package sk.hrstka.services.impl
 import com.github.t3hnar.bcrypt._
 import com.google.inject.{Inject, Singleton}
 import sk.hrstka.common.Logging
-import sk.hrstka.models.db.{Identifiable, User}
-import sk.hrstka.models.domain
-import sk.hrstka.models.domain.{Eminent, Role, UserFactory}
+import sk.hrstka.models.{db, domain}
+import sk.hrstka.models.domain.{Eminent, Identifiable, Role, UserFactory}
 import sk.hrstka.repositories.UserRepository
 import sk.hrstka.services.AuthService
 
@@ -15,7 +14,7 @@ import scala.concurrent.Future
 @Singleton
 final class AuthServiceImpl @Inject() (userRepository: UserRepository) extends AuthService with Logging {
   def createUser(email: String, password: String): Future[Unit] = {
-    userRepository.insert(User(Identifiable.empty, email, encrypt(password), Eminent.name)).map { lastError =>
+    userRepository.insert(db.User(db.Identifiable.empty, email, encrypt(password), Eminent.name)).map { lastError =>
       logger.info(s"User created. [$email]")
     }
   }
@@ -29,7 +28,7 @@ final class AuthServiceImpl @Inject() (userRepository: UserRepository) extends A
     val result = userRepository.findByEmail(email).map {
       case Some(user) if check(password, user.encryptedPassword) => {
         logger.debug(s"User authenticated. [$email]")
-        Some(domain.User(user._id.stringify, email, Role(user.role)))
+        Some(domain.User(Identifiable.fromBSON(user._id), email, Role(user.role)))
       }
       case Some(user) => {
         logger.debug(s"Invalid password. [$email]")

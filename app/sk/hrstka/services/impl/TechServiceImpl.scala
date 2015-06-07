@@ -23,7 +23,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
       categoryHandle  = tech.category.handle,
       name            = tech.name,
       website         = tech.website.toString
-    )).map(_.stringify)
+    )).map(Identifiable.fromBSON)
 
   def getByHandle(handle: hrstka.models.domain.Handle) = techRepository.getByHandle(handle).map(TechFactory(_))
 

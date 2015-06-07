@@ -8,7 +8,7 @@ import play.api.mvc.{Action, AnyContent}
 import sk.hrstka
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
-import sk.hrstka.models.domain.{City, Handle, Tech}
+import sk.hrstka.models.domain.{City, Handle, Id, Tech}
 import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
@@ -26,7 +26,7 @@ class CompControllerImpl @Inject() (compService: CompService,
 
   override def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     for {
-      comp    <- compService.get(compId)
+      comp    <- compService.get(Id(compId))
       result  <- withMainModel(None, None, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.comp(CompFactory(comp)))
       }

@@ -12,7 +12,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import sk.hrstka.controllers.auth.{AddCompForm, AuthCompController}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
-import sk.hrstka.models.domain.{Comp, Eminent, Handle, Identifiable}
+import sk.hrstka.models.domain._
 import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
@@ -34,7 +34,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
   }
 
   override def editForm(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    compService.get(compId).flatMap { comp =>
+    compService.get(Id(compId)).flatMap { comp =>
       edit(Some(comp), sk.hrstka.controllers.auth.routes.AuthCompController.save(Some(compId)))
     }
   }
@@ -44,7 +44,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
       locationService.getOrCreateCity(form.city).flatMap { city =>
         compService.upsert(
           Comp(
-            id = compId.getOrElse(Identifiable.empty),
+            id = compId.map(Id).getOrElse(Identifiable.empty),
             name = form.name,
             website = new URL(form.website),
             city = city,
@@ -59,7 +59,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             joel = form.joel.toSet
           ),
           form.techs.map(Handle.apply).toSet,
-          loggedIn.email
+          loggedIn.id
         ).map { _ =>
           Redirect(sk.hrstka.controllers.routes.CompController.all())
         }

@@ -1,14 +1,13 @@
 package sk.hrstka.controllers.test
 
+import org.mockito.Mockito._
 import org.mockito.internal.util.MockUtil
-import play.api.test.FakeRequest
-import play.api.{Mode, Application}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
-import sk.hrstka.models.domain.{TechRatingSpec, CitySpec}
+import play.api.{Application, Mode}
+import sk.hrstka.models.domain.{CitySpec, TechRatingSpec}
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
-import org.mockito.Mockito._
 
 import scala.concurrent.Future
 
@@ -17,10 +16,6 @@ abstract class BaseControllerSpec extends BaseSpec {
     assert(status(result) == OK)
     assert(contentType(result).contains("text/html"))
     f(contentAsString(result))
-  }
-
-  protected def assertVisitorUnauthorised(action: Action[AnyContent]): Unit = {
-    assert(status(action.apply(FakeRequest())) == UNAUTHORIZED)
   }
 
   protected abstract class BaseTestScope(val application: Application) {
@@ -39,10 +34,9 @@ abstract class BaseControllerSpec extends BaseSpec {
           .thenReturn(Mode.Test)
       }
     }
-
     def verifyMainModel(): Unit = {
-      verify(locationService).all()
-      verify(techService).allRatings()
+      verify(locationService, atLeastOnce()).all()
+      verify(techService, atLeastOnce()).allRatings()
       if (applicationIsAMock) {
         verify(application, times(2)).mode
       }

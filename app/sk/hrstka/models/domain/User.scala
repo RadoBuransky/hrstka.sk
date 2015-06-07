@@ -9,14 +9,14 @@ import sk.hrstka.models
  * @param email User email address, also unique.
  * @param role User role.
  */
-case class User(id: Identifiable.Id,
+case class User(id: Id,
                 email: String,
                 role: Role)
 
 object UserFactory {
   def apply(user: models.db.User): User =
     User(
-      id    = user._id.stringify,
+      id    = Identifiable.fromBSON(user._id),
       email = user.email,
       role  = Role(user.role)
     )

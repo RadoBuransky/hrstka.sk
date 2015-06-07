@@ -1,8 +1,7 @@
 package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
-import sk.hrstka.models.domain.Identifiable._
-import sk.hrstka.models.domain.{Comp, Handle, Identifiable}
+import sk.hrstka.models.domain.{Comp, Handle, Id}
 import sk.hrstka.services.impl.CompServiceImpl
 
 import scala.concurrent.Future
@@ -20,7 +19,7 @@ trait CompService {
    * @param userId The current user.
    * @return Identifier of the company.
    */
-  def upsert(comp: Comp, techHandles: Set[Handle], userId: Id): Future[Identifiable.Id]
+  def upsert(comp: Comp, techHandles: Set[Handle], userId: Id): Future[Id]
 
   /**
    * Gets the company if exists or fails otherwise.
