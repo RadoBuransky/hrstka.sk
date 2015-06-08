@@ -13,6 +13,7 @@ import sk.hrstka.models.domain._
 
 import scala.concurrent.Future
 
+@DoNotDiscover
 class StandaloneAuthTechControllerImplISpec extends BaseStandaloneFakeApplicationSuites {
   override val nestedSuites = Vector(new AuthTechControllerImplISpec(app))
 }

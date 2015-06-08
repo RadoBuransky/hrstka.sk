@@ -13,5 +13,5 @@ trait DbManager {
   /**
    * Executes whatever is needed at the application startup.
    */
-  def applicationInit(): Future[_]
+  def applicationInit(): Future[Unit]
 }

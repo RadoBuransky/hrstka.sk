@@ -1,12 +1,12 @@
 package sk.hrstka.repositories.scripts.mongoDb
 
 import com.google.inject.{Inject, Singleton}
-import sk.hrstka.common.HrstkaException
 import play.api.Logger
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.DBMetaCommands
 import reactivemongo.api.indexes.IndexType.Ascending
 import reactivemongo.api.indexes.{Index, NSIndex}
+import sk.hrstka.common.HrstkaException
 import sk.hrstka.repositories.mongoDb._
 import sk.hrstka.repositories.scripts.DbManager
 
@@ -18,14 +18,14 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbMa
   private val logger = Logger(getClass)
 
   import MongoDbManager._
-  override def applicationInit(): Future[_] = {
+  override def applicationInit(): Future[Unit] = {
     reactiveMongoApi.db match {
       case dbMetaCommands: DBMetaCommands => applicationInit(dbMetaCommands)
       case _ => Future.failed(new HrstkaException("Not a DBMetaCommands instance!"))
     }
   }
 
-  private def applicationInit(dBMetaCommands: DBMetaCommands): Future[_] = {
+  private def applicationInit(dBMetaCommands: DBMetaCommands): Future[Unit] = {
     logger.info(s"Initializing MongoDB [${reactiveMongoApi.db.name}].")
 
     // Ensure all indexes exist
