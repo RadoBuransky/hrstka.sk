@@ -35,6 +35,7 @@
                 @techVotes.get(techRating.tech.id).getOrElse(0)
                 <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteUp(techRating.tech.id)">Plus</a>
                 <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteDown(techRating.tech.id)">Mínus</a>
+                <a class="btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.remove(techRating.tech.handle)">Zmazať</a>
             </li>
         }
         </ul>

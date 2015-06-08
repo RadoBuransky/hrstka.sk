@@ -4,10 +4,11 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
+import sk.hrstka.common.HrstkaException
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.Identifiable._
 import sk.hrstka.models.domain._
-import sk.hrstka.repositories.{TechRepository, TechVoteRepository}
+import sk.hrstka.repositories.{CompRepository, TechRepository, TechVoteRepository}
 import sk.hrstka.test.BaseSpec
 
 import scala.concurrent.Future
@@ -32,6 +33,37 @@ class TechServiceImplSpec extends BaseSpec {
 
     // Assert
     assert(tech == db.TechSpec.akka)
+  }
+
+  behavior of "remove"
+
+  it should "not allow to remove a technology if it is being used" in new TestScope {
+    // Prepare
+    when(compRepository.all(None, Some(db.TechSpec.scala.handle)))
+      .thenReturn(Future.successful(Iterable(db.CompSpec.avitech)))
+
+    // Execute
+    whenReady(techService.remove(TechRatingSpec.scalaRating.tech.handle).failed) { ex =>
+      ex.isInstanceOf[HrstkaException]
+    }
+
+    // Verify
+    verify(compRepository).all(None, Some(db.TechSpec.scala.handle))
+  }
+
+  it should "remove a technology if it not being used" in new TestScope {
+    // Prepare
+    when(compRepository.all(None, Some(db.TechSpec.scala.handle)))
+      .thenReturn(Future.successful(Iterable.empty))
+    when(techRepository.remove(db.TechSpec.scala.handle))
+      .thenReturn(Future.successful(db.TechSpec.scala.handle))
+
+    // Execute
+    assert(techService.remove(TechRatingSpec.scalaRating.tech.handle).futureValue == TechRatingSpec.scalaRating.tech.handle)
+
+    // Verify
+    verify(techRepository).remove(db.TechSpec.scala.handle)
+    verify(compRepository).all(None, Some(db.TechSpec.scala.handle))
   }
 
   behavior of "getByHandle"
@@ -129,11 +161,13 @@ class TechServiceImplSpec extends BaseSpec {
   private class TestScope {
     val techRepository = mock[TechRepository]
     val techVoteRepository = mock[TechVoteRepository]
-    val techService = new TechServiceImpl(techRepository, techVoteRepository)
+    val compRepository = mock[CompRepository]
+    val techService = new TechServiceImpl(techRepository, techVoteRepository, compRepository)
 
     def verifyNoMore(): Unit = {
       verifyNoMoreInteractions(techRepository)
       verifyNoMoreInteractions(techVoteRepository)
+      verifyNoMoreInteractions(compRepository)
     }
   }
 }

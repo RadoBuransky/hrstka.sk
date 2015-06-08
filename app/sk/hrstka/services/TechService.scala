@@ -20,6 +20,14 @@ trait TechService {
   def upsert(tech: Tech): Future[Id]
 
   /**
+   * Removes a technology only if it is not used. Fails otherwise.
+   *
+   * @param handle Technology handle.
+   * @return Handle of the removed technology.
+   */
+  def remove(handle: Handle): Future[Handle]
+
+  /**
    * Gets the technology if exists or fails otherwise.
    *
    * @param handle Technology handle.

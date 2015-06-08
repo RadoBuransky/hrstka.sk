@@ -9,6 +9,7 @@ POST    /register                   sk.hrstka.controllers.auth.AuthController.re
 
 GET     /technologie                sk.hrstka.controllers.auth.AuthTechController.all
 POST    /technologia                sk.hrstka.controllers.auth.AuthTechController.add
+GET     /technologia/:handle/remove sk.hrstka.controllers.auth.AuthTechController.remove(handle: String)
 GET     /technologia/:id/voteUp     sk.hrstka.controllers.auth.AuthTechController.voteUp(id: String)
 GET     /technologia/:id/voteDown   sk.hrstka.controllers.auth.AuthTechController.voteDown(id: String)
 

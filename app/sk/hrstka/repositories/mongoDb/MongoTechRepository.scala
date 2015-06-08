@@ -3,9 +3,12 @@ package sk.hrstka.repositories.mongoDb
 import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import sk.hrstka.models.db.Identifiable.Id
 import sk.hrstka.models.db.JsonFormats._
 import sk.hrstka.models.db.{JsonFormats, Tech}
 import sk.hrstka.repositories.TechRepository
+
+import scala.concurrent.Future
 
 @Singleton
 final class MongoTechRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)

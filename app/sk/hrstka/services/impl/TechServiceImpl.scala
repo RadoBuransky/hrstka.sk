@@ -2,7 +2,7 @@ package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
 import sk.hrstka
-import sk.hrstka.common.Logging
+import sk.hrstka.common.{HrstkaException, Logging}
 import sk.hrstka.models.db
 import sk.hrstka.models.domain._
 import sk.hrstka.repositories._
@@ -13,7 +13,8 @@ import scala.concurrent.Future
 
 @Singleton
 final class TechServiceImpl @Inject() (techRepository: TechRepository,
-                                       techVoteRepository: TechVoteRepository) extends TechService with Logging {
+                                       techVoteRepository: TechVoteRepository,
+                                       compRepository: CompRepository) extends TechService with Logging {
   import sk.hrstka.models.domain.Identifiable._
 
   override def upsert(tech: hrstka.models.domain.Tech): Future[Id] =
@@ -25,7 +26,16 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
       website         = tech.website.toString
     )).map(Identifiable.fromBSON)
 
-  def getByHandle(handle: hrstka.models.domain.Handle) = techRepository.getByHandle(handle).map(TechFactory(_))
+  override def remove(handle: Handle): Future[Handle] = {
+    // Get all companies for the technology
+    compRepository.all(None, Some(handle)).flatMap { comps =>
+      if (comps.nonEmpty)
+        throw new HrstkaException(s"Cannot remove technology while it's used! [$comps]")
+      techRepository.remove(handle).map(Handle)
+    }
+  }
+
+  def getByHandle(handle: Handle) = techRepository.getByHandle(handle).map(TechFactory(_))
 
   override def allRatings(): Future[Seq[TechRating]] =
     // Get all technology votes for all users
@@ -69,5 +79,4 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
         techVoteRepository.vote(techId, userId, newVoteValue)
     }
   }
-
 }

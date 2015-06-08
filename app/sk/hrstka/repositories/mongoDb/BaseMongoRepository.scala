@@ -58,6 +58,22 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
   }
 
   /**
+   * Removes entity with the provided identifier.
+   *
+   * @param id Entity identifier.
+   * @return Identifier of removed entity.
+   */
+  def remove(id: Id): Future[Id] = collection.remove(Json.obj("_id" -> id)).map(_ => id)
+
+  /**
+   * Removes entity with the provided handle.
+   *
+   * @param handle Entity handle.
+   * @return Handle of the removed entity.
+   */
+  def remove(handle: String): Future[String] = collection.remove(Json.obj("handle" -> handle)).map(_ => handle)
+
+  /**
    * Gets entity by ID. Throws an exception if such entity does not exist.
    *
    * @param id Entity identifier.
@@ -110,8 +126,6 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
       case None => throw new HrstkaException(s"No ${coll.name} for $selector!")
     }
   }
-
-  private[repositories] def remove(id: Id): Future[LastError] = collection.remove(Json.obj("_id" -> id))
 
   protected def collection = db.collection[JSONCollection](coll.name)
   protected def db = reactiveMongoApi.db

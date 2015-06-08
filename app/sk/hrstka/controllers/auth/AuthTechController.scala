@@ -28,6 +28,14 @@ trait AuthTechController {
   def add: Action[AnyContent]
 
   /**
+   * Removes a technology.
+   *
+   * @param handle Technology handle.
+   * @return Redirect to all technologies.
+   */
+  def remove(handle: String): Action[AnyContent]
+
+  /**
    * Handles vote up.
    *
    * @param id Technology identifier.

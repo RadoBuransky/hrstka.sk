@@ -63,6 +63,12 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
     }
   }
 
+  override def remove(handle: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    techService.remove(Handle(handle)).map { techHandle =>
+      Redirect(sk.hrstka.controllers.auth.routes.AuthTechController.all())
+    }
+  }
+
   override def voteUp(id: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     vote(techService.voteUp(Id(id), loggedIn.id))
   }

@@ -13,7 +13,6 @@ import sk.hrstka.models.domain._
 
 import scala.concurrent.Future
 
-@DoNotDiscover
 class StandaloneAuthTechControllerImplISpec extends BaseStandaloneFakeApplicationSuites {
   override val nestedSuites = Vector(new AuthTechControllerImplISpec(app))
 }
@@ -81,6 +80,29 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
 
       // Verify
       verify(techService).upsert(tech)
+    }
+  }
+
+  behavior of "remove"
+
+  it should "not authorize anonymous user" in new TestScope {
+    assertAnonymousUser(authTechController.remove(TechRatingSpec.scalaRating.tech.handle.value))
+  }
+
+  it should "remove a technology and redirect" in new TestScope {
+    withEminentUser(mainModel = false) {
+      // Prepare
+      when(techService.remove(TechRatingSpec.scalaRating.tech.handle))
+        .thenReturn(Future.successful(TechRatingSpec.scalaRating.tech.handle))
+
+      // Execute
+      assertAuthResult(eminentUser, authTechController, authTechController.remove(TechRatingSpec.scalaRating.tech.handle.value)) { result =>
+        assert(status(result) == SEE_OTHER)
+        assert(redirectLocation(result).contains("/technologie"))
+      }
+
+      // Verify
+      verify(techService).remove(TechRatingSpec.scalaRating.tech.handle)
     }
   }
 

@@ -153,9 +153,13 @@
                     <ol>
                     @for(tech <- mainModel.techs) {
                         <li class="sidebar-item">
+                            @if(mainModel.cities.isEmpty) {
+                                @tech.handle
+                            } else {
                             <a href="@sk.hrstka.controllers.routes.CompController.cityTech(mainModel.city.getOrElse(mainModel.cities.head.handle), tech.handle)">
                                 @tech.handle
                             </a>
+                            }
                         </li>
                     }
                     </ol>

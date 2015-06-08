@@ -21,6 +21,14 @@ trait TechRepository {
   def upsert(tech: Tech): Future[Id]
 
   /**
+   * Removes a technology.
+   *
+   * @param handle Technology handle.
+   * @return Handle of the removed technology.
+   */
+  def remove(handle: String): Future[String]
+
+  /**
    * Gets technology for the handle if exists, fails otherwiswe.
    *
    * @param handle Handle to get the technology for.
