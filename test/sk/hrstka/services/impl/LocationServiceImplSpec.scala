@@ -3,7 +3,7 @@ package sk.hrstka.services.impl
 import org.mockito.Mockito._
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.CitySpec
-import sk.hrstka.repositories.CityRepository
+import sk.hrstka.repositories.{CompRepository, CityRepository}
 import sk.hrstka.test.BaseSpec
 
 import scala.concurrent.Future
@@ -15,11 +15,15 @@ class LocationServiceImplSpec extends BaseSpec {
     // Prepare
     when(cityRepository.all())
       .thenReturn(Future.successful(db.CitySpec.all))
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(db.CompSpec.all))
 
     // Execute
-    assert(locationService.all().futureValue.toSet == CitySpec.all.toSet)
+    val expected = CitySpec.all.sortBy(city => -1 * db.CompSpec.all.count(_.city == city.handle.value))
+    assert(locationService.all().futureValue == expected)
 
     // Verify
+    verify(compRepository).all(None, None)
     verify(cityRepository).all()
     verifyNoMoreInteractions(cityRepository)
   }
@@ -70,6 +74,7 @@ class LocationServiceImplSpec extends BaseSpec {
 
   private class TestScope {
     val cityRepository = mock[CityRepository]
-    val locationService = new LocationServiceImpl(cityRepository)
+    val compRepository = mock[CompRepository]
+    val locationService = new LocationServiceImpl(cityRepository, compRepository)
   }
 }

@@ -12,11 +12,11 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[LocationServiceImpl])
 trait LocationService {
   /**
-   * Gets all cities.
+   * Gets all cities ordered by number of companies.
    * 
-   * @return All cities.
+   * @return All cities ordered.
    */
-  def all(): Future[Traversable[City]]
+  def all(): Future[Seq[City]]
 
   /**
    * Gets city for the handle if exists, fails otherwise.
