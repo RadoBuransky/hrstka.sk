@@ -6,7 +6,6 @@ import org.mockito.Mockito._
 import org.scalatest.DoNotDiscover
 import play.api.Application
 import play.api.test.Helpers._
-import reactivemongo.bson.BSONObjectID
 import sk.hrstka.BaseStandaloneFakeApplicationSuites
 import sk.hrstka.controllers.itest.BaseControllerISpec
 import sk.hrstka.models.domain._
@@ -60,7 +59,6 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
   it should "handle submitted form" in new TestScope {
     withEminentUser(mainModel = false) {
       // Prepare
-      val techId = Identifiable.fromBSON(BSONObjectID.generate)
       val tech = Tech(
         id        = Identifiable.empty,
         handle    = HandleFactory.fromHumanName("IIS"),
@@ -69,7 +67,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
         website   = new URL("http://www.iis.com/")
       )
       when(techService.upsert(tech))
-        .thenReturn(Future.successful(techId))
+        .thenReturn(Future.successful(tech.handle))
 
       // Execute
       val form: Map[String, String] = Map(
@@ -119,17 +117,17 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
   it should "vote up a technology" in new TestScope {
     withEminentUser(mainModel = false) {
       // Prepare
-      when(techService.voteUp(TechRatingSpec.scalaRating.tech.id, eminentUser.id))
+      when(techService.voteUp(TechRatingSpec.scalaRating.tech.handle, eminentUser.id))
         .thenReturn(Future.successful(()))
 
       // Execute
-      assertAuthResult(eminentUser, authTechController, authTechController.voteUp(TechRatingSpec.scalaRating.tech.id.value)) { result =>
+      assertAuthResult(eminentUser, authTechController, authTechController.voteUp(TechRatingSpec.scalaRating.tech.handle.value)) { result =>
         assert(status(result) == SEE_OTHER)
         assert(redirectLocation(result).contains("/technologie"))
       }
 
       // Verify
-      verify(techService).voteUp(TechRatingSpec.scalaRating.tech.id, eminentUser.id)
+      verify(techService).voteUp(TechRatingSpec.scalaRating.tech.handle, eminentUser.id)
     }
   }
 
@@ -142,17 +140,17 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
   it should "vote down a technology" in new TestScope {
     withEminentUser(mainModel = false) {
       // Prepare
-      when(techService.voteDown(TechRatingSpec.phpRating.tech.id, eminentUser.id))
+      when(techService.voteDown(TechRatingSpec.phpRating.tech.handle, eminentUser.id))
         .thenReturn(Future.successful(()))
 
       // Execute
-      assertAuthResult(eminentUser, authTechController, authTechController.voteDown(TechRatingSpec.phpRating.tech.id.value)) { result =>
+      assertAuthResult(eminentUser, authTechController, authTechController.voteDown(TechRatingSpec.phpRating.tech.handle.value)) { result =>
         assert(status(result) == SEE_OTHER)
         assert(redirectLocation(result).contains("/technologie"))
       }
 
       // Verify
-      verify(techService).voteDown(TechRatingSpec.phpRating.tech.id, eminentUser.id)
+      verify(techService).voteDown(TechRatingSpec.phpRating.tech.handle, eminentUser.id)
     }
   }
 

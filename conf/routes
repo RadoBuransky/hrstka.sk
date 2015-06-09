@@ -7,11 +7,11 @@ POST    /authenticate               sk.hrstka.controllers.auth.AuthController.au
 GET     /register                   sk.hrstka.controllers.auth.AuthController.registerView
 POST    /register                   sk.hrstka.controllers.auth.AuthController.register
 
-GET     /technologie                sk.hrstka.controllers.auth.AuthTechController.all
-POST    /technologia                sk.hrstka.controllers.auth.AuthTechController.add
-GET     /technologia/:handle/remove sk.hrstka.controllers.auth.AuthTechController.remove(handle: String)
-GET     /technologia/:id/voteUp     sk.hrstka.controllers.auth.AuthTechController.voteUp(id: String)
-GET     /technologia/:id/voteDown   sk.hrstka.controllers.auth.AuthTechController.voteDown(id: String)
+GET     /technologie                    sk.hrstka.controllers.auth.AuthTechController.all
+POST    /technologia                    sk.hrstka.controllers.auth.AuthTechController.add
+GET     /technologia/:handle/remove     sk.hrstka.controllers.auth.AuthTechController.remove(handle: String)
+GET     /technologia/:handle/voteUp     sk.hrstka.controllers.auth.AuthTechController.voteUp(handle: String)
+GET     /technologia/:handle/voteDown   sk.hrstka.controllers.auth.AuthTechController.voteDown(handle: String)
 
 GET     /programovanie/firmy                    sk.hrstka.controllers.CompController.all
 GET     /programovanie/zeny                     sk.hrstka.controllers.CompController.women

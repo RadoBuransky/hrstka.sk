@@ -2,7 +2,7 @@ package sk.hrstka.controllers.impl
 
 import play.api.Application
 import play.api.mvc.Request
-import sk.hrstka.models.domain.User
+import sk.hrstka.models.domain.{Handle, User}
 import sk.hrstka.models.ui.{CityFactory, MainModel, TechFactory}
 import sk.hrstka.services.{LocationService, TechService}
 
@@ -14,9 +14,9 @@ trait MainModelProvider {
                                     tech: Option[String] = None,
                                     user: Option[User] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     locationService.all().flatMap { cities =>
-      techService.allUsed().map { techs =>
+      techService.allUsed(city.map(Handle)).map { techs =>
         action(MainModel(
-          cities  = cities.map(CityFactory(_)).toSeq,
+          cities  = cities.map(CityFactory(_)),
           techs   = techs.map(TechFactory.apply),
           city    = city,
           tech    = tech,

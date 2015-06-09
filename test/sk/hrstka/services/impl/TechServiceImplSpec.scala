@@ -18,12 +18,11 @@ class TechServiceImplSpec extends BaseSpec {
 
   it should "map tech to DB and invoke repository" in new TestScope {
     // Prepare
-    val techId = BSONObjectID.generate
     when(techRepository.upsert(any[db.Tech]))
-      .thenReturn(Future.successful(techId))
+      .thenReturn(Future.successful(BSONObjectID.generate))
 
     // Execute
-    assert(techService.upsert(TechRatingSpec.akkaRating.tech).futureValue == Identifiable.fromBSON(techId))
+    assert(techService.upsert(TechRatingSpec.akkaRating.tech).futureValue == TechRatingSpec.akkaRating.tech.handle)
 
     // Verify
     val techCaptor = ArgumentCaptor.forClass(classOf[db.Tech])
@@ -101,7 +100,7 @@ class TechServiceImplSpec extends BaseSpec {
 
   behavior of "allUsed"
 
-  it should "get all technology ratings and filter used by a company" in new TestScope {
+  it should "get all technology ratings and filter the ones used in any city" in new TestScope {
     // Prepare
     when(compRepository.all(None, None))
       .thenReturn(Future.successful(db.CompSpec.all))
@@ -116,12 +115,34 @@ class TechServiceImplSpec extends BaseSpec {
       TechRatingSpec.javaRating,
       TechRatingSpec.apacheRating,
       TechRatingSpec.phpRating)
-    assertSeq(expected.map(_.tech), techService.allUsed().futureValue)
+    assertSeq(expected.map(_.tech), techService.allUsed(None).futureValue)
 
     // Verify
     verify(techVoteRepository).all(None)
     verify(techRepository).all()
     verify(compRepository).all(None, None)
+    verifyNoMore()
+  }
+
+  it should "get all technology ratings and filter the ones used by a company in a specific city" in new TestScope {
+    // Prepare
+    when(compRepository.all(Some(CitySpec.noveZamky.handle), None))
+      .thenReturn(Future.successful(Iterable(db.CompSpec.borci)))
+    when(techVoteRepository.all(None))
+      .thenReturn(Future.successful(db.TechVoteSpec.all))
+    when(techRepository.all())
+      .thenReturn(Future.successful(db.TechSpec.all))
+
+    // Execute
+    val expected = Seq(
+      TechRatingSpec.apacheRating,
+      TechRatingSpec.phpRating)
+    assertSeq(expected.map(_.tech), techService.allUsed(Some(CitySpec.noveZamky.handle)).futureValue)
+
+    // Verify
+    verify(techVoteRepository).all(None)
+    verify(techRepository).all()
+    verify(compRepository).all(Some(CitySpec.noveZamky.handle), None)
     verifyNoMore()
   }
 
@@ -168,14 +189,17 @@ class TechServiceImplSpec extends BaseSpec {
     def testVoteUp(original: Option[Int], expected: Int): Unit = testVote(original, expected, techService.voteUp)
     def testVoteDown(original: Option[Int], expected: Int): Unit = testVote(original, expected, techService.voteDown)
 
-    private def testVote(original: Option[Int], expected: Int, f: (Id, Id) => Future[Unit]): Unit = {
+    private def testVote(original: Option[Int], expected: Int, f: (Handle, Id) => Future[Unit]): Unit = {
       // Prepare
+      when(techRepository.getByHandle(db.TechSpec.php.handle))
+        .thenReturn(Future.successful(db.TechSpec.php))
       when(techVoteRepository.findValue(db.TechSpec.php._id, db.UserSpec.rado._id))
         .thenReturn(Future.successful(original))
 
       // Execute
-      whenReady(f(TechRatingSpec.phpRating.tech.id, db.UserSpec.rado._id)) { _ =>
+      whenReady(f(TechRatingSpec.phpRating.tech.handle, db.UserSpec.rado._id)) { _ =>
         // Verify
+        verify(techRepository).getByHandle(db.TechSpec.php.handle)
         verify(techVoteRepository).findValue(db.TechSpec.php._id, db.UserSpec.rado._id)
         if (!original.contains(expected))
           verify(techVoteRepository).vote(db.TechSpec.php._id, db.UserSpec.rado._id, expected)

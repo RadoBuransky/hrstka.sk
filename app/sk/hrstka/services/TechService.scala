@@ -15,9 +15,9 @@ trait TechService {
    * Inserts or updates a technology.
    *
    * @param tech Technology to insert or update.
-   * @return Identifier of the technology.
+   * @return Technology handle.
    */
-  def upsert(tech: Tech): Future[Id]
+  def upsert(tech: Tech): Future[Handle]
 
   /**
    * Removes a technology only if it is not used. Fails otherwise.
@@ -43,11 +43,11 @@ trait TechService {
   def allRatings(): Future[Seq[TechRating]]
 
   /**
-   * Gets all used technologies ordered by rating value.
+   * Gets all used technologies in the city ordered by rating value.
    *
    * @return All used technologies.
    */
-  def allUsed(): Future[Seq[Tech]]
+  def allUsed(cityHandle: Option[Handle]): Future[Seq[Tech]]
 
   /**
    * Gets all technology votes for the user unordered.
@@ -60,20 +60,20 @@ trait TechService {
   /**
    * Increases value of user's vote for the technology.
    *
-   * @param techId Technology identifier.
+   * @param handle Technology handle.
    * @param userId User identifier.
    * @return Nothing.
    */
-  def voteUp(techId: Id, userId: Id): Future[Unit]
+  def voteUp(handle: Handle, userId: Id): Future[Unit]
 
   /**
    * Decreases value of user's vote for the technology.
    * 
-   * @param techId Technology identifier.
+   * @param handle Technology handle.
    * @param userId User identifier.
    * @return Nothing.
    */
-  def voteDown(techId: Id, userId: Id): Future[Unit]
+  def voteDown(handle: Handle, userId: Id): Future[Unit]
 
   /**
    * Gets all technology categories unordered.

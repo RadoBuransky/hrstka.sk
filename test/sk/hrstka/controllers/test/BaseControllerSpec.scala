@@ -6,7 +6,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Mode}
-import sk.hrstka.models.domain.{CitySpec, TechRatingSpec}
+import sk.hrstka.models.domain.{Handle, CitySpec, TechRatingSpec}
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
 
@@ -25,10 +25,10 @@ abstract class BaseControllerSpec extends BaseSpec {
     val locationService = mock[LocationService]
     private lazy val applicationIsAMock = new MockUtil().isMock(application)
 
-    def prepareMainModel(): Unit = {
+    def prepareMainModel(cityHandle: Option[Handle] = None): Unit = {
       when(locationService.all())
         .thenReturn(Future.successful(CitySpec.all))
-      when(techService.allUsed())
+      when(techService.allUsed(cityHandle))
         .thenReturn(Future.successful(TechRatingSpec.allTechs))
       if (applicationIsAMock) {
         when(application.mode)
@@ -47,9 +47,9 @@ abstract class BaseControllerSpec extends BaseSpec {
       f(result)
     }
 
-    def verifyMainModel(): Unit = {
+    def verifyMainModel(cityHandle: Option[Handle] = None): Unit = {
       verify(locationService, atLeastOnce()).all()
-      verify(techService, atLeastOnce()).allUsed()
+      verify(techService, atLeastOnce()).allUsed(cityHandle)
       if (applicationIsAMock) {
         verify(application, times(2)).mode
       }

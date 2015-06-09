@@ -56,7 +56,7 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
         category  = TechCategory(form.categoryHandle),
         name      = form.name,
         website   = new URL(form.website)
-      )).map { techId =>
+      )).map { _ =>
         Redirect(sk.hrstka.controllers.auth.routes.AuthTechController.all())
       }
     }
@@ -68,12 +68,12 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
     }
   }
 
-  override def voteUp(id: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    vote(techService.voteUp(Id(id), loggedIn.id))
+  override def voteUp(handle: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    vote(techService.voteUp(Handle(handle), loggedIn.id))
   }
 
-  override def voteDown(id: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    vote(techService.voteDown(Id(id), loggedIn.id))
+  override def voteDown(handle: String) = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    vote(techService.voteDown(Handle(handle), loggedIn.id))
   }
 
   private def vote[A](action: Future[Unit])(implicit request: RequestWithAttributes[A]) =

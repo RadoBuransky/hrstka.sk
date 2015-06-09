@@ -99,7 +99,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
       .thenReturn(Future.successful(Seq(CompSpec.avitech)))
     when(locationService.get(CompSpec.avitech.city.handle))
       .thenReturn(Future.successful(CompSpec.avitech.city))
-    prepareMainModel()
+    prepareMainModel(Some(CompSpec.avitech.city.handle))
 
     // Execute
     assertView(compController.cityTech(CompSpec.avitech.city.handle.value, "").apply(FakeRequest())) { result =>
@@ -108,7 +108,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     }
 
     // Verify
-    verifyMainModel()
+    verifyMainModel(Some(CompSpec.avitech.city.handle))
     verify(locationService).get(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), None)
     verifyNoMore()
@@ -122,7 +122,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
       .thenReturn(Future.successful(CompSpec.avitech.city))
     when(techService.getByHandle(TechRatingSpec.scalaRating.tech.handle))
       .thenReturn(Future.successful(TechRatingSpec.scalaRating.tech))
-    prepareMainModel()
+    prepareMainModel(Some(CompSpec.avitech.city.handle))
 
     // Execute
     assertView(compController.cityTech(CompSpec.avitech.city.handle.value, TechRatingSpec.scalaRating.tech.handle.value).apply(FakeRequest())) { result =>
@@ -131,7 +131,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     }
 
     // Verify
-    verifyMainModel()
+    verifyMainModel(Some(CompSpec.avitech.city.handle))
     verify(techService).getByHandle(TechRatingSpec.scalaRating.tech.handle)
     verify(locationService).get(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), Some(TechRatingSpec.scalaRating.tech.handle))

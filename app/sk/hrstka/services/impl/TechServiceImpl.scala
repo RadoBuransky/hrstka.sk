@@ -17,14 +17,14 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
                                        compRepository: CompRepository) extends TechService with Logging {
   import sk.hrstka.models.domain.Identifiable._
 
-  override def upsert(tech: hrstka.models.domain.Tech): Future[Id] =
+  override def upsert(tech: hrstka.models.domain.Tech): Future[Handle] =
     techRepository.upsert(db.Tech(
       _id             = tech.id,
       handle          = tech.handle,
       categoryHandle  = tech.category.handle,
       name            = tech.name,
       website         = tech.website.toString
-    )).map(Identifiable.fromBSON)
+    )).map(_ => tech.handle)
 
   override def remove(handle: Handle): Future[Handle] = {
     // Get all companies for the technology
@@ -52,9 +52,9 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
       }
     }
 
-  override def allUsed(): Future[Seq[Tech]] = {
+  override def allUsed(cityHandle: Option[Handle]): Future[Seq[Tech]] = {
     // Get all companies
-    compRepository.all(None, None).flatMap { dbComps =>
+    compRepository.all(cityHandle.map(_.value), None).flatMap { dbComps =>
       // Get all technology ratings
       allRatings().map { techRatings =>
         // Filter those which are used by a company
@@ -65,8 +65,8 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
     }
   }
 
-  override def voteUp(techId: Id, userId: Id) = voteDelta(techId, userId, 1)
-  override def voteDown(techId: Id, userId: Id) = voteDelta(techId, userId, -1)
+  override def voteUp(handle: Handle, userId: Id) = voteDelta(handle, userId, 1)
+  override def voteDown(handle: Handle, userId: Id) = voteDelta(handle, userId, -1)
   override def votesFor(userId: Id): Future[Traversable[TechVote]] =
     techVoteRepository.all(Some(userId)).map(_.map(TechVoteFactory.apply))
 
@@ -84,12 +84,14 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
     TechRatingFactory(tech, techVotes.filter(_ > 0).sum, techVotes.size)
   }
 
-  private def voteDelta(techId: Id, userId: Id, delta: Int): Future[Unit] = {
-    techVoteRepository.findValue(techId, userId).map { latestVoteOption =>
-      val newVoteValue = latestVoteOption.getOrElse(0) + delta
-      if ((newVoteValue <= TechRatingFactory.maxVoteValue) &&
-        (newVoteValue >= TechRatingFactory.minVoteValue))
-        techVoteRepository.vote(techId, userId, newVoteValue)
+  private def voteDelta(handle: Handle, userId: Id, delta: Int): Future[Unit] = {
+    techRepository.getByHandle(handle).flatMap { dbTech =>
+      techVoteRepository.findValue(dbTech._id, userId).map { latestVoteOption =>
+        val newVoteValue = latestVoteOption.getOrElse(0) + delta
+        if ((newVoteValue <= TechRatingFactory.maxVoteValue) &&
+          (newVoteValue >= TechRatingFactory.minVoteValue))
+          techVoteRepository.vote(dbTech._id, userId, newVoteValue)
+      }
     }
   }
 }

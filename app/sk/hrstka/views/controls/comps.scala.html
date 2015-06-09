@@ -1,4 +1,4 @@
-@(headline: String, comps: Seq[sk.hrstka.models.ui.Comp])
+@(headline: String, comps: Seq[sk.hrstka.models.ui.Comp])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 <header>
     <h2>@headline</h2>
@@ -12,6 +12,8 @@
     <div>Top techs: @comp.techs.take(10).mkString(" ")</div>
     <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
     <div>Joel's test: @comp.joel.toList.sorted.map(_ + 1).mkString(", ")</div>
-    <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
+    @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
+        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
+    }
 </article>
 }

@@ -61,8 +61,8 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         assert(content.contains("<form action=\"/programovanie/firma?compId="))
       }
 
-      // allRatings
-      verify(techService).allUsed()
+      // Verify
+      verify(techService).allRatings()
       verify(compService).get(CompSpec.avitech.id)
     }
   }

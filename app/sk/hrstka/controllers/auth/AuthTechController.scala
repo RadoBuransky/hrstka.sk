@@ -38,17 +38,17 @@ trait AuthTechController {
   /**
    * Handles vote up.
    *
-   * @param id Technology identifier.
+   * @param handle Technology handle.
    * @return Redirect to all technologies.
    */
-  def voteUp(id: String): Action[AnyContent]
+  def voteUp(handle: String): Action[AnyContent]
 
   /**
    * Handles vote down.
    *
-   * @param id Technology identifier.
+   * @param handle Technology handle.
    * @return Redirect to all technologies.
    */
-  def voteDown(id: String): Action[AnyContent]
+  def voteDown(handle: String): Action[AnyContent]
 }
 
