@@ -1,6 +1,7 @@
 package sk.hrstka.models.api
 
 import sk.hrstka.models.domain
+import sk.hrstka.models.domain.CompRatingFactory
 
 case class Comp(id: String,
                 name: String,
@@ -15,7 +16,8 @@ case class Comp(id: String,
                 internal: Boolean,
                 techs: Set[String],
                 joel: Set[Int],
-                hrstkaUrl: String)
+                hrstkaUrl: String,
+                rating: BigDecimal)
 
 object CompFactory {
   def fromDomain(comp: domain.Comp, url: String) = Comp(
@@ -32,6 +34,7 @@ object CompFactory {
     internal          = comp.internal,
     techs             = comp.techRatings.map(_.tech.handle.value),
     joel              = comp.joel,
-    hrstkaUrl         = url.toString
+    hrstkaUrl         = url.toString,
+    rating            = CompRatingFactory(comp).value
   )
 }
