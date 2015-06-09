@@ -33,6 +33,8 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
         .thenReturn(Future.successful(TechCategory.allCategories))
       when(techService.votesFor(eminentUser.id))
         .thenReturn(Future.successful(TechVoteSpec.johnysVotes))
+      when(techService.allRatings())
+        .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
       // Execute
       assertAuthView(eminentUser, authTechController, authTechController.all) { content =>
@@ -43,6 +45,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
       }
 
       // Verify
+      verify(techService).allRatings()
       verify(techService).votesFor(eminentUser.id)
       verify(techService).allCategories()
     }

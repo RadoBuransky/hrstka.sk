@@ -99,6 +99,32 @@ class TechServiceImplSpec extends BaseSpec {
     verifyNoMore()
   }
 
+  behavior of "allUsed"
+
+  it should "get all technology ratings and filter used by a company" in new TestScope {
+    // Prepare
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(db.CompSpec.all))
+    when(techVoteRepository.all(None))
+      .thenReturn(Future.successful(db.TechVoteSpec.all))
+    when(techRepository.all())
+      .thenReturn(Future.successful(db.TechSpec.all))
+
+    // Execute
+    val expected = Seq(
+      TechRatingSpec.scalaRating,
+      TechRatingSpec.javaRating,
+      TechRatingSpec.apacheRating,
+      TechRatingSpec.phpRating)
+    assertSeq(expected.map(_.tech), techService.allUsed().futureValue)
+
+    // Verify
+    verify(techVoteRepository).all(None)
+    verify(techRepository).all()
+    verify(compRepository).all(None, None)
+    verifyNoMore()
+  }
+
   behavior of "voteUp"
 
   it should "set vote value to 1 if no vote exists yet" in new VoteTestScope { testVoteUp(None, 1) }

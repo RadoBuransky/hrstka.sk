@@ -38,4 +38,6 @@ object CompSpec {
     techs             = Set(TechSpec.php.handle, TechSpec.apache.handle),
     joel              = Set(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
   )
+
+  lazy val all = Iterable(avitech, borci)
 }

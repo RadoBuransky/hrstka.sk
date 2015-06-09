@@ -70,5 +70,6 @@ object TechRatingSpec {
   val apacheRating = TechRating(TechFactory(models.db.TechSpec.apache), 0.3333333333333333)
   val phpRating = TechRating(TechFactory(models.db.TechSpec.php), 0.0)
   lazy val allRatings = Seq(scalaRating, javaRating, phpRating, akkaRating, apacheRating).sortBy(-1 * _.value)
+  lazy val allTechs = allRatings.map(_.tech)
   def forHandle(handle: String): TechRating = allRatings.find(_.tech.handle.value == handle).get
 }

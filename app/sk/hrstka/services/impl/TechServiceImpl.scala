@@ -52,6 +52,19 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
       }
     }
 
+  override def allUsed(): Future[Seq[Tech]] = {
+    // Get all companies
+    compRepository.all(None, None).flatMap { dbComps =>
+      // Get all technology ratings
+      allRatings().map { techRatings =>
+        // Filter those which are used by a company
+        techRatings
+          .filter(techRating => dbComps.exists(_.techs.contains(techRating.tech.handle.value)))
+          .map(_.tech)
+      }
+    }
+  }
+
   override def voteUp(techId: Id, userId: Id) = voteDelta(techId, userId, 1)
   override def voteDown(techId: Id, userId: Id) = voteDelta(techId, userId, -1)
   override def votesFor(userId: Id): Future[Traversable[TechVote]] =

@@ -28,8 +28,8 @@ abstract class BaseControllerSpec extends BaseSpec {
     def prepareMainModel(): Unit = {
       when(locationService.all())
         .thenReturn(Future.successful(CitySpec.all))
-      when(techService.allRatings())
-        .thenReturn(Future.successful(TechRatingSpec.allRatings))
+      when(techService.allUsed())
+        .thenReturn(Future.successful(TechRatingSpec.allTechs))
       if (applicationIsAMock) {
         when(application.mode)
           .thenReturn(Mode.Test)
@@ -49,7 +49,7 @@ abstract class BaseControllerSpec extends BaseSpec {
 
     def verifyMainModel(): Unit = {
       verify(locationService, atLeastOnce()).all()
-      verify(techService, atLeastOnce()).allRatings()
+      verify(techService, atLeastOnce()).allUsed()
       if (applicationIsAMock) {
         verify(application, times(2)).mode
       }

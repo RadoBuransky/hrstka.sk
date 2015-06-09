@@ -29,9 +29,16 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
 
   it should "get HTML view with a form to add a company" in new TestScope {
     withEminentUser() {
+      // Prepare
+      when(techService.allRatings())
+        .thenReturn(Future.successful(TechRatingSpec.allRatings))
+
       assertAuthView(eminentUser, authCompController, authCompController.addForm()) { content =>
         assert(content.contains("<form action=\"/programovanie/firma\" method=\"post\">"))
       }
+
+      // Verify
+      verify(techService).allRatings()
     }
   }
 
@@ -46,13 +53,16 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
       // Prepare
       when(compService.get(CompSpec.avitech.id))
         .thenReturn(Future.successful(CompSpec.avitech))
+      when(techService.allRatings())
+        .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
       // Execute
       assertAuthView(eminentUser, authCompController, authCompController.editForm(CompSpec.avitech.id.value)) { content =>
         assert(content.contains("<form action=\"/programovanie/firma?compId="))
       }
 
-      // Verify
+      // allRatings
+      verify(techService).allUsed()
       verify(compService).get(CompSpec.avitech.id)
     }
   }

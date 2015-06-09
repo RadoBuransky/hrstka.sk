@@ -43,6 +43,13 @@ trait TechService {
   def allRatings(): Future[Seq[TechRating]]
 
   /**
+   * Gets all used technologies ordered by rating value.
+   *
+   * @return All used technologies.
+   */
+  def allUsed(): Future[Seq[Tech]]
+
+  /**
    * Gets all technology votes for the user unordered.
    *
    * @param userId User identifier.
