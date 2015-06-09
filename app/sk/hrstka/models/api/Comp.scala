@@ -14,11 +14,12 @@ case class Comp(id: String,
                 services: Boolean,
                 internal: Boolean,
                 techs: Set[String],
-                joel: Set[Int])
+                joel: Set[Int],
+                hrstkaUrl: String)
 
 object CompFactory {
-  def fromDomain(comp: domain.Comp) = Comp(
-    id                = comp.id.toString,
+  def fromDomain(comp: domain.Comp, url: String) = Comp(
+    id                = comp.id.value,
     name              = comp.name,
     website           = comp.website.toString,
     city              = comp.city.handle.value,
@@ -30,6 +31,7 @@ object CompFactory {
     services          = comp.services,
     internal          = comp.internal,
     techs             = comp.techRatings.map(_.tech.handle.value),
-    joel              = comp.joel
+    joel              = comp.joel,
+    hrstkaUrl         = url.toString
   )
 }

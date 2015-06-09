@@ -1,5 +1,7 @@
 package sk.hrstka.models.api
 
+import java.math.MathContext
+
 import sk.hrstka.models.domain.TechRating
 
 case class Tech(id: String,

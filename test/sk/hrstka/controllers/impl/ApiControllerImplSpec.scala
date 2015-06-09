@@ -5,9 +5,9 @@ import play.api.libs.json.{JsArray, JsValue, Json}
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import sk.hrstka.models.api.{TechFactory, CompFactory}
 import sk.hrstka.models.api.JsonFormats._
-import sk.hrstka.models.domain.{City, CitySpec, TechRatingSpec, CompSpec}
+import sk.hrstka.models.api.{CompFactory, TechFactory}
+import sk.hrstka.models.domain.{City, CitySpec, CompSpec, TechRatingSpec}
 import sk.hrstka.services.{CompService, LocationService, TechService}
 import sk.hrstka.test.BaseSpec
 
@@ -22,7 +22,9 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(CompSpec.all))
 
     // Execute
-    assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompSpec.all.map(CompFactory.fromDomain)))
+    assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompSpec.all.map { comp =>
+      CompFactory.fromDomain(comp, sk.hrstka.controllers.routes.CompController.get(comp.id.value).absoluteURL()(FakeRequest()))
+    }))
 
     // Verify
     verify(compService).all(None, None)
