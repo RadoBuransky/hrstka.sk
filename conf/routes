@@ -1,5 +1,6 @@
 GET     /                           sk.hrstka.controllers.CompController.all
 GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
+GET     /api                        sk.hrstka.controllers.AppController.api
 
 GET     /login                      sk.hrstka.controllers.auth.AuthController.login
 GET     /logout                     sk.hrstka.controllers.auth.AuthController.logout

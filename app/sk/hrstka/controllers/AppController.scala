@@ -16,5 +16,12 @@ trait AppController {
    * @return 301 MovedPermanently HTTP result.
    */
   def untrail(path: String): Action[AnyContent]
+
+  /**
+   * Gets HTML view with information about REST API.
+   *
+   * @return HTML view.
+   */
+  def api(): Action[AnyContent]
 }
 

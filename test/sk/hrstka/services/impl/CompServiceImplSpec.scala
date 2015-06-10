@@ -59,7 +59,7 @@ class CompServiceImplSpec extends BaseSpec {
     val result = compService.all(None, None).futureValue
     assertComp(avitech, result.find(_.id == avitech.id).get)
     assertComp(borci, result.find(_.id == borci.id).get)
-    assertResult(Seq(borci, avitech))(result)
+    assertResult(Seq(avitech, borci))(result)
 
     // Verify
     verify(compRepository).all(None, None)

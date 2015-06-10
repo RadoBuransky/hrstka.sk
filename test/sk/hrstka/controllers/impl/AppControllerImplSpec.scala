@@ -3,9 +3,10 @@ package sk.hrstka.controllers.impl
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import sk.hrstka.controllers.test.BaseControllerSpec
 import sk.hrstka.test.BaseSpec
 
-class AppControllerImplSpec extends BaseSpec with Results {
+class AppControllerImplSpec extends BaseControllerSpec with Results {
   behavior of "untrail"
 
   it should "remove ending / and redirect" in new TestScope {
@@ -14,7 +15,27 @@ class AppControllerImplSpec extends BaseSpec with Results {
     assert(redirectLocation(result).contains("/abc"))
   }
 
-  private class TestScope {
-    val appController = new AppControllerImpl()
+  behavior of "api"
+
+  it should "get HTML view with information about REST API" in new TestScope {
+    // Prepare
+    prepareMainModel()
+
+    // Execute
+    assertView(appController.api()) { content =>
+      assert(content.contains("<h2>Hŕstka REST API</h2>"))
+    }
+
+    // Verify
+    verifyMainModel()
+    verifyNoMore()
+  }
+
+  private class TestScope extends BaseTestScope {
+    val appController = new AppControllerImpl(
+      locationService,
+      techService,
+      application
+    )
   }
 }

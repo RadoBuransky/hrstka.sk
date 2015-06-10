@@ -20,7 +20,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel()
 
     // Execute
-    assertView(compController.get(CompSpec.avitech.id.value).apply(FakeRequest())) { result =>
+    assertView(compController.get(CompSpec.avitech.id.value)) { result =>
       assert(result.contains("<h2><a href=\"http://avitech.aero/\" target=\"_blank\">Avitech</a></h2>"))
     }
 
@@ -39,7 +39,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel()
 
     // Execute
-    assertView(compController.women().apply(FakeRequest())) { result =>
+    assertView(compController.women()) { result =>
       assert(result.contains("<h2>Firmy kde je veľa programátoriek</h2>"))
       assert(result.contains(">Borci</a></h3>"))
       assert(result.contains(">Avitech</a></h3>"))
@@ -60,7 +60,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel()
 
     // Execute
-    assertView(compController.all().apply(FakeRequest())) { result =>
+    assertView(compController.all()) { result =>
       assert(result.contains("<h2>Firmy na Slovensku kde sa programuje</h2>"))
       assert(result.contains(">Borci</a></h3>"))
       assert(result.contains(">Avitech</a></h3>"))
@@ -81,7 +81,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel()
 
     // Execute
-    assertView(compController.cityTech("", "").apply(FakeRequest())) { result =>
+    assertView(compController.cityTech("", "")) { result =>
       assert(result.contains("<h2>Firmy na Slovensku kde sa programuje</h2>"))
       assert(result.contains(">Borci</a></h3>"))
       assert(result.contains(">Avitech</a></h3>"))
@@ -102,7 +102,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel(Some(CompSpec.avitech.city.handle))
 
     // Execute
-    assertView(compController.cityTech(CompSpec.avitech.city.handle.value, "").apply(FakeRequest())) { result =>
+    assertView(compController.cityTech(CompSpec.avitech.city.handle.value, "")) { result =>
       assert(result.contains("<h2>Firmy v meste Bratislava</h2>"))
       assert(result.contains(">Avitech</a></h3>"))
     }
@@ -125,7 +125,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel(Some(CompSpec.avitech.city.handle))
 
     // Execute
-    assertView(compController.cityTech(CompSpec.avitech.city.handle.value, TechRatingSpec.scalaRating.tech.handle.value).apply(FakeRequest())) { result =>
+    assertView(compController.cityTech(CompSpec.avitech.city.handle.value, TechRatingSpec.scalaRating.tech.handle.value)) { result =>
       assert(result.contains("<h2>Firmy v meste Bratislava používajúce Scala</h2>"))
       assert(result.contains(">Avitech</a></h3>"))
     }

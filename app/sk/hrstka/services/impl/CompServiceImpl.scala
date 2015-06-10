@@ -45,7 +45,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
         val comps = Future.sequence(dbComps.map(dbCompToDomain(techRatingsSet, _)))
 
         // Sort by company rating
-        comps.map(_.toSeq.sortBy(CompRatingFactory(_).value))
+        comps.map(_.toSeq.sortBy(-1 * CompRatingFactory(_).value))
       }
     }
   }

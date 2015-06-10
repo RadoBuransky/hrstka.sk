@@ -13,7 +13,8 @@ import sk.hrstka.test.BaseSpec
 import scala.concurrent.Future
 
 abstract class BaseControllerSpec extends BaseSpec {
-  protected def assertView(result: Future[Result])(f: (String) => Unit): Unit = {
+  protected def assertView(action: Action[AnyContent])(f: (String) => Unit): Unit = {
+    val result = action(FakeRequest())
     assert(status(result) == OK)
     assert(contentType(result).contains("text/html"))
     f(contentAsString(result))
@@ -51,7 +52,7 @@ abstract class BaseControllerSpec extends BaseSpec {
       verify(locationService, atLeastOnce()).all()
       verify(techService, atLeastOnce()).allUsed(cityHandle)
       if (applicationIsAMock) {
-        verify(application, times(2)).mode
+        verify(application, atLeastOnce).mode
       }
     }
 

@@ -1,13 +1,12 @@
 package sk.hrstka.controllers.auth.impl
 
+import org.mockito.Mockito._
 import org.scalatest.DoNotDiscover
 import play.api.Application
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import sk.hrstka.BaseStandaloneFakeApplicationSuites
 import sk.hrstka.controllers.itest.BaseControllerISpec
 import sk.hrstka.models.domain.User
-import org.mockito.Mockito._
 
 import scala.concurrent.Future
 
@@ -25,7 +24,7 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
     prepareMainModel()
 
     // Execute
-    assertView(authController.login()(FakeRequest())) { content =>
+    assertView(authController.login()) { content =>
       assert(content.contains("<form class=\"form-signin\" action=\"/authenticate\" method=\"post\">"))
     }
 
