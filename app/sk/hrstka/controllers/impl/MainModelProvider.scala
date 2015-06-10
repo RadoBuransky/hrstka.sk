@@ -1,7 +1,7 @@
 package sk.hrstka.controllers.impl
 
 import play.api.Application
-import play.api.mvc.Request
+import play.api.mvc._
 import sk.hrstka.models.domain.{Handle, User}
 import sk.hrstka.models.ui.{CityFactory, MainModel, TechFactory}
 import sk.hrstka.services.{LocationService, TechService}

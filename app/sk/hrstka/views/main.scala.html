@@ -97,9 +97,10 @@
                     <li><a href="@sk.hrstka.controllers.routes.CompController.women">Ženy</a></li>
                     <li><a href="@sk.hrstka.controllers.routes.AppController.api">API</a></li>
                     <li><a href="https://github.com/RadoBuransky/hrstka.sk">GitHub</a></li>
-                    <li><a href="">O hŕstke</a></li>
+                    <li><a href="@sk.hrstka.controllers.routes.AppController.about">O hŕstke</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
+                    <li><a href="@sk.hrstka.controllers.routes.AppController.addCompInfo">+ Pridať firmu</a></li>
                     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -118,8 +119,6 @@
                     } else {
                         @if(mainModel.mode == play.api.Mode.Dev) {
                             <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.login">Prihlásiť</a></li>
-                        } else {
-                            <li><a href="#">+ Pridať firmu</a></li>
                         }
                     }
                 </ul>

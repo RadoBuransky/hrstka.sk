@@ -23,5 +23,19 @@ trait AppController {
    * @return HTML view.
    */
   def api(): Action[AnyContent]
+
+  /**
+   * Gets HTML view with general information about Hrstka.
+   *
+   * @return HTML view.
+   */
+  def about(): Action[AnyContent]
+
+  /**
+   * Gets HTML view with information about how to add a company.
+   *
+   * @return HTML view.
+   */
+  def addCompInfo(): Action[AnyContent]
 }
 
