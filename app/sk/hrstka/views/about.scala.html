@@ -2,17 +2,51 @@
 
 @main("Hŕstka Eminencie", "xxx") {
     <h2>O Hŕstke</h2>
-    <p>Hśtska vznikla z mojej potreby zistiť kde sa dá zamestnať, ak chcem
+    <p>Hŕstka vznikla z potreby zistiť kde sa dá zamestnať, ak chcem
         <a href="@sk.hrstka.controllers.routes.CompController.cityTech("bratislava", "scala")">programovať v Scale a žiť
-        v Bratislave</a>.</p>
-    <p>Firmy sa na svojich stránkach venujú biznisu. Detaily o programovacích
-        jazykoch, frameworkoch a tooloch, sa dajú dovtípiť len ak hľadajú nového zamestnanca. Jediná cesta bola rozprávať
-        sa s kamarátmi, chodiť na programátorské stretnutia a pýtať sa. Zrazu som zistil, že je tu veľa zaujímavých
-        firiem, kde sa neboja používať kvalitné technológie. To som hľadal. <strong>Technickú remeselnú
-        kvalitu.</strong></p>
+        v Bratislave</a>. Firmy nemajú na svojich stránkach detaily o tom aké programovacie jazyky, frameworky a tooly
+        interne používajú. Jediná cesta bola rozprávať sa s kamarátmi, chodiť na programátorské stretnutia a pýtať sa.
+        Zrazu som zistil, že je tu veľa zaujímavých firiem, kde sa veci robia kvalitne a neboja sa experimentovať.</p>
 
-    <h3>Technológie</h3>
-    <p>Spadajú pod nasledovné kategórie:</p>
+    <h3>Túžba po korporáciách a ošúchaných nástrojoch</h3>
+    <p>Prieskumy ukazujú, že naši študenti chcú pracovať pre veľké nadnárodné firmy. Prirodzene, marketing majú dobrý.
+    Taktiež je tu na môj vkus až príliš veľa zastaralých technológii.</p>
+    <p>Chcem zviditeľniť menšie, kvalitné a "iné" programátorské firmy. Iné môže znamenať sídlo mimo Bratislavy, viac
+    žien programátoriek, exotické technológie, nekonvenčný mindset. Čokoľvek čo vy považujete za hodné povšimnutia.</p>
+
+    <h3>Cesta sa kľukatí, hmla je hustá</h3>
+    <p>Ako správny open source a open data projekt, tak aj cieľ je otvorený. Keď už nič iné, tak aspoň budeme mať zoznam
+    firiem kde sa programuje. Rád by som upriamil pozornosť na tie dobré, dobrota sa ale ťažko meria. Zaujíma ma
+    technická remeselná kvalita. Výsledný produkt a najmä ľudia sú nakoniec najdôležitejší, ale ich hodnotiť si netrúfam.</p>
+
+    <h3>Eminenti</h3>
+    <p>Programátori, ktorých rešpektujem. Neboja sa prejaviť svoj názor a vedia o ňom rozumne diskutovať. Vôbec to nemusí
+    znamenať, že s nimi súhlasím. Častokrát robia open source, chodia na stretnutia, nájdete ich na StackOverflow, majú
+    blog. Som rád, že sú.</p>
+
+    <h3>Otvor sa, bodni!</h3>
+    <p>Bodovanie je ponechané na eminentov. Rozmýšľal som nad braním do úvahy počet bodov na StackOverflow alebo
+    hviezdičiek na GitHube, ale zatiaľ má hlas každého eminenta rovnakú váhu.</p>
+
+    <h3>Raz si hore, raz si dole</h3>
+    <ul class="list-unstyled">
+        <li><strong>3 body</strong> - S týmto chcem pracovať! Je to skvelé a v danej kategórii nepoznám nič lepšie.</li>
+        <li><strong>2 body</strong> - Môže byť. Nie je to naj, ale ide to.</li>
+        <li><strong>1 bod</strong> - Prežijem, ale už by sme mali prejsť na niečo lepšie.</li>
+        <li><strong>0 bodov</strong> - Hlas nehlas, neberie sa do úvahy. Neviem, nemám záujem, je mi to jedno, nevyznám sa.</li>
+        <li><strong>-1 bod</strong> - S týmto ja nikdy robiť nebudem, radšej dám výpoveď.</li>
+    </ul>
+    <p>Cieľom nie je vymyslieť metriku na porovnanie lopát s cukríkmi. Osobne sa na to pozerám z pohľadu, že keby som
+    si hľadal prácu, aká ponuka by mi hneď rozžiarila oči. Iný pohľad môže byť, aké technológie by som si vybral, ak by
+    som bol v rozhodovacej pozícii a mohol použiť čokoľvek. Eminenti sú ale eminentami práve preto, lebo im do týchto
+    vecí nikto hovoriť nemusí a majú vlastný názor.</p>
+
+    <h3>Celkové hodnotenie</h3>
+    <p>suma kladných bodov / (počet nenulových bodov * 3)</p>
+    <p>Čiže technológia má plný počet bodov, ak všetci čo majú názor, dali najvyššie hodnotenie. Miera dobroty je na svete!<p/>
+
+    <h3>Kategórie</h3>
+    <p>Pre jednoduchšiu vizuálnu orientáciu sú technológie rozdelené do kategórií:</p>
     <ul class="list-unstyled">
         <li><span class="label label-default">platforma</span></li>
         <li><span class="label label-default">framework</span></li>
@@ -25,30 +59,19 @@
         <li><span class="label label-default">doména</span></li>
         <li><span class="label label-default">iné</span></li>
     </ul>
-    <h4>Ako eminenti hodnotia</h4>
-    <p><strong>Ktoré sú dobré a ktoré zlé?</strong> Objektívne kritérium nepoznám, a tak je hodnotenie ponechané na tých, ktorých ja považujem
-    za autority. Je to trocha sekta, ale na nič lepšie som neprišiel.</p>
-    <p>Eminenti môžu každej technológii prideliť <strong>body od -1 do 3</strong>:</p>
-    <ul class="list-unstyled">
-        <li><strong>3</strong> - S týmto chcem pracovať! Je to skvelé a v danej kategórii nepoznám nič lepšie.</li>
-        <li><strong>2</strong> - Môže byť. Nie je to naj, ale ide to.</li>
-        <li><strong>1</strong> - Prežijem, ale už by sme mali prejsť na niečo lepšie.</li>
-        <li><strong>0</strong> - Neviem, nemám záujem, je mi to jedno, nevyznám sa.</li>
-        <li><strong>-1</strong> - Nikdy, radšej dám výpoveď.</li>
-    </ul>
-    <p>Cieľom nie je vymyslieť metriku na porovnanie lopát s cukríkmi. Ja osobne sa na to pozerám z pohľadu, že keby som
-        si hľadal prácu, aká ponuka by mi hneď rozžiarila oči a čo by som rázne zatvoril. Iný pohľad môže byť, aké
-        technológie by som si vybral, ak by som bol v rozhodovacej pozícii a mohol použiť čokoľvek. Eminenti sú ale
-        eminentami práve preto, lebo im do týchto vecí nikto hovoriť nemusí a oni vedia ako hodnotiť.</p>
-    <h4>Celkové hodnotenie technológii</h4>
-    <p>Výsledkom hlasovania je <strong>číslo v intervale od 0 do 1</strong>, vypočítané podľa vzorca:
-        <strong>suma kladných hlasov / (počet nenulových hlasov * 3)</strong></p>
-    <p>Čiže technológia má plný počet ak všetci čo majú názor, dali plný počet bodov. To číslo je vlastne <strong>miera dobroty.</strong><p/>
 
-    <h3>Firmy</h3>
-    <h3>Eminenti</h3>
-    <p>Programátori, ktorých rešpektujem. Neboja sa prejaviť svoj názor a vedia o ňom rozumne diskutovať. Vôbec to nemusí
-    znamenať, že s nimi súhlasím. Častokrát robia open source, chodia na stretnutia, nájdete ich na StackOverflow, majú
-    blog. Som rád, že sú.</p>
-    <h3>Open data, open source</h3>
+    <h3>Firmy kde sa programuje</h3>
+    <p>To čo nakoniec chceme sú ale informácie o firmách. Firmy ako také sa nehodnotia priamo. Ich bodová hodnota je
+    číslo od 0 do 1, vypočítané nasledovným váženým súčtom:</p>
+    <ul class="list-unstyled">
+        <li>70% - priemer hodnôt technológii</li>
+        <li>10% - <a href="http://www.joelonsoftware.com/articles/fog0000000043.html">The Joel Test: 12 Steps to Better
+            Code</a>. Ďakujem <a href="https://www.facebook.com/jan.suchal">Janovi Suchalovi</a> za nápad.</li>
+        <li>10% - pomer počtu žien programátoriek a mužov programátorov, plný počet je pri pomere 1:1</li>
+        <li>10% - pomer počtu všetkých programátorov a všetkých zamestnancov, plný počet ak sú všetci programátori</li>
+    </ul>
+
+    <h3>Open data, open source, open mind</h3>
+    <p>Prispejte nápadmi, kritikou, informáciami o firmách, pull requestami. Šírte a kričte do sveta. Všetko sa vám raz
+    vráti.</p>
 }
