@@ -48,7 +48,9 @@
     <style>
         #sidebar {
             float: left;
-            width: 180px;
+            width: 280px;
+            padding-left: 30px;
+            padding-right: 30px;
         }
 
         #sidebar h2 {
@@ -127,15 +129,15 @@
     </nav>
 
     <div class="container">
-        <header>
-            <h1>Hŕstka Eminencie</h1>
-            <p>Programátorské lahôdky.</p>
-        </header>
         <nav id="sidebar">
+            <header>
+                <h1>Hŕstka Eminencie</h1>
+                <p>Programátorské lahôdky</p>
+            </header>
             <section>
                 <h2 class="sidebar-item sidebar-heading">Mestá</h2>
                 <nav class="sidebar-section">
-                    <ol>
+                    <ol class="list-unstyled">
                     @for(city <- mainModel.cities) {
                         <li class="sidebar-item">
                             <a href="@sk.hrstka.controllers.routes.CompController.cityTech(city.handle, "")">
@@ -149,7 +151,7 @@
             <section>
                 <h2 class="sidebar-item sidebar-heading">Technológie</h2>
                 <nav class="sidebar-section">
-                    <ol>
+                    <ol class="list-unstyled">
                     @for(tech <- mainModel.techs) {
                         <li class="sidebar-item">
                             @if(mainModel.cities.isEmpty) {
