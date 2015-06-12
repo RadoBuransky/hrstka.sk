@@ -60,16 +60,17 @@ class CompControllerImpl @Inject() (compService: CompService,
   }
 
   private def headline(city: Option[City], tech: Option[Tech]): String = {
-    val cityHeadline = city.map { c =>
-      " v meste " + c.sk
-    }
-    val techHeadline = tech.map { t =>
-      " používajúce " + t.handle.value.capitalize
-    }
+    val cityHeadline = city
+      .map(c => " v meste " + c.sk)
+      .getOrElse("")
+    val techHeadline = tech.map(_.name).getOrElse("")
     if (city.isEmpty && tech.isEmpty)
       "Firmy na Slovensku kde sa programuje"
     else
-      "Firmy" + cityHeadline.getOrElse("") + techHeadline.getOrElse("")
+      if (tech.isEmpty)
+        "Firmy" + cityHeadline
+      else
+        techHeadline + cityHeadline
   }
 
   private def techForHandle(techHandle: Option[String]): Future[Option[Tech]] = techHandle match {

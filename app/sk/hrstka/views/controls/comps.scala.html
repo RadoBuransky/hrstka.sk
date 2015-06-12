@@ -2,12 +2,13 @@
 
 <header>
     <h2>@headline</h2>
-    <p>Zoradené podľa hodnotenia.</p>
 </header>
 @for(comp <- comps) {
 <article>
     <h3><a href="@sk.hrstka.controllers.routes.CompController.get(comp.id)">@comp.name</a></h3>
-    <div>@comp.city.sk</div>
+    @if(mainModel.city.isEmpty) {
+        <div>@comp.city.sk</div>
+    }
     <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
     <div>Top techs: @comp.techs.take(10).mkString(" ")</div>
     <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>

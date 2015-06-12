@@ -32,6 +32,9 @@
     -->
 
     <!-- Styles -->
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" type="text/css">
     <link href="@routes.Assets.at("stylesheets/main.css")" rel="stylesheet">
 
     <!--
@@ -48,9 +51,7 @@
     <style>
         #sidebar {
             float: left;
-            width: 280px;
-            padding-left: 30px;
-            padding-right: 30px;
+            padding-right: 20px;
         }
 
         #sidebar h2 {
@@ -73,7 +74,7 @@
 
         #content {
             overflow: hidden;
-            padding-left: 15px;
+            padding-left: 20px;
         }
 
         #content h2 {
@@ -129,13 +130,17 @@
     </nav>
 
     <div class="container">
-        <nav id="sidebar">
-            <header>
-                <h1>Hŕstka Eminencie</h1>
-                <p>Programátorské lahôdky</p>
+        <nav id="sidebar" style="width: 245px; border-right-style: solid; border-right-width: 1px; border-right-color: #c0c0c0">
+            <header style="width: 100%; margin-bottom: 20px">
+                <h1 style="margin-top: 0px; margin-bottom: 0px; font-size: 50px; color: #FA1E64; float: left">Hŕstka</h1>
+                <img src="http://hrstka.sk/assets/images/he.png" style="margin-top: 9px; margin-left: 9px; height: 42px">
+                <p style="color: #111111; font-size: 15px; margin-top: 5px; font-weight: 300">PROGRAMÁTORSKÝCH DOBRÔT</p>
             </header>
             <section>
-                <h2 class="sidebar-item sidebar-heading">Mestá</h2>
+                <!--
+                <h2 class="sidebar-item sidebar-heading" style="color: 000; background: linear-gradient(to right, #FA1E64 , #2800D7); padding: 7px">Mestá</h2>
+                -->
+                <h2 class="sidebar-item sidebar-heading" style="padding-bottom: 7px; font-size: 22px; background-color: #fff; color: #2800D7; border-bottom-color: #000; border-bottom-style: dotted; border-bottom-width: 1px">MESTÁ</h2>
                 <nav class="sidebar-section">
                     <ol class="list-unstyled">
                     @for(city <- mainModel.cities) {
@@ -149,7 +154,9 @@
                 </nav>
             </section>
             <section>
-                <h2 class="sidebar-item sidebar-heading">Technológie</h2>
+                <h2 class="sidebar-item sidebar-heading" style="padding-bottom: 7px; font-size: 22px; background-color: #fff; color: #2800D7; border-bottom-color: #000; border-bottom-style: dotted; border-bottom-width: 1px">
+                    TECHNOLÓGIE
+                </h2>
                 <nav class="sidebar-section">
                     <ol class="list-unstyled">
                     @for(tech <- mainModel.techs) {
@@ -170,7 +177,7 @@
         <section id="content">@content</section>
     </div>
 
-    <script src="@routes.Assets.at("lib/jquery/jquery.min.js")"></script>
-    <script src="@routes.Assets.at("lib/bootstrap/js/bootstrap.min.js")"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </body>
 </html>
