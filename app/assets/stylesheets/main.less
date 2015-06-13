@@ -23,6 +23,14 @@ body {
         color: @hrstka-color-grey;
     }
 
+    #headline-separator {
+        background: url('/assets/images/dot.png') repeat;
+        height: 15px;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+
     h3 {
         a {
             color: @hrstka-color-comp;
@@ -48,12 +56,18 @@ body {
         border-bottom-width: 1px;
     }
 
-    #headline-separator {
-        background: url('/assets/images/dot.png') repeat;
-        height: 20px;
-        width: 100%;
-        margin-top: 30px;
-        margin-bottom: 30px;
+    #about-contact {
+        text-align: right;
+
+        h3 {
+            color: @hrstka-color-pink;
+        }
+
+        i {
+            font-size: 24px;
+            margin-left: 20px;
+            color: @hrstka-color-blue;
+        }
     }
 }
 
