@@ -32,5 +32,5 @@ object CompSpec {
   lazy val all = Seq(avitech, borci)
 
   private def create(comp: models.db.Comp): domain.Comp =
-    CompFactory(comp, comp.techs.map(TechRatingSpec.forHandle), CitySpec.forHandle(comp.city))
+    CompFactory(comp, comp.techs.map(TechRatingSpec.forHandle).toSeq.sortBy(-1 * _.value), CitySpec.forHandle(comp.city))
 }

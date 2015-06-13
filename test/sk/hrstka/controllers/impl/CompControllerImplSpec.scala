@@ -21,7 +21,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(compController.get(CompSpec.avitech.id.value)) { result =>
-      assert(result.contains("<h2><a href=\"http://avitech.aero/\" target=\"_blank\">Avitech</a></h2>"))
+      assert(result.contains("<h2>Avitech</h2>"))
     }
 
     // Verify
@@ -41,8 +41,6 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Execute
     assertView(compController.women()) { result =>
       assert(result.contains("<h2>Firmy kde je veľa programátoriek</h2>"))
-      assert(result.contains(">Borci</a></h3>"))
-      assert(result.contains(">Avitech</a></h3>"))
     }
 
     // Verify
@@ -61,9 +59,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(compController.all()) { result =>
-      assert(result.contains("<h2>Firmy na Slovensku kde sa programuje</h2>"))
-      assert(result.contains(">Borci</a></h3>"))
-      assert(result.contains(">Avitech</a></h3>"))
+      assert(result.contains("<h2>Všetky firmy kde sa programuje</h2>"))
     }
 
     // Verify
@@ -82,9 +78,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(compController.cityTech("", "")) { result =>
-      assert(result.contains("<h2>Firmy na Slovensku kde sa programuje</h2>"))
-      assert(result.contains(">Borci</a></h3>"))
-      assert(result.contains(">Avitech</a></h3>"))
+      assert(result.contains("<h2>Všetky firmy kde sa programuje</h2>"))
     }
 
     // Verify
@@ -104,7 +98,6 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Execute
     assertView(compController.cityTech(CompSpec.avitech.city.handle.value, "")) { result =>
       assert(result.contains("<h2>Firmy v meste Bratislava</h2>"))
-      assert(result.contains(">Avitech</a></h3>"))
     }
 
     // Verify
@@ -126,8 +119,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(compController.cityTech(CompSpec.avitech.city.handle.value, TechRatingSpec.scalaRating.tech.handle.value)) { result =>
-      assert(result.contains("<h2>Firmy v meste Bratislava používajúce Scala</h2>"))
-      assert(result.contains(">Avitech</a></h3>"))
+      assert(result.contains("<h2>Scala v meste Bratislava</h2>"))
     }
 
     // Verify

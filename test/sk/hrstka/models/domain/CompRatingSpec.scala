@@ -18,7 +18,7 @@ class CompRatingSpec extends BaseSpec {
   behavior of "techRating"
 
   it should "return 0.0 if there are no tech ratings" in {
-    assert(CompRatingFactory.techRating(CompSpec.avitech.copy(techRatings = Set.empty)) == BigDecimal(0))
+    assert(CompRatingFactory.techRating(CompSpec.avitech.copy(techRatings = Seq.empty)) == BigDecimal(0))
   }
 
   it should "return average of all tech rating values" in {
@@ -78,7 +78,7 @@ class CompRatingSpec extends BaseSpec {
   behavior of "apply"
 
   it should "use 70% weight for tech rating" in {
-    assert(CompRatingFactory(zeroRatedAvitech.copy(techRatings = Set(TechRatingSpec.scalaRating))).value == BigDecimal(0.7))
+    assert(CompRatingFactory(zeroRatedAvitech.copy(techRatings = Seq(TechRatingSpec.scalaRating))).value == BigDecimal(0.7))
   }
 
   it should "use 10% weight for Joel's test" in {
@@ -95,7 +95,7 @@ class CompRatingSpec extends BaseSpec {
 
   it should "return 100% if everything is at best" in {
     assert(CompRatingFactory(zeroRatedAvitech.copy(
-      techRatings       = Set(TechRatingSpec.scalaRating),
+      techRatings       = Seq(TechRatingSpec.scalaRating),
       joel              = Set(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
       employeeCount     = Some(2),
       codersCount       = Some(2),
@@ -109,7 +109,7 @@ class CompRatingSpec extends BaseSpec {
 
 object CompRatingSpec {
   val zeroRatedAvitech = CompSpec.avitech.copy(
-    techRatings       = Set.empty,
+    techRatings       = Seq.empty,
     joel              = Set.empty,
     employeeCount     = None,
     codersCount       = None,

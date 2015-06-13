@@ -28,7 +28,7 @@ class CompServiceImplSpec extends BaseSpec {
     // Execute
     assert(compService.upsert(
       comp        = avitech,
-      techHandles = avitech.techRatings.map(_.tech.handle),
+      techHandles = avitech.techRatings.map(_.tech.handle).toSet,
       userId      = Identifiable.fromBSON(models.db.CompSpec.avitech.authorId)
     ).futureValue == Identifiable.fromBSON(compId))
 

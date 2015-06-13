@@ -23,7 +23,7 @@ class AppControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(appController.api()) { content =>
-      assert(content.contains("<h2>Hŕstka REST API</h2>"))
+      assert(content.contains("<h2>API</h2>"))
     }
 
     // Verify

@@ -100,7 +100,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           products = true,
           services = true,
           internal = false,
-          techRatings = Set.empty,
+          techRatings = Seq.empty,
           joel = Set(3, 5, 11))
 
         // Prepare

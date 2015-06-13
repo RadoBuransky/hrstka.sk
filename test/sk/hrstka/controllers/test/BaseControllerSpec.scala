@@ -6,7 +6,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Mode}
-import sk.hrstka.models.domain.{Handle, CitySpec, TechRatingSpec}
+import sk.hrstka.models.domain.{CitySpec, Handle, TechRatingSpec}
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
 
@@ -30,7 +30,7 @@ abstract class BaseControllerSpec extends BaseSpec {
       when(locationService.all())
         .thenReturn(Future.successful(CitySpec.all))
       when(techService.allUsedRatings(cityHandle))
-        .thenReturn(Future.successful(TechRatingSpec.allTechs))
+        .thenReturn(Future.successful(TechRatingSpec.allRatings))
       if (applicationIsAMock) {
         when(application.mode)
           .thenReturn(Mode.Test)
