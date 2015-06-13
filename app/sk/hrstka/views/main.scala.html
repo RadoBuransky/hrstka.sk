@@ -1,4 +1,4 @@
-@(description: String)(content: Html)(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(headline: String)(content: Html)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 <!DOCTYPE html>
 
@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hŕstka</title>
-    <meta name="description" content="@description"/>
+    <meta name="description" content="@headline"/>
     <meta name="author" content="Rado Buranský"/>
     <meta name="copyright" content="Rado Buranský"/>
     <meta name="application-name" content="Hŕstka"/>
@@ -19,7 +19,7 @@
     <meta property="og:title" content="Hŕstka"/>
     <meta property="og:type" content="article"/>
     <meta property="og:image" content="http://jugjane.com/assets/images/jugjane_big.png"/>
-    <meta property="og:description" content="@description"/>
+    <meta property="og:description" content="@headline"/>
     <meta property="fb:admins" content="608441607" />
     -->
 
@@ -27,7 +27,7 @@
     <!--
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Hŕstka">
-    <meta name="twitter:description" content="@description">
+    <meta name="twitter:description" content="@headline">
     <meta name="twitter:image" content="http://jugjane.com/assets/images/jugjane_big.png"/>
     -->
 
@@ -138,7 +138,13 @@
                 </nav>
             </section>
         </nav>
-        <section id="content">@content</section>
+        <section id="content">
+            <header>
+                <h2>@headline</h2>
+                <div id="headline-separator"></div>
+            </header>
+            @content
+        </section>
     </div>
 
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>

@@ -11,6 +11,7 @@
 
 body {
     -webkit-font-smoothing: antialiased;
+    padding-bottom: 50px;
 }
 
 #content {
@@ -22,22 +23,22 @@ body {
         color: @hrstka-color-grey;
     }
 
+    h3 {
+        a {
+            color: @hrstka-color-comp;
+        }
+        color: @hrstka-color-comp;
+    }
+
+    header {
+        margin-bottom: 5px;
+        clear: both;
+    }
+
     article.comp {
-        header {
-            margin-top: 20px;
-            margin-bottom: 5px;
-            clear: both;
-
-            h3 {
-                a {
-                    color: @hrstka-color-comp;
-                }
-            }
-
-            .city {
-                float: right;
-                color: @hrstka-color-city;
-            }
+        .city {
+            float: right;
+            color: @hrstka-color-city;
         }
 
         margin-top: 20px;

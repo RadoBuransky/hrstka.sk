@@ -1,7 +1,6 @@
 @(comp: sk.hrstka.models.ui.Comp)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @main(comp.name) {
-    <h2><a href="@comp.website" target="_blank">@comp.name</a></h2>
     <div>@comp.city.sk</div>
     <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
     <div>Techs: @comp.techs.mkString(" ")</div>
