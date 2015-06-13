@@ -3,10 +3,20 @@
 @hrstka-color-pink: #FA1E64;
 @hrstka-color-blue: #2800D7;
 
+#content {
+    overflow: hidden;
+    padding-left: 30px;
+
+    h2 {
+        margin-top: 0;
+        color: #404050;
+    }
+}
+
 #sidebar {
-    width: 245px;
+    width: 255px;
     float: left;
-    padding-right: 20px;
+    padding-right: 30px;
     border-right-style: solid;
     border-right-width: 1px;
     border-right-color: #c0c0c0;
@@ -59,15 +69,10 @@
     }
 }
 
-#content {
-    overflow: hidden;
-    padding-left: 20px;
+.navbar {
+    font-weight: 700;
 
-    h2 {
-        margin-top: 0;
+    .navbar-brand img {
+        width: 24px; height: 24px
     }
-}
-
-.navbar-brand img {
-    width: 24px; height: 24px
 }
