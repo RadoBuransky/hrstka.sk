@@ -104,7 +104,7 @@
                 </a>
                 <p>PROGRAMÁTORSKÝCH DOBRÔT</p>
             </header>
-            <section>
+            <section id="section-cities">
                 <h2>MESTÁ</h2>
                 <nav>
                     <ol>
@@ -118,17 +118,18 @@
                     </ol>
                 </nav>
             </section>
-            <section>
+            <section id="section-techs">
                 <h2>TECHNOLÓGIE</h2>
                 <nav>
                     <ol>
-                    @for(tech <- mainModel.techs) {
+                    @for(techRating <- mainModel.techRatings) {
                         <li>
                             @if(mainModel.cities.isEmpty) {
-                                @tech.handle
+                                @techRating.tech.handle
                             } else {
-                            <a href="@sk.hrstka.controllers.routes.CompController.cityTech(mainModel.city.getOrElse(mainModel.cities.head.handle), tech.handle)">
-                                @tech.handle
+                            <a href="@sk.hrstka.controllers.routes.CompController.cityTech(mainModel.city.getOrElse(mainModel.cities.head.handle), techRating.tech.handle)"
+                               style="opacity: @((techRating.value / 143.0) + 0.3);">
+                                @techRating.tech.name
                             </a>
                             }
                         </li>

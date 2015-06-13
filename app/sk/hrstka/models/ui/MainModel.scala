@@ -4,7 +4,7 @@ import play.api.Mode.Mode
 import sk.hrstka.models.domain.User
 
 case class MainModel(cities: Seq[City],
-                     techs: Seq[Tech],
+                     techRatings: Seq[TechRating],
                      city: Option[String],
                      tech: Option[String],
                      user: Option[User],

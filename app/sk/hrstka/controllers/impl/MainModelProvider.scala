@@ -3,7 +3,7 @@ package sk.hrstka.controllers.impl
 import play.api.Application
 import play.api.mvc._
 import sk.hrstka.models.domain.{Handle, User}
-import sk.hrstka.models.ui.{CityFactory, MainModel, TechFactory}
+import sk.hrstka.models.ui.{CityFactory, MainModel, TechRatingFactory}
 import sk.hrstka.services.{LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,14 +14,14 @@ trait MainModelProvider {
                                     tech: Option[String] = None,
                                     user: Option[User] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     locationService.all().flatMap { cities =>
-      techService.allUsed(city.map(Handle)).map { techs =>
+      techService.allUsedRatings(city.map(Handle)).map { techRatings =>
         action(MainModel(
-          cities  = cities.map(CityFactory(_)),
-          techs   = techs.map(TechFactory.apply),
-          city    = city,
-          tech    = tech,
-          user    = user,
-          mode    = application.mode
+          cities        = cities.map(CityFactory(_)),
+          techRatings   = techRatings.map(TechRatingFactory.apply),
+          city          = city,
+          tech          = tech,
+          user          = user,
+          mode          = application.mode
         ))
       }
     }

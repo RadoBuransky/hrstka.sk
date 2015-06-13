@@ -115,7 +115,7 @@ class TechServiceImplSpec extends BaseSpec {
       TechRatingSpec.javaRating,
       TechRatingSpec.apacheRating,
       TechRatingSpec.phpRating)
-    assertSeq(expected.map(_.tech), techService.allUsed(None).futureValue)
+    assertSeq(expected.map(_.tech), techService.allUsedRatings(None).futureValue)
 
     // Verify
     verify(techVoteRepository).all(None)
@@ -137,7 +137,7 @@ class TechServiceImplSpec extends BaseSpec {
     val expected = Seq(
       TechRatingSpec.apacheRating,
       TechRatingSpec.phpRating)
-    assertSeq(expected.map(_.tech), techService.allUsed(Some(CitySpec.noveZamky.handle)).futureValue)
+    assertSeq(expected.map(_.tech), techService.allUsedRatings(Some(CitySpec.noveZamky.handle)).futureValue)
 
     // Verify
     verify(techVoteRepository).all(None)

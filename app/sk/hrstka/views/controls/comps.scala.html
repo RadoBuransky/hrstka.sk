@@ -2,13 +2,16 @@
 
 <header>
     <h2>@headline</h2>
+    <div id="headline-separator"></div>
 </header>
 @for(comp <- comps) {
-<article>
-    <h3><a href="@sk.hrstka.controllers.routes.CompController.get(comp.id)">@comp.name</a></h3>
-    @if(mainModel.city.isEmpty) {
-        <div>@comp.city.sk</div>
-    }
+<article class="comp">
+    <header>
+        <h3>
+            <a href="@sk.hrstka.controllers.routes.CompController.get(comp.id)">@comp.name</a>
+            @if(mainModel.city.isEmpty) { <div class="city">@comp.city.sk</div> }
+        </h3>
+    </header>
     <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
     <div>Top techs: @comp.techs.take(10).mkString(" ")</div>
     <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
@@ -16,5 +19,6 @@
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
         <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
     }
+    <div id="comp-separator"></div>
 </article>
 }

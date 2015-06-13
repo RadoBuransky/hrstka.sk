@@ -52,7 +52,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
       }
     }
 
-  override def allUsed(cityHandle: Option[Handle]): Future[Seq[Tech]] = {
+  override def allUsedRatings(cityHandle: Option[Handle]): Future[Seq[TechRating]] = {
     // Get all companies
     compRepository.all(cityHandle.map(_.value), None).flatMap { dbComps =>
       // Get all technology ratings
@@ -60,7 +60,6 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
         // Filter those which are used by a company
         techRatings
           .filter(techRating => dbComps.exists(_.techs.contains(techRating.tech.handle.value)))
-          .map(_.tech)
       }
     }
   }
