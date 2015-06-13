@@ -13,7 +13,7 @@ case class Comp(id: String,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techs: Set[String],
+                techs: Seq[String],
                 joel: Set[Int])
 
 object CompFactory {
@@ -29,6 +29,6 @@ object CompFactory {
     products          = comp.products,
     services          = comp.services,
     internal          = comp.internal,
-    techs             = comp.techRatings.map(_.tech.handle.value),
+    techs             = comp.techRatings.map(_.tech.name),
     joel              = comp.joel)
 }

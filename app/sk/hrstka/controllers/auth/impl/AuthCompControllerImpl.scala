@@ -55,7 +55,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             products = form.products,
             services = form.services,
             internal = form.internal,
-            techRatings = Set.empty,
+            techRatings = Seq.empty,
             joel = form.joel.toSet
           ),
           form.techs.map(Handle.apply).toSet,

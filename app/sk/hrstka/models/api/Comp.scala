@@ -14,7 +14,7 @@ case class Comp(id: String,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techHandles: Set[String],
+                techHandles: Seq[String],
                 joel: Set[Int],
                 hrstkaUrl: String,
                 rating: BigDecimal)

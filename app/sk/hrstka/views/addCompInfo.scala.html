@@ -1,8 +1,7 @@
 @()(implicit mainModel: sk.hrstka.models.ui.MainModel, request: RequestHeader)
 
 @main("Ako pridať firmu") {
-    <h2>Ako pridať firmu</h2>
-    <p>Jednoducho mi napíšte na <a href="mailto:rado@@buransky.com">rado@@buransky.com</a> a pridajte nasledovné informácie:</p>
+    <p>Vypĺňanie formulárov je nuda. Napíšte mi na <a href="mailto:rado@@buransky.com">rado@@buransky.com</a> a pridajte nasledovné informácie:</p>
     <ul>
         <li>Názov</li>
         <li>Web</li>
@@ -11,7 +10,9 @@
         <li>Programuje sa SW/HW produkt?</li>
         <li>Poskytujú sa SW/HW služby?</li>
         <li>Biznis firmy nie je IT ale má interné programátorské oddelenie?</li>
-        <li>Zoznam technológii. Inšpirujte sa našim zoznamom ale nebojte sa pridať ďalšie</li>
+        <li>Zoznam technológii. Inšpirujte sa našim zoznamom, ale nebojte sa pridať ďalšie</li>
         <li>Ktoré body <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow">Joelovho testu</a> spĺňate?</li>
     </ul>
+    <p>Bolo by úžasné, ak by ste navyše voľne porozprávali ako sa u vás programuje. Strohé vymenovanie faktov dostane
+    ihneď iný rozmer. Ak vám to nedáva zmysel, prečítajte si viac <a href="@sk.hrstka.controllers.routes.AppController.about">o Hŕstke</a>.</p>
 }

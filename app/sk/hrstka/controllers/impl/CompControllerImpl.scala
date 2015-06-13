@@ -65,7 +65,7 @@ class CompControllerImpl @Inject() (compService: CompService,
       .getOrElse("")
     val techHeadline = tech.map(_.name).getOrElse("")
     if (city.isEmpty && tech.isEmpty)
-      "Firmy na Slovensku kde sa programuje"
+      "Všetky firmy kde sa programuje"
     else
       if (tech.isEmpty)
         "Firmy" + cityHeadline

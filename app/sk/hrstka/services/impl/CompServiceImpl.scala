@@ -37,12 +37,10 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[Comp]] = {
     // Get all technologies with ratings
     techService.allRatings().flatMap { techRatings =>
-      val techRatingsSet = techRatings.toSet
-
       // Get all companies for the city and the technology
       compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { dbComps =>
         // Convert DB entities to domain
-        val comps = Future.sequence(dbComps.map(dbCompToDomain(techRatingsSet, _)))
+        val comps = Future.sequence(dbComps.map(dbCompToDomain(techRatings, _)))
 
         // Sort by company rating
         comps.map(_.toSeq.sortBy(-1 * CompRatingFactory(_).value))
@@ -52,8 +50,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
 
   override def get(compId: Id): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>
-      val techRatingsSet = techRatings.toSet
-      compRepository.get(compId).flatMap(dbCompToDomain(techRatingsSet, _))
+      compRepository.get(compId).flatMap(dbCompToDomain(techRatings, _))
     }
 
   override def topWomen(): Future[Seq[Comp]] = {
@@ -71,7 +68,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
-  private def dbCompToDomain(techRatings: Set[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
+  private def dbCompToDomain(techRatings: Seq[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
     locationService.get(Handle(comp.city)).map { city =>
       CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
     }

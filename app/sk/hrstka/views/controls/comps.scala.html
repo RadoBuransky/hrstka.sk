@@ -8,10 +8,26 @@
             @if(mainModel.city.isEmpty) { <span class="city">@comp.city.sk</span> }
         </h3>
     </header>
-    <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
-    <div>Top techs: @comp.techs.take(10).mkString(" ")</div>
-    <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
-    <div>Joel's test: @comp.joel.toList.sorted.map(_ + 1).mkString(", ")</div>
+    @if(comp.techs.nonEmpty) {
+    <div class="techs">
+        @for(tech <- comp.techs) {
+        <span class="hrstka-tech">@tech</span>
+        }
+    </div>
+    }
+    <div class="comp-line">
+        <span class="comp-count"><span class="comp-count-num">@comp.femaleCodersCount</span> programátoriek</span>
+        <span class="comp-count"><span class="comp-count-num">@comp.codersCount</span> programátorov</span>
+        <span class="comp-count"><span class="comp-count-num">@comp.employeeCount</span> zamestnancov</span>
+    </div>
+    @if(comp.joel.nonEmpty) {
+    <div class="comp-line">
+        The Joel Test
+        @for(j <- comp.joel) {
+        <span class="comp-joel">@j</span>
+        }
+    </div>
+    }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
         <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
     }

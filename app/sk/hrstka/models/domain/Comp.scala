@@ -15,7 +15,7 @@ case class Comp(id: Id,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techRatings: Set[TechRating],
+                techRatings: Seq[TechRating],
                 joel: Set[Int]) extends Identifiable {
   codersCount match {
     case Some(c) => employeeCount match {
@@ -37,7 +37,7 @@ case class Comp(id: Id,
 }
 
 object CompFactory {
-  def apply(comp: models.db.Comp, techRatings: Set[TechRating], city: City): Comp = Comp(
+  def apply(comp: models.db.Comp, techRatings: Seq[TechRating], city: City): Comp = Comp(
     id                = Identifiable.fromBSON(comp._id),
     name              = comp.name,
     website           = new URL(comp.website),
