@@ -26,9 +26,9 @@ GET     /programovanie/firma/:compId/uprav      sk.hrstka.controllers.auth.AuthC
 POST    /programovanie/firma                    sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
 GET     /programovanie/novaFirma                sk.hrstka.controllers.auth.AuthCompController.addForm
 
-GET     /api/companies.json              sk.hrstka.controllers.ApiController.comps
-GET     /api/technologies.json           sk.hrstka.controllers.ApiController.techs
-GET     /api/cities.json                 sk.hrstka.controllers.ApiController.cities
+GET     /api/companies              sk.hrstka.controllers.ApiController.comps
+GET     /api/technologies           sk.hrstka.controllers.ApiController.techs
+GET     /api/cities                 sk.hrstka.controllers.ApiController.cities
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
