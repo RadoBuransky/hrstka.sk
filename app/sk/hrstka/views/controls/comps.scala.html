@@ -8,23 +8,29 @@
             @if(mainModel.city.isEmpty) { <span class="city">@comp.city.sk</span> }
         </h3>
     </header>
-    @if(comp.techs.nonEmpty) {
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">.col-md-4</div>
+            <div class="col-md-8">.col-md-8</div>
+        </div>
+    </div>
+    @if(comp.techRatings.nonEmpty) {
     <div class="techs">
-        @for(tech <- comp.techs) {
-        <span class="hrstka-tech">@tech</span>
+        @for(techRating <- comp.techRatings) {
+        <span class="hrstka-tech">@techRating.tech.name</span>
         }
     </div>
     }
     <div class="comp-line">
-        <span class="comp-count"><span class="comp-count-num">@comp.femaleCodersCount</span> programátoriek</span>
-        <span class="comp-count"><span class="comp-count-num">@comp.codersCount</span> programátorov</span>
-        <span class="comp-count"><span class="comp-count-num">@comp.employeeCount</span> zamestnancov</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@comp.femaleCodersCount</span> programátoriek</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@comp.maleCodersCount</span> programátorov</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@comp.employeeCount</span> zamestnancov</span>
     </div>
     @if(comp.joel.nonEmpty) {
     <div class="comp-line">
         The Joel Test
         @for(j <- comp.joel) {
-        <span class="comp-joel">@j</span>
+        <span class="hrstka-joel">@j</span>
         }
     </div>
     }

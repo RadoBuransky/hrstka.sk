@@ -1,11 +1,65 @@
 @(comp: sk.hrstka.models.ui.Comp)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @main(comp.name) {
-    <div>@comp.city.sk</div>
-    <div>Zamestnanci / programátori / programátorky: @comp.employeeCount / @comp.codersCount / @comp.femaleCodersCount</div>
-    <div>Techs: @comp.techs.mkString(" ")</div>
-    <div>Produkty / služby / internal: @comp.products / @comp.services / @comp.internal </div>
-    <div>Joel's test: @comp.joel.toList.sorted.map(_ + 1).mkString(", ")</div>
+<article class="comp-details">
+    <div><a href="@comp.website" rel="nofollow">@comp.website</a></div>
+    <div class="hrstka-city">@comp.city.sk</div>
+    <div class="container-fluid">
+        @if(comp.products) {
+        <div>Vývoj softvérových produktov</div>
+        }
+        @if(comp.services) {
+        <div>Poskytovanie softvérových služieb</div>
+        }
+        @if(comp.internal) {
+        <div>Interný vývoj</div>
+        }
+    </div>
+    <div class="container-fluid">
+        @if(comp.employeeCount.isDefined) {
+        <div class="row">
+            <div class="col-md-4">Všetkých zamestnancov:</div>
+            <div class="col-md-8"><span class="hrstka-emp-count">@comp.employeeCount</span></div>
+        </div>
+        }
+        @if(comp.maleCodersCount.isDefined) {
+        <div class="row">
+            <div class="col-md-4">Mužov programátorov:</div>
+            <div class="col-md-8"><span class="hrstka-emp-count">@comp.maleCodersCount</span></div>
+        </div>
+        }
+        @if(comp.femaleCodersCount.isDefined) {
+        <div class="row">
+            <div class="col-md-4">Žien programátoriek:</div>
+            <div class="col-md-8"><span class="hrstka-emp-count">@comp.femaleCodersCount</span></div>
+        </div>
+        }
+    </div>
+    @if(comp.joel.nonEmpty) {
+    <div class="container-fluid">
+        @for(j <- comp.joel) {
+        <div class="row">
+            <div class="col-md-4">
+            @if(j == comp.joel.head) {
+                <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow">The Joel Test</a>:
+            }
+            </div>
+            <div class="col-md-8"><span class="hrstka-joel">@j</span></div>
+        </div>
+        }
+    </div>
+    }
+    @if(comp.techRatings.nonEmpty) {
+    <div class="container-fluid">
+        @for(techRating <- comp.techRatings) {
+        <div class="row">
+            <div class="col-md-4">@if(techRating == comp.techRatings.head) { Technológie: }</div>
+            <div class="col-md-8"><span class="hrstka-tech">@techRating.tech.name</span></div>
+        </div>
+        }
+    </div>
+    }
     <div>@comp.note</div>
     <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
+</article>
 }

@@ -74,18 +74,15 @@ body {
 
         .comp-count {
             margin-right: 10px;
-
-            .comp-count-num {
-                .label;
-                background-color: #a0a0a0;
-                font-weight: 700;
-            }
         }
+    }
 
-        .comp-joel {
-            .label;
-            margin-right: 10px;
-            background-color: @hrstka-color-orange;
+    article.comp-details {
+        .container-fluid {
+            padding-left: 0px;
+            padding-right: 0px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
     }
 
@@ -165,7 +162,7 @@ body {
 
 
     #section-cities nav ol li a {
-        color: @hrstka-color-city;
+        .hrstka-city;
     }
 
     #section-techs nav ol li a {
@@ -181,7 +178,24 @@ body {
     }
 }
 
+.hrstka-city {
+    color: @hrstka-color-city;
+    font-weight: 700;
+}
+
 .hrstka-tech {
     color: @hrstka-color-pink;
     font-weight: 700;
+}
+
+.hrstka-emp-count {
+    .label;
+    background-color: #a0a0a0;
+    font-weight: 700;
+}
+
+.hrstka-joel {
+    .label;
+    margin-right: 10px;
+    background-color: @hrstka-color-orange;
 }

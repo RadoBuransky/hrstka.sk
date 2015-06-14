@@ -7,13 +7,13 @@ case class Comp(id: String,
                 website: String,
                 city: City,
                 employeeCount: Option[Int],
-                codersCount: Option[Int],
+                maleCodersCount: Option[Int],
                 femaleCodersCount: Option[Int],
                 note: String,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
-                techs: Seq[String],
+                techRatings: Seq[TechRating],
                 joel: Set[Int])
 
 object CompFactory {
@@ -23,12 +23,12 @@ object CompFactory {
     website           = comp.website.toString,
     city              = CityFactory(comp.city),
     employeeCount     = comp.employeeCount,
-    codersCount       = comp.codersCount,
+    maleCodersCount   = comp.codersCount.map(_ - comp.femaleCodersCount.getOrElse(0)),
     femaleCodersCount = comp.femaleCodersCount,
     note              = comp.note,
     products          = comp.products,
     services          = comp.services,
     internal          = comp.internal,
-    techs             = comp.techRatings.map(_.tech.name),
+    techRatings       = comp.techRatings.map(TechRatingFactory.apply),
     joel              = comp.joel)
 }
