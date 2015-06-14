@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <label for="codersCount">Z toho programátorov</label>
-            <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.maleCodersCount)">
+            <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.codersCount)">
         </div>
         <div class="form-group">
             <label for="femaleCodersCount">Z toho žien programátoriek</label>
@@ -53,7 +53,7 @@
                 <li>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="joel[]" value="@joelQuestion._2" @if(comp.map(_.joel(joelQuestion._2)).getOrElse(false)) { checked } > @joelQuestion._1
+                            <input type="checkbox" name="joel[]" value="@joelQuestion._2" @if(comp.map(_.joel.exists(_._1 == (joelQuestion._1 + 1))).getOrElse(false)) { checked } > @joelQuestion._1
                         </label>
                     </div>
                 </li>

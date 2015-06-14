@@ -8,12 +8,6 @@
             @if(mainModel.city.isEmpty) { <span class="city">@comp.city.sk</span> }
         </h3>
     </header>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4">.col-md-4</div>
-            <div class="col-md-8">.col-md-8</div>
-        </div>
-    </div>
     @if(comp.techRatings.nonEmpty) {
     <div class="techs">
         @for(techRating <- comp.techRatings) {
@@ -30,7 +24,7 @@
     <div class="comp-line">
         The Joel Test
         @for(j <- comp.joel) {
-        <span class="hrstka-joel">@j</span>
+        <span class="hrstka-joel">@j._1</span>
         }
     </div>
     }

@@ -74,7 +74,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(CompFactory.apply), companyTechnologies, joelQuestions, action))
+        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(CompFactory.apply), companyTechnologies, CompFactory.joelQuestions, action))
       }
     } yield result
 }
@@ -95,20 +95,5 @@ object AuthCompControllerImpl {
       "techs" -> list(text),
       "joel" -> list(number)
     )(AddCompForm.apply)(AddCompForm.unapply)
-  )
-
-  val joelQuestions = List(
-    "Do you use source control?",
-    "Can you make a build in one step?",
-    "Do you make daily builds?",
-    "Do you have a bug database?",
-    "Do you fix bugs before writing new code?",
-    "Do you have an up-to-date schedule?",
-    "Do you have a spec?",
-    "Do programmers have quiet working conditions?",
-    "Do you use the best tools money can buy?",
-    "Do you have testers?",
-    "Do new candidates write code during their interview?",
-    "Do you do hallway usability testing?"
   )
 }
