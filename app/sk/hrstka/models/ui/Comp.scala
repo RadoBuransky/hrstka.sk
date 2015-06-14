@@ -1,6 +1,9 @@
 package sk.hrstka.models.ui
 
+import java.text.DecimalFormat
+
 import sk.hrstka.models
+import sk.hrstka.models.domain.CompRatingFactory
 
 case class Comp(id: String,
                 name: String,
@@ -14,11 +17,16 @@ case class Comp(id: String,
                 services: Boolean,
                 internal: Boolean,
                 techRatings: Seq[TechRating],
-                joel: Map[Int, String]) {
+                joel: Map[Int, String],
+                rating: BigDecimal) {
   def maleCodersCount: Option[Int] = for {
     coders <- codersCount
     females <- femaleCodersCount
   } yield coders - females
+}
+
+object Comp {
+  val format = new DecimalFormat("#.#")
 }
 
 object CompFactory {
@@ -50,5 +58,6 @@ object CompFactory {
     services          = comp.services,
     internal          = comp.internal,
     techRatings       = comp.techRatings.map(TechRatingFactory.apply),
-    joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap)
+    joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap,
+    rating            = CompRatingFactory.apply(comp).value)
 }

@@ -5,16 +5,10 @@
     <header>
         <h3>
             <a href="@sk.hrstka.controllers.routes.CompController.get(comp.id)">@comp.name</a>
+            <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(comp.rating*100.0)%</span>
             @if(mainModel.city.isEmpty) { <span class="city">@comp.city.sk</span> }
         </h3>
     </header>
-    @if(comp.techRatings.nonEmpty) {
-    <div class="techs">
-        @for(techRating <- comp.techRatings) {
-        <span class="hrstka-tech">@techRating.tech.name</span>
-        }
-    </div>
-    }
     <div class="comp-line">
         <span class="comp-count"><span class="hrstka-emp-count">@comp.femaleCodersCount</span> programátoriek</span>
         <span class="comp-count"><span class="hrstka-emp-count">@comp.maleCodersCount</span> programátorov</span>
@@ -25,6 +19,13 @@
         The Joel Test
         @for(j <- comp.joel) {
         <span class="hrstka-joel">@j._1</span>
+        }
+    </div>
+    }
+    @if(comp.techRatings.nonEmpty) {
+    <div class="techs">
+        @for(techRating <- comp.techRatings) {
+        <span class="hrstka-tech">@techRating.tech.name</span>
         }
     </div>
     }
