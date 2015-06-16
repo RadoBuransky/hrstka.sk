@@ -45,7 +45,14 @@ object CompFactory {
     "Do you do hallway usability testing?"
   )
 
-  def apply(comp: models.domain.Comp) = new Comp(
+  /**
+   * Converts company from domain model to UI.
+   *
+   * @param comp Company in domain model.
+   * @param formattedNote Properly formatted note. It can be HTML or Markdown depending on usage.
+   * @return
+   */
+  def apply(comp: models.domain.Comp, formattedNote: String) = new Comp(
     id                = comp.id.value,
     name              = comp.name,
     website           = comp.website.toString,
@@ -53,7 +60,7 @@ object CompFactory {
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
-    note              = comp.note,
+    note              = formattedNote,
     products          = comp.products,
     services          = comp.services,
     internal          = comp.internal,

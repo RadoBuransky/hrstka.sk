@@ -60,8 +60,8 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
           ),
           form.techs.map(Handle.apply).toSet,
           loggedIn.id
-        ).map { _ =>
-          Redirect(sk.hrstka.controllers.routes.CompController.all())
+        ).map { id =>
+          Redirect(sk.hrstka.controllers.routes.CompController.get(id.value))
         }
       }
     }
@@ -74,7 +74,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(CompFactory.apply), companyTechnologies, CompFactory.joelQuestions, action))
+        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(c => CompFactory.apply(c, c.note)), companyTechnologies, CompFactory.joelQuestions, action))
       }
     } yield result
 }

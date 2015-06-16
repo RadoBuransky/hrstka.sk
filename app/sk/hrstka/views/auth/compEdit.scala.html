@@ -4,43 +4,43 @@
     <form action="@action" method="post">
         <div class="form-group">
             <label for="compName">Názov</label>
-            <input type="text" class="form-control" id="compName" name="compName" value="@comp.map(_.name)" required>
+            <input type="text" class="form-control" id="compName" name="compName" value="@comp.map(_.name)" required />
         </div>
         <div class="form-group">
             <label for="website">Web</label>
-            <input type="url" class="form-control" id="website" name="website" value="@comp.map(_.website)" required>
+            <input type="url" class="form-control" id="website" name="website" value="@comp.map(_.website)" required />
         </div>
         <div class="form-group">
             <label for="city">Mesto</label>
-            <input type="text" class="form-control" id="city" name="city" value="@comp.map(_.city.sk)" required>
+            <input type="text" class="form-control" id="city" name="city" value="@comp.map(_.city.sk)" required />
         </div>
         <div class="form-group">
             <label for="codersCount">Počet zamestnancov</label>
-            <input type="number" class="form-control" id="employeeCount" name="employeeCount" value="@comp.map(_.employeeCount)">
+            <input type="number" class="form-control" id="employeeCount" name="employeeCount" value="@comp.map(_.employeeCount)" />
         </div>
         <div class="form-group">
             <label for="codersCount">Z toho programátorov</label>
-            <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.codersCount)">
+            <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.codersCount)" />
         </div>
         <div class="form-group">
             <label for="femaleCodersCount">Z toho žien programátoriek</label>
-            <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount" value="@comp.map(_.femaleCodersCount)">
+            <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount" value="@comp.map(_.femaleCodersCount)" />
         </div>
         <div class="form-group">
             <label>Čo sa programuje</label>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="products" name="products" value="true" @if(comp.map(_.products).getOrElse(false)) { checked } > SW/HW produkt (web, appka, robot, ...)
+                    <input type="checkbox" id="products" name="products" value="true" @if(comp.map(_.products).getOrElse(false)) { checked } /> SW/HW produkt (web, appka, robot, ...)
                 </label>
             </div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="services" name="services" value="true" @if(comp.map(_.services).getOrElse(false)) { checked }> SW/HW služby (vývoj SW na zákazku, správa zákazníkovho HW, ...)
+                    <input type="checkbox" id="services" name="services" value="true" @if(comp.map(_.services).getOrElse(false)) { checked } /> SW/HW služby (vývoj SW na zákazku, správa zákazníkovho HW, ...)
                 </label>
             </div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" id="internal" name="internal" value="true" @if(comp.map(_.internal).getOrElse(false)) { checked }> Interné SW/HW oddelenie (biznis firmy nie je IT)
+                    <input type="checkbox" id="internal" name="internal" value="true" @if(comp.map(_.internal).getOrElse(false)) { checked } /> Interné SW/HW oddelenie (biznis firmy nie je IT)
                 </label>
             </div>
         </div>
@@ -53,7 +53,7 @@
                 <li>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="joel[]" value="@joelQuestion._2" @if(comp.map(_.joel.exists(_._1 == (joelQuestion._1 + 1))).getOrElse(false)) { checked } > @joelQuestion._1
+                            <input type="checkbox" name="joel[]" value="@joelQuestion._2" @if(comp.map(_.joel.exists(_._1 == (joelQuestion._2 + 1))).getOrElse(false)) { checked } /> @joelQuestion._1
                         </label>
                     </div>
                 </li>
@@ -65,14 +65,14 @@
             @for(tech <- techs) {
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="techs[]" value="@tech._1" @if(tech._2) { checked }> @tech._1
+                    <input type="checkbox" name="techs[]" value="@tech._1" @if(tech._2) { checked } /> @tech._1
                 </label>
             </div>
             }
         </div>
         <div class="form-group">
             <label for="note">Všetko ostatné čo sa nezmestilo inde</label>
-            <input type="text" class="form-control" id="note" name="note" value="@comp.map(_.note)">
+            <textarea class="form-control" id="note" name="note" rows="10">@comp.map(_.note)</textarea>
         </div>
         <button type="submit" class="btn btn-default">Uložiť</button>
     </form>

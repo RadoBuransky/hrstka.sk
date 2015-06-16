@@ -5,7 +5,7 @@
     <div><a href="@comp.website" rel="nofollow">@comp.website</a></div>
     <div class="hrstka-city">@comp.city.sk</div>
     @if(comp.note.nonEmpty) {
-        <div class="container-fluid">@comp.note</div>
+        <div class="container-fluid">@Html(comp.note)</div>
     }
     <div class="container-fluid">
         @if(comp.products) {
