@@ -5,7 +5,9 @@
     <header>
         <h3>
             <a href="@sk.hrstka.controllers.routes.CompController.get(comp.id)">@comp.name</a>
-            <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(comp.rating*100.0)%</span>
+            @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
+                <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(comp.rating*100.0)%</span>
+            }
             @if(mainModel.city.isEmpty) { <span class="city">@comp.city.sk</span> }
         </h3>
     </header>

@@ -1,2 +1,5 @@
-# hrstka-eminencie
-Hŕstka Eminencie - to najlepšie čo si môže programátor priať
+# Hŕstka programátoských dobrôt
+
+- Scala
+- Play Framework 2.4
+- MongoDB 3

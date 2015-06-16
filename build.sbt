@@ -22,14 +22,15 @@ routesGenerator := InjectedRoutesGenerator
 libraryDependencies ++= Seq(
   cache,
   ws,
-  "org.reactivemongo" %%  "play2-reactivemongo"   % "0.10.5.0.akka23.play24-SNAPSHOT",
-  "jp.t2v"            %%  "play2-auth"            % "0.13.2",
-  "com.github.t3hnar" %%  "scala-bcrypt"          % "2.4",
-  "com.typesafe.play" %%  "play-test"             % "2.4.0"             % "it",
-  "org.scalatest"     %%  "scalatest"             % "2.2.4"             % "it,test",
-  "org.mockito"       %   "mockito-all"           % "1.10.19"           % "it,test",
-  "org.scalatestplus" %%  "play"                  % "1.4.0-M3"          % "it,test",
-  "jp.t2v"            %%  "play2-auth-test"       % "0.13.2"            % "test"
+  "org.reactivemongo"   %%  "play2-reactivemongo"   % "0.10.5.0.akka23.play24-SNAPSHOT",
+  "jp.t2v"              %%  "play2-auth"            % "0.13.2",
+  "com.github.t3hnar"   %%  "scala-bcrypt"          % "2.4",
+  "com.github.rjeschke" %   "txtmark"               % "0.13",
+  "com.typesafe.play"   %%  "play-test"             % "2.4.0"             % "it",
+  "org.scalatest"       %%  "scalatest"             % "2.2.4"             % "it,test",
+  "org.mockito"         %   "mockito-all"           % "1.10.19"           % "it,test",
+  "org.scalatestplus"   %%  "play"                  % "1.4.0-M3"          % "it,test",
+  "jp.t2v"              %%  "play2-auth-test"       % "0.13.2"            % "test"
 )
 
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages :=
