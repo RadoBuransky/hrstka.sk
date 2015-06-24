@@ -6,7 +6,6 @@ import play.modules.reactivemongo.json.BSONFormats._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.QueryOpts
 import reactivemongo.bson.BSONObjectID
-import reactivemongo.core.commands.LastError
 import sk.hrstka.common.HrstkaException
 import sk.hrstka.models.db.Identifiable
 import sk.hrstka.models.db.Identifiable.Id

@@ -42,7 +42,7 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
           Ok(sk.hrstka.views.html.auth.techs(
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),
-            userVotes.map(uv => uv.techId.value -> uv.value).toMap,
+            userVotes.map(uv => uv.entityId.value -> uv.value).toMap,
             allCategories.toSeq.map(TechCategoryFactory.apply)))
         }
     }

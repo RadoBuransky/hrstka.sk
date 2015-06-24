@@ -26,6 +26,7 @@ class MongoDbManagerISpec(testApplication: TestApplication) extends FlatSpec wit
   it should "create userEmailIndex" in { assert(indexExists(MongoDbManager.userEmailIndex).futureValue) }
   it should "create cityHandleIndex" in { assert(indexExists(MongoDbManager.cityHandleIndex).futureValue) }
   it should "create techVoteUserTechIndex" in { assert(indexExists(MongoDbManager.techVoteUserTechIndex).futureValue) }
+  it should "create compVoteUserTechIndex" in { assert(indexExists(MongoDbManager.compVoteUserTechIndex).futureValue) }
 
   private def indexExists(nsIndex: NSIndex): Future[Boolean] = {
     testApplication.db match {

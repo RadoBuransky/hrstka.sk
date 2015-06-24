@@ -43,10 +43,10 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
     assert(emptyIds(all1).toSet ==
       Set(
         TechVote(
-          _id     = Identifiable.empty,
-          userId  = user1Id,
-          techId  = scalaId,
-          value   = 42
+          _id       = Identifiable.empty,
+          userId    = user1Id,
+          entityId  = scalaId,
+          value     = 42
         )
       )
     )
@@ -54,10 +54,10 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
     assert(all2.toSet ==
       Set(
         TechVote(
-          _id     = all1.head._id,
-          userId  = user1Id,
-          techId  = scalaId,
-          value   = -13
+          _id       = all1.head._id,
+          userId    = user1Id,
+          entityId  = scalaId,
+          value     = -13
         )
       )
     )
@@ -92,13 +92,13 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
         TechVote(
         _id = Identifiable.empty,
         userId = user1Id,
-        techId = scalaId,
+        entityId = scalaId,
         value = 1
         ),
         TechVote(
           _id = Identifiable.empty,
           userId = user1Id,
-          techId = javaId,
+          entityId = javaId,
           value = 2
         )))
 
@@ -107,7 +107,7 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
         TechVote(
           _id = Identifiable.empty,
           userId = user2Id,
-          techId = javaId,
+          entityId = javaId,
           value = 3
         )))
 
@@ -128,19 +128,19 @@ class MongoTechVoteRepositoryISpec(testApplication: TestApplication)
         TechVote(
           _id = Identifiable.empty,
           userId = user1Id,
-          techId = scalaId,
+          entityId = scalaId,
           value = 1
         ),
         TechVote(
           _id = Identifiable.empty,
           userId = user1Id,
-          techId = javaId,
+          entityId = javaId,
           value = 2
         ),
         TechVote(
           _id = Identifiable.empty,
           userId = user2Id,
-          techId = javaId,
+          entityId = javaId,
           value = 3
         )
       )

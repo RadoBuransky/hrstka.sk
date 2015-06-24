@@ -41,7 +41,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
     // Get all technology votes for all users
     techVoteRepository.all(None).flatMap { dbTechVotes =>
       // Map to domain model
-      val allTechVotes = dbTechVotes.map(TechVoteFactory.apply)
+      val allTechVotes = dbTechVotes.map(VoteFactory.apply)
       // Get all technologies
       techRepository.all().map { techs =>
         // Map to domain model
@@ -67,7 +67,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
   override def voteUp(handle: Handle, userId: Id) = voteDelta(handle, userId, 1)
   override def voteDown(handle: Handle, userId: Id) = voteDelta(handle, userId, -1)
   override def votesFor(userId: Id): Future[Traversable[TechVote]] =
-    techVoteRepository.all(Some(userId)).map(_.map(TechVoteFactory.apply))
+    techVoteRepository.all(Some(userId)).map(_.map(VoteFactory.apply))
 
   override def allCategories(): Future[Traversable[TechCategory]] = Future.successful(TechCategory.allCategories)
 
@@ -79,7 +79,7 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
    * @return Rating value, a number between 0.0 and 100.0
    */
   private def techRating(tech: Tech, allTechVotes: Traversable[TechVote]): TechRating = {
-    val techVotes = allTechVotes.filter(tv => tv.techId == tech.id && tv.value != 0).map(_.value)
+    val techVotes = allTechVotes.filter(tv => tv.entityId == tech.id && tv.value != 0).map(_.value)
     TechRatingFactory(tech, techVotes.filter(_ > 0).sum, techVotes.size)
   }
 

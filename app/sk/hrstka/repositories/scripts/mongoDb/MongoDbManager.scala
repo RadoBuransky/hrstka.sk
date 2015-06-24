@@ -50,7 +50,8 @@ private object MongoDbManager {
     techHandleIndex,
     userEmailIndex,
     cityHandleIndex,
-    techVoteUserTechIndex
+    techVoteUserTechIndex,
+    compVoteUserTechIndex
   )
 
   lazy val compNameIndex = createUniqueIndex(CompCollection, "name")
@@ -58,7 +59,8 @@ private object MongoDbManager {
   lazy val techHandleIndex = createUniqueIndex(TechCollection, "handle")
   lazy val userEmailIndex = createUniqueIndex(UserCollection, "email")
   lazy val cityHandleIndex = createUniqueIndex(CityCollection, "handle")
-  lazy val techVoteUserTechIndex = createUniqueIndex(TechVoteCollection, "userId", "techId")
+  lazy val techVoteUserTechIndex = createUniqueIndex(TechVoteCollection, "userId", "entityId")
+  lazy val compVoteUserTechIndex = createUniqueIndex(CompVoteCollection, "userId", "entityId")
 
   private def createUniqueIndex(coll: MongoCollection, fieldNames: String*) = NSIndex("db." + coll.name,
     Index(

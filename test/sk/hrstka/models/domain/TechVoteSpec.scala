@@ -8,5 +8,5 @@ object TechVoteSpec {
   lazy val all = radosVotes ++ johnysVotes
 
   private def votesFor(user: db.User): Traversable[TechVote] =
-    db.TechVoteSpec.all.filter(_.userId == user._id).map(TechVoteFactory(_))
+    db.TechVoteSpec.all.filter(_.userId == user._id).map(VoteFactory(_))
 }
