@@ -14,7 +14,7 @@ trait ApiController {
    *
    * @return JSON array.
    */
-  def comps(): EssentialAction
+  def comps(): Action[AnyContent]
 
   /**
    * Gets JSON array with all technologies.

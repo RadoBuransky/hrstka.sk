@@ -3,10 +3,9 @@ package sk.hrstka.controllers.impl
 import org.mockito.Mockito._
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results
-import play.api.test.FakeRequest
 import sk.hrstka.controllers.test.BaseControllerSpec
 import sk.hrstka.models.domain.{CompSpec, TechRatingSpec}
-import sk.hrstka.services.{AuthService, CompService}
+import sk.hrstka.services.{AuthService, CompService, MarkdownService}
 
 import scala.concurrent.Future
 
@@ -17,6 +16,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Prepare
     when(compService.get(CompSpec.avitech.id))
       .thenReturn(Future.successful(CompSpec.avitech))
+    when(markdownService.toHtml(CompSpec.avitech.note))
+      .thenReturn(CompSpec.avitech.note)
     prepareMainModel()
 
     // Execute
@@ -132,10 +133,12 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
   private class TestScope extends BaseTestScope {
     val compService = mock[CompService]
+    val markdownService = mock[MarkdownService]
     val authService = mock[AuthService]
     val messagesApi = mock[MessagesApi]
     val compController = new CompControllerImpl(
       compService,
+      markdownService,
       authService,
       techService,
       locationService,

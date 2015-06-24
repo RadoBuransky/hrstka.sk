@@ -2,6 +2,7 @@ package sk.hrstka.controllers.test
 
 import org.mockito.Mockito._
 import org.mockito.internal.util.MockUtil
+import play.api.cache.{CacheApi, Cached}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
