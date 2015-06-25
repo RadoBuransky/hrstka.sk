@@ -15,4 +15,5 @@ case class Comp(_id: Id,
                 services: Boolean,
                 internal: Boolean,
                 techs: Set[Handle],
-                joel: Set[Int]) extends Identifiable with Authorable
+                joel: Set[Int],
+                govRevenue: Option[BigDecimal]) extends Identifiable with Authorable

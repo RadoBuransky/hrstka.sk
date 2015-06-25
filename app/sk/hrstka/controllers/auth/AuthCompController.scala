@@ -10,6 +10,7 @@ case class AddCompForm(name: String,
                        employeeCount:Option[Int],
                        codersCount: Option[Int],
                        femaleCodersCount: Option[Int],
+                       govRevenue: Option[BigDecimal],
                        note: String,
                        products: Boolean,
                        services: Boolean,
@@ -41,8 +42,24 @@ trait AuthCompController {
    * Handles sumbitted form with a company to add or update.
    *
    * @param compId Company identifier.
-   * @return Redirects to index page.
+   * @return Redirects to the index page.
    */
   def save(compId: Option[String]): Action[AnyContent]
+
+  /**
+   * Handles vote up.
+   *
+   * @param compId Company identifier.
+   * @return Redirect to the company page.
+   */
+  def voteUp(compId: String): Action[AnyContent]
+
+  /**
+   * Handles vote down.
+   *
+   * @param compId Company identifier.
+   * @return Redirect to the company page.
+   */
+  def voteDown(compId: String): Action[AnyContent]
 }
 

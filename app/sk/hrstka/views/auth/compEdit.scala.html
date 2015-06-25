@@ -61,6 +61,10 @@
             </ol>
         </div>
         <div class="form-group">
+            <label for="govRevenue">Podiel obchodu so štátom na minuloročnom obrate firmy</label>
+            <input type="number" class="form-control" id="govRevenue" name="govRevenue" value="@comp.map(_.govRevenue)" />
+        </div>
+        <div class="form-group">
             <label>Technológie</label>
             @for(tech <- techs) {
             <div class="checkbox">

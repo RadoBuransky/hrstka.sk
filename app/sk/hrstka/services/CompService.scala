@@ -44,4 +44,24 @@ trait CompService {
    * @return Ordered list of companies.
    */
   def topWomen(): Future[Seq[Comp]]
+
+  /**
+   * Increases value of user's vote for the company.
+   *
+   * @param compId Company identifier.
+   * @param userId User identifier.
+   * @return Nothing.
+   */
+  def voteUp(compId: Id, userId: Id): Future[Unit]
+
+  /**
+   * Decreases value of user's vote for the company.
+   *
+   * @param compId Company identifier.
+   * @param userId User identifier.
+   * @return Nothing.
+   */
+  def voteDown(compId: Id, userId: Id): Future[Unit]
+
+  // TODO: Get vote value for a compId and userId
 }

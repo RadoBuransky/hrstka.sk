@@ -15,27 +15,31 @@ case class CompRating(comp: Comp,
 }
 
 object CompRatingFactory {
+  val maxVoteValue = 3
+  val minVoteValue = -1
+
   /**
    * Computes company rating:
-   *   70% technology ratings
+   *   30% technology ratings
    *     - average of all technology rating values
+   *   30% eminents' votes
+   *   20% percentage of business with government in the last year's revenue
    *   10% Joel's test
    *     - percentage of how many points checked
    *   10% ratio of female / male programmers
-   *     - the close to 1:1 the better rating
-   *   10% ratio of programmers / all employees
-   *     - full score if all employees are programmers, this a tech website
+   *     - the closer to 1:1 the better rating
    *
    * @param comp Company to compute rating for.
    * @return Company rating.
    */
-  def apply(comp: Comp): CompRating = {
+  def apply(comp: Comp, upVotesValue: Int, voteCount: Int): CompRating = {
     CompRating(
       comp,
-      0.7 * techRating(comp) +
+      0.3 * techRating(comp) +
+      0.3 * compVotes(upVotesValue, voteCount) +
+      0.2 * governmentRevenue(comp) +
       0.1 * joelsTest(comp) +
-      0.1 * femaleRatio(comp) +
-      0.1 * codersRatio(comp))
+      0.1 * femaleRatio(comp))
   }
 
   private[domain] def techRating(comp: Comp): BigDecimal = {
@@ -45,6 +49,18 @@ object CompRatingFactory {
     else
       techRatingValues.sum / techRatingValues.size
   }
+
+  private[domain] def compVotes(upVotesValue: Int, voteCount: Int): BigDecimal = {
+    if (voteCount == 0)
+      0
+    else {
+      if (upVotesValue > voteCount * maxVoteValue)
+        throw new IllegalArgumentException(s"Illegal vote value! [$upVotesValue, $voteCount]")
+      upVotesValue.toDouble / (voteCount.toDouble * maxVoteValue.toDouble)
+    }
+  }
+
+  private[domain] def governmentRevenue(comp: Comp): BigDecimal = 0.0
 
   private[domain] def joelsTest(comp: Comp): BigDecimal = comp.joel.size / 12.0
 
@@ -58,15 +74,5 @@ object CompRatingFactory {
       val opt = (females + males) / 2.0
       1.0 - (Math.abs(females - opt) / opt)
     }
-  }
-
-  private[domain] def codersRatio(comp: Comp): BigDecimal = {
-    val all = comp.employeeCount.getOrElse(0)
-    val coders = comp.codersCount.getOrElse(0)
-
-    if (all == 0 || coders == 0)
-      0.0
-    else
-      coders.toDouble / all.toDouble
   }
 }

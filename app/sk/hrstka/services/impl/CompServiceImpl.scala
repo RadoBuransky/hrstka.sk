@@ -3,7 +3,7 @@ package sk.hrstka.services.impl
 import com.google.inject.{Inject, Singleton}
 import sk.hrstka
 import sk.hrstka.models.domain.{Handle, _}
-import sk.hrstka.repositories.CompRepository
+import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,6 +11,7 @@ import scala.concurrent.Future
 
 @Singleton
 final class CompServiceImpl @Inject() (compRepository: CompRepository,
+                                       compVoteRepository: CompVoteRepository,
                                        techService: TechService,
                                        locationService: LocationService) extends CompService {
   import Identifiable._
@@ -68,9 +69,21 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
+  override def voteUp(compId: Id, userId: Id): Future[Unit] = voteDelta(compId, userId, 1)
+  override def voteDown(compId: Id, userId: Id): Future[Unit] = voteDelta(compId, userId, -1)
+
   private def dbCompToDomain(techRatings: Seq[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
     locationService.get(Handle(comp.city)).map { city =>
       CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
+    }
+  }
+
+  private def voteDelta(compId: Id, userId: Id, delta: Int): Future[Unit] = {
+    compVoteRepository.findValue(compId, userId).map { latestVoteOption =>
+      val newVoteValue = latestVoteOption.getOrElse(0) + delta
+      if ((newVoteValue <= CompRatingFactory.maxVoteValue) &&
+        (newVoteValue >= CompRatingFactory.minVoteValue))
+        compVoteRepository.vote(compId, userId, newVoteValue)
     }
   }
 }

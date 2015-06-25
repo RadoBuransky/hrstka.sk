@@ -3,7 +3,6 @@ package sk.hrstka.models.ui
 import java.text.DecimalFormat
 
 import sk.hrstka.models
-import sk.hrstka.models.domain.CompRatingFactory
 
 case class Comp(id: String,
                 name: String,
@@ -12,6 +11,7 @@ case class Comp(id: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
+                govRevenue: Option[BigDecimal],
                 note: String,
                 products: Boolean,
                 services: Boolean,
@@ -48,23 +48,24 @@ object CompFactory {
   /**
    * Converts company from domain model to UI.
    *
-   * @param comp Company in domain model.
+   * @param compRating Company rating in domain model.
    * @param formattedNote Properly formatted note. It can be HTML or Markdown depending on usage.
    * @return
    */
-  def apply(comp: models.domain.Comp, formattedNote: String) = new Comp(
-    id                = comp.id.value,
-    name              = comp.name,
-    website           = comp.website.toString,
-    city              = CityFactory(comp.city),
-    employeeCount     = comp.employeeCount,
-    codersCount       = comp.codersCount,
-    femaleCodersCount = comp.femaleCodersCount,
+  def apply(compRating: models.domain.CompRating, formattedNote: String) = new Comp(
+    id                = compRating.comp.id.value,
+    name              = compRating.comp.name,
+    website           = compRating.comp.website.toString,
+    city              = CityFactory(compRating.comp.city),
+    employeeCount     = compRating.comp.employeeCount,
+    codersCount       = compRating.comp.codersCount,
+    femaleCodersCount = compRating.comp.femaleCodersCount,
+    govRevenue        = compRating.comp.govRevenue,
     note              = formattedNote,
-    products          = comp.products,
-    services          = comp.services,
-    internal          = comp.internal,
-    techRatings       = comp.techRatings.map(TechRatingFactory.apply),
-    joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap,
-    rating            = CompRatingFactory.apply(comp).value)
+    products          = compRating.comp.products,
+    services          = compRating.comp.services,
+    internal          = compRating.comp.internal,
+    techRatings       = compRating.comp.techRatings.map(TechRatingFactory.apply),
+    joel              = compRating.comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap,
+    rating            = compRating.value)
 }

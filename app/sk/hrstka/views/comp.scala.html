@@ -1,4 +1,4 @@
-@(comp: sk.hrstka.models.ui.Comp)(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(comp: sk.hrstka.models.ui.Comp, vote: Option[Int] = None)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @main(comp.name) {
 <article class="comp-details">
@@ -8,15 +8,17 @@
         <div class="container-fluid">@Html(comp.note)</div>
     }
     <div class="container-fluid">
-        @if(comp.products) {
-        <div>Vývoj softvérových produktov</div>
-        }
-        @if(comp.services) {
-        <div>Poskytovanie softvérových služieb</div>
-        }
-        @if(comp.internal) {
-        <div>Interný vývoj</div>
-        }
+        <ul>
+            @if(comp.products) {
+            <li>Vývoj softvérových produktov</li>
+            }
+            @if(comp.services) {
+            <li>Poskytovanie softvérových služieb</li>
+            }
+            @if(comp.internal) {
+            <li>Interný vývoj</li>
+            }
+        </ul>
     </div>
     <div class="container-fluid">
         @if(comp.employeeCount.isDefined) {
@@ -59,6 +61,16 @@
         }
     </div>
     }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3">
+                Podiel obchodu so štátom na minuloročnom obrate firmy:
+            </div>
+            <div class="col-sm-9">
+                @comp.govRevenue
+            </div>
+        </div>
+    </div>
     @if(comp.techRatings.nonEmpty) {
     <div class="container-fluid">
         @for(techRating <- comp.techRatings) {
@@ -70,6 +82,12 @@
     </div>
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
+        <div>
+            @comp.rating
+            @vote.getOrElse(0)
+            <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.id)">Plus</a>
+            <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.id)">Mínus</a>
+        </div>
         <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
     }
 </article>

@@ -25,6 +25,8 @@ GET     /programovanie/firma/:compId            sk.hrstka.controllers.CompContro
 GET     /programovanie/firma/:compId/uprav      sk.hrstka.controllers.auth.AuthCompController.editForm(compId: String)
 POST    /programovanie/firma                    sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
 GET     /programovanie/novaFirma                sk.hrstka.controllers.auth.AuthCompController.addForm
+GET     /programovanie/firma/:compId/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(compId: String)
+GET     /programovanie/firma/:compId/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(compId: String)
 
 GET     /api/companies              sk.hrstka.controllers.ApiController.comps
 GET     /api/technologies           sk.hrstka.controllers.ApiController.techs

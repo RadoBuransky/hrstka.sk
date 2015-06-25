@@ -56,7 +56,8 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             services = form.services,
             internal = form.internal,
             techRatings = Seq.empty,
-            joel = form.joel.toSet
+            joel = form.joel.toSet,
+            govRevenue = form.govRevenue
           ),
           form.techs.map(Handle.apply).toSet,
           loggedIn.id
@@ -66,6 +67,19 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
       }
     }
   }
+
+  override def voteUp(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    vote(compId, compService.voteUp(Id(compId), loggedIn.id))
+  }
+
+  override def voteDown(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    vote(compId, compService.voteDown(Id(compId), loggedIn.id))
+  }
+
+  private def vote[A](compId: String, action: Future[Unit])(implicit request: RequestWithAttributes[A]) =
+    action.map { Unit =>
+      Redirect(sk.hrstka.controllers.routes.CompController.get(compId))
+    }
 
   private def edit[A](comp: Option[Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
     for {
@@ -88,6 +102,7 @@ object AuthCompControllerImpl {
       "employeeCount" -> optional(number),
       "codersCount" -> optional(number),
       "femaleCodersCount" -> optional(number),
+      "govRevenue" -> optional(bigDecimal),
       "note" -> text,
       "products" -> boolean,
       "services" -> boolean,
