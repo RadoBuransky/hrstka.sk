@@ -1,5 +1,5 @@
-@(headline: String, comps: Seq[sk.hrstka.models.ui.Comp])(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(headline: String, compRatings: Seq[sk.hrstka.models.ui.CompRating])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @main(headline) {
-    @controls.comps(comps)
+    @controls.comps(compRatings)
 }

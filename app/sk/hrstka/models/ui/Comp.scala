@@ -4,6 +4,24 @@ import java.text.DecimalFormat
 
 import sk.hrstka.models
 
+/**
+ * Company user interface model.
+ *
+ * @param id Company identifier.
+ * @param name Name.
+ * @param website Website URL.
+ * @param city City.
+ * @param employeeCount Total number of employees.
+ * @param codersCount Number of programmers.
+ * @param femaleCodersCount Number of female programmers.
+ * @param note HTML or Markdown depending on usage.
+ * @param products Does the company sell products?
+ * @param services Does the company provide services?
+ * @param internal Does the company have an internal programming department?
+ * @param techRatings Technology ratings.
+ * @param joel The Joel Test.
+ * @param govBiz Government business percentage.
+ */
 case class Comp(id: String,
                 name: String,
                 website: String,
@@ -11,14 +29,13 @@ case class Comp(id: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
-                govRevenue: Option[BigDecimal],
-                note: String,
+                note: FormattedText,
                 products: Boolean,
                 services: Boolean,
                 internal: Boolean,
                 techRatings: Seq[TechRating],
                 joel: Map[Int, String],
-                rating: BigDecimal) {
+                govBiz: Option[BigDecimal]) {
   def maleCodersCount: Option[Int] = for {
     coders <- codersCount
     females <- femaleCodersCount
@@ -48,24 +65,23 @@ object CompFactory {
   /**
    * Converts company from domain model to UI.
    *
-   * @param compRating Company rating in domain model.
+   * @param comp Company n domain model.
    * @param formattedNote Properly formatted note. It can be HTML or Markdown depending on usage.
    * @return
    */
-  def apply(compRating: models.domain.CompRating, formattedNote: String) = new Comp(
-    id                = compRating.comp.id.value,
-    name              = compRating.comp.name,
-    website           = compRating.comp.website.toString,
-    city              = CityFactory(compRating.comp.city),
-    employeeCount     = compRating.comp.employeeCount,
-    codersCount       = compRating.comp.codersCount,
-    femaleCodersCount = compRating.comp.femaleCodersCount,
-    govRevenue        = compRating.comp.govRevenue,
+  def apply(comp: models.domain.Comp, formattedNote: FormattedText) = new Comp(
+    id                = comp.id.value,
+    name              = comp.name,
+    website           = comp.website.toString,
+    city              = CityFactory(comp.city),
+    employeeCount     = comp.employeeCount,
+    codersCount       = comp.codersCount,
+    femaleCodersCount = comp.femaleCodersCount,
     note              = formattedNote,
-    products          = compRating.comp.products,
-    services          = compRating.comp.services,
-    internal          = compRating.comp.internal,
-    techRatings       = compRating.comp.techRatings.map(TechRatingFactory.apply),
-    joel              = compRating.comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap,
-    rating            = compRating.value)
+    products          = comp.products,
+    services          = comp.services,
+    internal          = comp.internal,
+    techRatings       = comp.techRatings.map(TechRatingFactory.apply),
+    joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap,
+    govBiz            = comp.govBiz)
 }

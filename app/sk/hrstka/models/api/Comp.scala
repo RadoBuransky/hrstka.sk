@@ -16,25 +16,27 @@ case class Comp(id: String,
                 internal: Boolean,
                 techHandles: Seq[String],
                 joel: Set[Int],
+                govBiz: Option[BigDecimal],
                 hrstkaUrl: String,
                 rating: BigDecimal)
 
 object CompFactory {
-  def fromDomain(comp: domain.Comp, url: String) = Comp(
-    id                = comp.id.value,
-    name              = comp.name,
-    website           = comp.website.toString,
-    cityHandle        = comp.city.handle.value,
-    employeeCount     = comp.employeeCount,
-    codersCount       = comp.codersCount,
-    femaleCodersCount = comp.femaleCodersCount,
-    note              = comp.note,
-    products          = comp.products,
-    services          = comp.services,
-    internal          = comp.internal,
-    techHandles       = comp.techRatings.map(_.tech.handle.value),
-    joel              = comp.joel,
+  def fromDomain(compRating: domain.CompRating, url: String) = Comp(
+    id                = compRating.comp.id.value,
+    name              = compRating.comp.name,
+    website           = compRating.comp.website.toString,
+    cityHandle        = compRating.comp.city.handle.value,
+    employeeCount     = compRating.comp.employeeCount,
+    codersCount       = compRating.comp.codersCount,
+    femaleCodersCount = compRating.comp.femaleCodersCount,
+    note              = compRating.comp.note,
+    products          = compRating.comp.products,
+    services          = compRating.comp.services,
+    internal          = compRating.comp.internal,
+    techHandles       = compRating.comp.techRatings.map(_.tech.handle.value),
+    joel              = compRating.comp.joel,
+    govBiz            = compRating.comp.govBiz,
     hrstkaUrl         = url.toString,
-    rating            = CompRatingFactory(comp).value
+    rating            = compRating.value
   )
 }

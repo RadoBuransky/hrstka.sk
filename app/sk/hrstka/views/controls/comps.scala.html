@@ -1,38 +1,38 @@
-@(comps: Seq[sk.hrstka.models.ui.Comp])(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(compRatings: Seq[sk.hrstka.models.ui.CompRating])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
-@for(comp <- comps) {
+@for(compRating <- compRatings) {
 <article class="comp">
     <header>
         <h3>
-            <a href="@sk.hrstka.controllers.routes.CompController.get(comp.id)">@comp.name</a>
+            <a href="@sk.hrstka.controllers.routes.CompController.get(compRating.comp.id)">@compRating.comp.name</a>
             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
-                <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(comp.rating*100.0)%</span>
+                <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(compRating.value)%</span>
             }
-            @if(mainModel.city.isEmpty) { <span class="city">@comp.city.sk</span> }
+            @if(mainModel.city.isEmpty) { <span class="city">@compRating.comp.city.sk</span> }
         </h3>
     </header>
     <div class="comp-line">
-        <span class="comp-count"><span class="hrstka-emp-count">@comp.femaleCodersCount</span> programátoriek</span>
-        <span class="comp-count"><span class="hrstka-emp-count">@comp.maleCodersCount</span> programátorov</span>
-        <span class="comp-count"><span class="hrstka-emp-count">@comp.employeeCount</span> zamestnancov</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.femaleCodersCount</span> programátoriek</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.maleCodersCount</span> programátorov</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.employeeCount</span> zamestnancov</span>
     </div>
-    @if(comp.joel.nonEmpty) {
+    @if(compRating.comp.joel.nonEmpty) {
     <div class="comp-line">
         The Joel Test
-        @for(j <- comp.joel) {
+        @for(j <- compRating.comp.joel) {
         <span class="hrstka-joel">@j._1</span>
         }
     </div>
     }
-    @if(comp.techRatings.nonEmpty) {
+    @if(compRating.comp.techRatings.nonEmpty) {
     <div class="techs">
-        @for(techRating <- comp.techRatings) {
+        @for(techRating <- compRating.comp.techRatings) {
         <span class="hrstka-tech">@techRating.tech.name</span>
         }
     </div>
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
-        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
+        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(compRating.comp.id)">Upraviť</a></div>
     }
     <div id="comp-separator"></div>
 </article>

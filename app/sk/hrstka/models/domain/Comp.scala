@@ -17,7 +17,7 @@ case class Comp(id: Id,
                 internal: Boolean,
                 techRatings: Seq[TechRating],
                 joel: Set[Int],
-                govRevenue: Option[BigDecimal]) extends Identifiable {
+                govBiz: Option[BigDecimal]) extends Identifiable {
   codersCount match {
     case Some(c) => employeeCount match {
       case Some(e) if e < c => throw new IllegalArgumentException(s"Number of all employees is lower than number of all coders!")
@@ -52,6 +52,6 @@ object CompFactory {
     internal          = comp.internal,
     techRatings       = techRatings,
     joel              = comp.joel,
-    govRevenue        = comp.govRevenue
+    govBiz            = comp.govBiz
   )
 }

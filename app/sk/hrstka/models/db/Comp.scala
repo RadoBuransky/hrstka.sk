@@ -16,4 +16,4 @@ case class Comp(_id: Id,
                 internal: Boolean,
                 techs: Set[Handle],
                 joel: Set[Int],
-                govRevenue: Option[BigDecimal]) extends Identifiable with Authorable
+                govBiz: Option[BigDecimal]) extends Identifiable with Authorable

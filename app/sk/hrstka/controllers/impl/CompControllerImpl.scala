@@ -8,8 +8,8 @@ import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
 import sk.hrstka.models.domain.{City, Handle, Id, Tech}
+import sk.hrstka.models.ui.{CompFactory, CompRatingFactory, Html}
 import sk.hrstka.models.{domain, ui}
-import sk.hrstka.models.ui.CompFactory
 import sk.hrstka.services._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,7 +38,7 @@ class CompControllerImpl @Inject() (compService: CompService,
     for {
       topWomen  <- compService.topWomen()
       result    <- withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.women(topWomen.map(compToUi)))
+        Ok(sk.hrstka.views.html.women(topWomen.map(compRatingToUi)))
       }
     } yield result
   }
@@ -49,18 +49,22 @@ class CompControllerImpl @Inject() (compService: CompService,
 
   private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = AsyncStack { implicit request =>
     for {
-      city    <- cityForHandle(cityHandle)
-      tech    <- techForHandle(techHandle)
-      comps   <- compService.all(city.map(_.handle), tech.map(_.handle))
-      result  <- withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
+      city        <- cityForHandle(cityHandle)
+      tech        <- techForHandle(techHandle)
+      compRatings <- compService.all(city.map(_.handle), tech.map(_.handle))
+      result      <- withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.index(
           headline(city, tech),
-          comps.map(compToUi)))
+          compRatings.map(compRating => compRatingToUi(compRating))))
       }
     } yield result
   }
 
-  private def compToUi(comp: domain.Comp): ui.Comp = CompFactory(comp, markdownService.toHtml(comp.note))
+  private def compRatingToUi(compRating: domain.CompRating): ui.CompRating =
+    CompRatingFactory(compToUi(compRating.comp), compRating.value)
+
+  private def compToUi(comp: domain.Comp): ui.Comp =
+    CompFactory(comp, Html(markdownService.toHtml(comp.note)))
 
   private def headline(city: Option[City], tech: Option[Tech]): String = {
     val cityHeadline = city

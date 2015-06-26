@@ -18,9 +18,9 @@ final class ApiControllerImpl @Inject() (compService: CompService,
   import JsonFormats._
 
   override def comps() = Action.async { implicit request =>
-    compService.all(None, None).map { comps =>
-      Ok(Json.toJson(comps.map { comp =>
-        CompFactory.fromDomain(comp, sk.hrstka.controllers.routes.CompController.get(comp.id.value).absoluteURL())
+    compService.all(None, None).map { compRatings =>
+      Ok(Json.toJson(compRatings.map { compRating =>
+        CompFactory.fromDomain(compRating, sk.hrstka.controllers.routes.CompController.get(compRating.comp.id.value).absoluteURL())
       }))
     }
   }

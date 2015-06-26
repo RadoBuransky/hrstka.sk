@@ -32,9 +32,9 @@ trait VoteRepository[+TEntity <: Vote] {
   def findValue(entityId: Id, userId: Id): Future[Option[Int]]
 
   /**
-   * Gets all votes for the user unordered.
+   * Gets all votes unordered.
    *
-   * @param userId User identifier.
+   * @param userId User identifier to filter votes for. If not provided, all votes are returnes.
    * @return Unordered collection of user's votes.
    */
   def all(userId: Option[Id]): Future[Traversable[TEntity]]

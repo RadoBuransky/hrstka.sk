@@ -13,7 +13,7 @@ import play.api.mvc._
 import sk.hrstka.controllers.auth.{AddCompForm, AuthCompController}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain._
-import sk.hrstka.models.ui.CompFactory
+import sk.hrstka.models.ui.{Markdown, CompFactory}
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -57,7 +57,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             internal = form.internal,
             techRatings = Seq.empty,
             joel = form.joel.toSet,
-            govRevenue = form.govRevenue
+            govBiz = form.govRevenue
           ),
           form.techs.map(Handle.apply).toSet,
           loggedIn.id
@@ -88,7 +88,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(c => CompFactory.apply(c, c.note)), companyTechnologies, CompFactory.joelQuestions, action))
+        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(c => CompFactory.apply(c, Markdown(c.note))), companyTechnologies, CompFactory.joelQuestions, action))
       }
     } yield result
 }

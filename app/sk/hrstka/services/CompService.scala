@@ -1,7 +1,7 @@
 package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
-import sk.hrstka.models.domain.{Comp, Handle, Id}
+import sk.hrstka.models.domain.{CompRating, Comp, Handle, Id}
 import sk.hrstka.services.impl.CompServiceImpl
 
 import scala.concurrent.Future
@@ -30,20 +30,20 @@ trait CompService {
   def get(compId: Id): Future[Comp]
 
   /**
-   * Gets all companies for the provided city AND tech ordered by their rating.
+   * Gets all company ratings for the provided city AND tech ordered by their rating.
    *
    * @param city Filter companies for the city.
    * @param tech Filter companies for the technology.
    * @return Found companies.
    */
-  def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[Comp]]
+  def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[CompRating]]
 
   /**
    * Ordered list of top few companies with the most number of female programmers.
    *
    * @return Ordered list of companies.
    */
-  def topWomen(): Future[Seq[Comp]]
+  def topWomen(): Future[Seq[CompRating]]
 
   /**
    * Increases value of user's vote for the company.
@@ -62,6 +62,4 @@ trait CompService {
    * @return Nothing.
    */
   def voteDown(compId: Id, userId: Id): Future[Unit]
-
-  // TODO: Get vote value for a compId and userId
 }

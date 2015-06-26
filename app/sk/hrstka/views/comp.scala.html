@@ -4,8 +4,8 @@
 <article class="comp-details">
     <div><a href="@comp.website" rel="nofollow">@comp.website</a></div>
     <div class="hrstka-city">@comp.city.sk</div>
-    @if(comp.note.nonEmpty) {
-        <div class="container-fluid">@Html(comp.note)</div>
+    @if(comp.note.html.nonEmpty) {
+        <div class="container-fluid">@Html(comp.note.html)</div>
     }
     <div class="container-fluid">
         <ul>
@@ -61,16 +61,18 @@
         }
     </div>
     }
+    @if(comp.govBiz.isDefined) {
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3">
                 Podiel obchodu so štátom na minuloročnom obrate firmy:
             </div>
             <div class="col-sm-9">
-                @comp.govRevenue
+                @comp.govBiz.get
             </div>
         </div>
     </div>
+    }
     @if(comp.techRatings.nonEmpty) {
     <div class="container-fluid">
         @for(techRating <- comp.techRatings) {
@@ -83,7 +85,6 @@
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
         <div>
-            @comp.rating
             @vote.getOrElse(0)
             <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.id)">Plus</a>
             <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.id)">Mínus</a>
