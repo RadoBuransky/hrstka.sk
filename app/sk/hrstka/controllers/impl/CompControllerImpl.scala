@@ -28,8 +28,9 @@ class CompControllerImpl @Inject() (compService: CompService,
   override def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
     for {
       comp    <- compService.get(Id(compId))
+      vote    <- transform(loggedIn.map(userId => compService.voteFor(comp.id, userId.id)))
       result  <- withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.comp(compToUi(comp)))
+        Ok(sk.hrstka.views.html.comp(compToUi(comp), vote.flatten.map(_.value)))
       }
     } yield result
   }
@@ -46,6 +47,9 @@ class CompControllerImpl @Inject() (compService: CompService,
   override def all = cityTech("", "")
   override def cityTech(cityHandle: String, techHandle: String) =
     cityTechAction(Option(cityHandle).filter(_.trim.nonEmpty), Option(techHandle).filter(_.trim.nonEmpty))
+
+  private def transform[A](o: Option[Future[A]]): Future[Option[A]] =
+    o.map(f => f.map(Option(_))).getOrElse(Future.successful(None))
 
   private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = AsyncStack { implicit request =>
     for {

@@ -7,6 +7,7 @@ import sk.hrstka.controllers.auth.impl.AuthCompControllerImpl
 case class AddCompForm(name: String,
                        website: String,
                        city: String,
+                       businessNumber: String,
                        employeeCount:Option[Int],
                        codersCount: Option[Int],
                        femaleCodersCount: Option[Int],

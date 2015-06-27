@@ -4,6 +4,7 @@
 <article class="comp-details">
     <div><a href="@comp.website" rel="nofollow">@comp.website</a></div>
     <div class="hrstka-city">@comp.city.sk</div>
+    <div>IČO: @comp.businessNumber</div>
     @if(comp.note.html.nonEmpty) {
         <div class="container-fluid">@Html(comp.note.html)</div>
     }

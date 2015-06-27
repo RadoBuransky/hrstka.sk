@@ -37,7 +37,7 @@ object CompRatingFactory {
       comp,
       0.3 * techRating(comp) +
       0.3 * compVotes(upVotesValue, voteCount) +
-      0.2 * governmentRevenue(comp) +
+      0.2 * govBiz(comp) +
       0.1 * joelsTest(comp) +
       0.1 * femaleRatio(comp))
   }
@@ -60,7 +60,7 @@ object CompRatingFactory {
     }
   }
 
-  private[domain] def governmentRevenue(comp: Comp): BigDecimal = 0.0
+  private[domain] def govBiz(comp: Comp): BigDecimal = comp.govBiz.map(1.0 - _ / 100.0).getOrElse(0.0)
 
   private[domain] def joelsTest(comp: Comp): BigDecimal = comp.joel.size / 12.0
 

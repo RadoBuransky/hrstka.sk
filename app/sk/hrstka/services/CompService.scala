@@ -1,7 +1,7 @@
 package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
-import sk.hrstka.models.domain.{CompRating, Comp, Handle, Id}
+import sk.hrstka.models.domain._
 import sk.hrstka.services.impl.CompServiceImpl
 
 import scala.concurrent.Future
@@ -44,6 +44,15 @@ trait CompService {
    * @return Ordered list of companies.
    */
   def topWomen(): Future[Seq[CompRating]]
+
+  /**
+   * Gets vote for the user and the company.
+   *
+   * @param compId Company identifier.
+   * @param userId User identifier.
+   * @return Vote if exists.
+   */
+  def voteFor(compId: Id, userId: Id):Future[Option[CompVote]]
 
   /**
    * Increases value of user's vote for the company.

@@ -11,6 +11,7 @@ import sk.hrstka.models
  * @param name Name.
  * @param website Website URL.
  * @param city City.
+ * @param businessNumber Business number (natural unique identifier)
  * @param employeeCount Total number of employees.
  * @param codersCount Number of programmers.
  * @param femaleCodersCount Number of female programmers.
@@ -26,6 +27,7 @@ case class Comp(id: String,
                 name: String,
                 website: String,
                 city: City,
+                businessNumber: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
@@ -34,7 +36,7 @@ case class Comp(id: String,
                 services: Boolean,
                 internal: Boolean,
                 techRatings: Seq[TechRating],
-                joel: Map[Int, String],
+                joel: Seq[(Int, String)],
                 govBiz: Option[BigDecimal]) {
   def maleCodersCount: Option[Int] = for {
     coders <- codersCount
@@ -74,6 +76,7 @@ object CompFactory {
     name              = comp.name,
     website           = comp.website.toString,
     city              = CityFactory(comp.city),
+    businessNumber    = comp.businessNumber,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
@@ -82,6 +85,6 @@ object CompFactory {
     services          = comp.services,
     internal          = comp.internal,
     techRatings       = comp.techRatings.map(TechRatingFactory.apply),
-    joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toMap,
+    joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toSeq.sortBy(_._1),
     govBiz            = comp.govBiz)
 }

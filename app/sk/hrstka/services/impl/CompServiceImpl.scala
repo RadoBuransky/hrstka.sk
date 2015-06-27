@@ -24,6 +24,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       name = comp.name,
       website = comp.website.toString,
       city = comp.city.handle,
+      businessNumber = comp.businessNumber,
       employeeCount = comp.employeeCount,
       codersCount = comp.codersCount,
       femaleCodersCount = comp.femaleCodersCount,
@@ -76,6 +77,11 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       compRatings.map(compRating => (compRating, womenRank(compRating.comp))).filter(_._2.isDefined).sortBy(-1 * _._2.get).map(_._1).take(42)
     }
   }
+
+  override def voteFor(compId: Id, userId: Id): Future[Option[CompVote]] =
+    compVoteRepository.findValue(compId, userId).map { voteOption =>
+      voteOption.map(CompVote(compId, userId, _))
+    }
 
   override def voteUp(compId: Id, userId: Id): Future[Unit] = voteDelta(compId, userId, 1)
   override def voteDown(compId: Id, userId: Id): Future[Unit] = voteDelta(compId, userId, -1)

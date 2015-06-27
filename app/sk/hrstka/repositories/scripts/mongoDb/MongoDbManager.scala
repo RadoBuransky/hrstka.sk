@@ -47,6 +47,7 @@ private object MongoDbManager {
   lazy val allIndexes = Seq(
     compNameIndex,
     compWebsiteIndex,
+    compBusinessNumberIndex,
     techHandleIndex,
     userEmailIndex,
     cityHandleIndex,
@@ -56,6 +57,7 @@ private object MongoDbManager {
 
   lazy val compNameIndex = createUniqueIndex(CompCollection, "name")
   lazy val compWebsiteIndex = createUniqueIndex(CompCollection, "website")
+  lazy val compBusinessNumberIndex = createUniqueIndex(CompCollection, "businessNumber")
   lazy val techHandleIndex = createUniqueIndex(TechCollection, "handle")
   lazy val userEmailIndex = createUniqueIndex(UserCollection, "email")
   lazy val cityHandleIndex = createUniqueIndex(CityCollection, "handle")
@@ -64,7 +66,7 @@ private object MongoDbManager {
 
   private def createUniqueIndex(coll: MongoCollection, fieldNames: String*) = NSIndex("db." + coll.name,
     Index(
-      key     = fieldNames.map(_ -> Ascending).toSeq,
+      key     = fieldNames.map(_ -> Ascending),
       unique  = true
     ))
 }
