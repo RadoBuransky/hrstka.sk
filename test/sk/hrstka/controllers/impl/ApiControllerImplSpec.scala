@@ -7,7 +7,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import sk.hrstka.models.api.JsonFormats._
 import sk.hrstka.models.api.{CompFactory, TechFactory}
-import sk.hrstka.models.domain.{City, CitySpec, CompSpec, TechRatingSpec}
+import sk.hrstka.models.domain._
 import sk.hrstka.services.{CompService, LocationService, TechService}
 import sk.hrstka.test.BaseSpec
 
@@ -19,7 +19,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
   it should "return JSON of all companies" in new TestScope {
     // Prepare
     when(compService.all(None, None))
-      .thenReturn(Future.successful(CompSpec.all))
+      .thenReturn(Future.successful(CompRatingSpec.all))
 
     // Execute
     assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompSpec.all.map { comp =>

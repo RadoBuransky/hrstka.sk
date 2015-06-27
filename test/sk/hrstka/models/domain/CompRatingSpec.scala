@@ -108,11 +108,18 @@ class CompRatingSpec extends BaseSpec {
 }
 
 object CompRatingSpec {
-  val zeroRatedAvitech = CompSpec.avitech.copy(
-    techRatings       = Seq.empty,
-    joel              = Set.empty,
-    employeeCount     = None,
-    codersCount       = None,
-    femaleCodersCount = None
+  val zeroRatedAvitech = CompRatingFactory(
+    CompSpec.avitech.copy(
+      techRatings       = Seq.empty,
+      joel              = Set.empty,
+      employeeCount     = None,
+      codersCount       = None,
+      femaleCodersCount = None
+    ),
+    0,
+    0
   )
+  val avitech = CompRatingFactory(CompSpec.avitech, 5, 3)
+  val borci = CompRatingFactory(CompSpec.avitech, 1, 1)
+  val all = Seq(avitech, borci)
 }
