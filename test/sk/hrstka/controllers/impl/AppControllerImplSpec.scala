@@ -31,6 +31,38 @@ class AppControllerImplSpec extends BaseControllerSpec with Results {
     verifyNoMore()
   }
 
+  behavior of "about"
+
+  it should "get HTML view with information about the website" in new TestScope {
+    // Prepare
+    prepareMainModel()
+
+    // Execute
+    assertView(appController.about()) { content =>
+      assert(content.contains("<h2>O Hŕstke</h2>"))
+    }
+
+    // Verify
+    verifyMainModel()
+    verifyNoMore()
+  }
+
+  behavior of "addCompInfo"
+
+  it should "get HTML view with information about how to add a company" in new TestScope {
+    // Prepare
+    prepareMainModel()
+
+    // Execute
+    assertView(appController.addCompInfo()) { content =>
+      assert(content.contains("<h2>Ako pridať firmu</h2>"))
+    }
+
+    // Verify
+    verifyMainModel()
+    verifyNoMore()
+  }
+
   private class TestScope extends BaseTestScope {
     val appController = new AppControllerImpl(
       locationService,
