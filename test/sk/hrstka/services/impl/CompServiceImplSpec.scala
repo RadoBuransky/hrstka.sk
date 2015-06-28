@@ -201,6 +201,40 @@ class CompServiceImplSpec extends BaseSpec {
     verifyNoMore()
   }
 
+  behavior of "voteFor"
+
+  it should "return votes for the given user and company" in new TestScope {
+    // Prepare
+    when(compVoteRepository.findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id))
+      .thenReturn(Future.successful(Some(db.CompVoteSpec.avitechRado.value)))
+
+    // Execute
+    assertResult(Some(CompVote(CompSpec.avitech.id, UserSpec.rado.id, db.CompVoteSpec.avitechRado.value))) {
+      futureValue(compService.voteFor(CompSpec.avitech.id, UserSpec.rado.id))
+    }
+
+    // Verify
+    verify(compVoteRepository).findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id)
+    verifyNoMore()
+  }
+
+  behavior of "voteUp"
+
+  it should "set vote value to 1 if no vote exists yet" in new VoteTestScope { testVoteUp(None, 1) }
+  it should "set vote value to 0 if was -1" in new VoteTestScope { testVoteUp(Some(-1), 0) }
+  it should "set vote value to 1 if was 0" in new VoteTestScope { testVoteUp(Some(0), 1) }
+  it should "set vote value to 2 if was 1" in new VoteTestScope { testVoteUp(Some(1), 2) }
+  it should "set vote value to 3 if was 2" in new VoteTestScope { testVoteUp(Some(2), 3) }
+  it should "not change vote value if was 3" in new VoteTestScope { testVoteUp(Some(3), 3) }
+
+  behavior of "voteDown"
+
+  it should "set vote value to -1 if no vote exists yet" in new VoteTestScope { testVoteDown(None, -1) }
+  it should "set vote value to 2 if was 3" in new VoteTestScope { testVoteDown(Some(3), 2) }
+  it should "set vote value to 1 if was 2" in new VoteTestScope { testVoteDown(Some(2), 1) }
+  it should "set vote value to 0 if was 1" in new VoteTestScope { testVoteDown(Some(1), 0) }
+  it should "set vote value to -1 if was 0" in new VoteTestScope { testVoteDown(Some(0), -1) }
+
   private def assertCompRating(expected: domain.CompRating, actual: domain.CompRating): Unit = {
     assertComp(expected.comp, actual.comp)
     assert(expected.value == actual.value, expected.comp.name)
@@ -219,6 +253,26 @@ class CompServiceImplSpec extends BaseSpec {
   private def assertUnapplied(expected: Seq[Any], actual: Seq[Any]): Unit =
     expected.zip(actual).foreach { pair =>
       assertResult(pair._1)(pair._2)
+  }
+
+  private class VoteTestScope extends TestScope {
+    def testVoteUp(original: Option[Int], expected: Int): Unit = testVote(original, expected, compService.voteUp)
+    def testVoteDown(original: Option[Int], expected: Int): Unit = testVote(original, expected, compService.voteDown)
+
+    private def testVote(original: Option[Int], expected: Int, f: (Id, Id) => Future[Unit]): Unit = {
+      // Prepare
+      when(compVoteRepository.findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id))
+        .thenReturn(Future.successful(original))
+
+      // Execute
+      whenReady(f(CompSpec.avitech.id, UserSpec.rado.id)) { _ =>
+        // Verify
+        verify(compVoteRepository).findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id)
+        if (!original.contains(expected))
+          verify(compVoteRepository).vote(db.CompSpec.avitech._id, db.UserSpec.rado._id, expected)
+        verifyNoMore()
+      }
+    }
   }
 
   private class TestScope {
