@@ -22,8 +22,8 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(CompRatingSpec.all))
 
     // Execute
-    assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompSpec.all.map { comp =>
-      CompFactory.fromDomain(comp, sk.hrstka.controllers.routes.CompController.get(comp.id.value).absoluteURL()(FakeRequest()))
+    assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompRatingSpec.all.map { compRating =>
+      CompFactory.fromDomain(compRating, sk.hrstka.controllers.routes.CompController.get(compRating.comp.id.value).absoluteURL()(FakeRequest()))
     }))
 
     // Verify
@@ -61,7 +61,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(CitySpec.all))
 
     // Execute
-    assert(contentAsJson(apiController.cities().apply(FakeRequest())) == JsArray(CitySpec.all.map(cityToJson).toSeq))
+    assert(contentAsJson(apiController.cities().apply(FakeRequest())) == JsArray(CitySpec.all.map(cityToJson)))
 
     // Verify
     verify(locationService).all()
