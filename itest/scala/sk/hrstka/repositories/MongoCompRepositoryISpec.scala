@@ -39,6 +39,17 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
     }
   }
 
+  it should "not allow to insert a company with the same business number" in { compRepository =>
+    val result = for {
+      inserted1 <-compRepository.upsert(avitech)
+      inserted2 <-compRepository.upsert(borci.copy(businessNumber = avitech.businessNumber))
+    } yield inserted2
+
+    whenReady(result.failed) { ex =>
+      assert(ex.isInstanceOf[HrstkaException])
+    }
+  }
+
   behavior of "all"
 
   it should "return everything if no filtering is used" in { compRepository =>

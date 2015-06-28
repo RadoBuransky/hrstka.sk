@@ -22,6 +22,7 @@ class MongoDbManagerISpec(testApplication: TestApplication) extends FlatSpec wit
 
   it should "create compNameIndex" in { assert(indexExists(MongoDbManager.compNameIndex).futureValue) }
   it should "create compWebsiteIndex" in { assert(indexExists(MongoDbManager.compWebsiteIndex).futureValue) }
+  it should "create compBusinessNumberIndex" in { assert(indexExists(MongoDbManager.compBusinessNumberIndex).futureValue) }
   it should "create techHandleIndex" in { assert(indexExists(MongoDbManager.techHandleIndex).futureValue) }
   it should "create userEmailIndex" in { assert(indexExists(MongoDbManager.userEmailIndex).futureValue) }
   it should "create cityHandleIndex" in { assert(indexExists(MongoDbManager.cityHandleIndex).futureValue) }

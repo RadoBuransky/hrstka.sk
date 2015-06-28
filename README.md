@@ -1,4 +1,4 @@
-# Hŕstka programátoských dobrôt
+# Hŕstka programátorských dobrôt
 
 - Scala
 - Play Framework 2.4
