@@ -17,6 +17,14 @@ trait ApiController {
   def comps(): Action[AnyContent]
 
   /**
+   * Gets JSON representation of comapny for the business number.
+   *
+   * @param businessNumber Company business number.
+   * @return JSON object.
+   */
+  def comp(businessNumber: String): Action[AnyContent]
+
+  /**
    * Gets JSON array with all technologies.
    *
    * @return JSON array.

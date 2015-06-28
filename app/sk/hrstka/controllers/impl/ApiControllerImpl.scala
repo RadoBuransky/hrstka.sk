@@ -2,10 +2,11 @@ package sk.hrstka.controllers.impl
 
 import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.mvc.{Request, Action, AnyContent, Controller}
 import sk.hrstka.common.Logging
 import sk.hrstka.controllers.ApiController
-import sk.hrstka.models.api.{CompFactory, JsonFormats, TechFactory}
+import sk.hrstka.models.api.{Comp, CompFactory, JsonFormats, TechFactory}
+import sk.hrstka.models.domain.CompRating
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -19,9 +20,16 @@ final class ApiControllerImpl @Inject() (compService: CompService,
 
   override def comps() = Action.async { implicit request =>
     compService.all(None, None).map { compRatings =>
-      Ok(Json.toJson(compRatings.map { compRating =>
-        CompFactory.fromDomain(compRating, sk.hrstka.controllers.routes.CompController.get(compRating.comp.id.value).absoluteURL())
-      }))
+      Ok(Json.toJson(compRatings.map(convertCompRating)))
+    }
+  }
+
+  override def comp(businessNumber: String) = Action.async { implicit request =>
+    compService.all(None, None).map { compRatings =>
+      compRatings.find(_.comp.businessNumber.value == businessNumber) match {
+        case Some(compRating) => Ok(Json.toJson(convertCompRating(compRating)))
+        case None => NotFound(s"Company with business number [$businessNumber] does not exist!")
+      }
     }
   }
 
@@ -41,6 +49,13 @@ final class ApiControllerImpl @Inject() (compService: CompService,
       }))
     }
   }
+
+  private def convertCompRating(compRating: CompRating)(implicit request: Request[AnyContent]): Comp =
+    CompFactory.fromDomain(
+      compRating,
+      sk.hrstka.controllers.routes.ApiController.comp(compRating.comp.businessNumber.value).absoluteURL(),
+      sk.hrstka.controllers.routes.CompController.get(compRating.comp.businessNumber.value).absoluteURL()
+    )
 }
 
 private object ApiControllerImpl {

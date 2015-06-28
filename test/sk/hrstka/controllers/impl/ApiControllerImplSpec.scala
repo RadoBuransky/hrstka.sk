@@ -23,13 +23,53 @@ class ApiControllerImplSpec extends BaseSpec with Results {
 
     // Execute
     assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompRatingSpec.all.map { compRating =>
-      CompFactory.fromDomain(compRating, sk.hrstka.controllers.routes.CompController.get(compRating.comp.id.value).absoluteURL()(FakeRequest()))
+      CompFactory.fromDomain(
+        compRating,
+        sk.hrstka.controllers.routes.ApiController.comp(compRating.comp.businessNumber.value).absoluteURL()(FakeRequest()),
+        sk.hrstka.controllers.routes.CompController.get(compRating.comp.businessNumber.value).absoluteURL()(FakeRequest())
+      )
     }))
 
     // Verify
     verify(compService).all(None, None)
     verifyNoMore()
   }
+
+  behavior of "comp"
+
+  it should "return JSON of company for the business number" in new TestScope {
+    // Prepare
+    when(compService.all(None, None))
+      .thenReturn(Future.successful(CompRatingSpec.all))
+
+    // Execute
+    assert(contentAsJson(apiController.comp(CompSpec.avitech.businessNumber.value).apply(FakeRequest())) ==
+      Json.toJson(
+        CompFactory.fromDomain(
+          CompRatingSpec.avitech,
+          sk.hrstka.controllers.routes.ApiController.comp(CompRatingSpec.avitech.comp.businessNumber.value).absoluteURL()(FakeRequest()),
+          sk.hrstka.controllers.routes.CompController.get(CompRatingSpec.avitech.comp.businessNumber.value).absoluteURL()(FakeRequest())
+        )
+    ))
+
+    // Verify
+    verify(compService).all(None, None)
+    verifyNoMore()
+  }
+
+  it should "return 404 if the company does not exist" in new TestScope {
+    // Prepare
+    when(compService.all(None, None))
+      .thenReturn(Future.successful(CompRatingSpec.all))
+
+    // Execute
+    assert(status(apiController.comp("123").apply(FakeRequest())) == NOT_FOUND)
+
+    // Verify
+    verify(compService).all(None, None)
+    verifyNoMore()
+  }
+
 
   behavior of "techs"
 

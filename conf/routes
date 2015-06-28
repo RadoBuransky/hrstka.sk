@@ -28,9 +28,10 @@ GET     /programovanie/novaFirma                        sk.hrstka.controllers.au
 GET     /programovanie/firma/:businessNumber/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(businessNumber: String)
 GET     /programovanie/firma/:businessNumber/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(businessNumber: String)
 
-GET     /api/companies              sk.hrstka.controllers.ApiController.comps
-GET     /api/technologies           sk.hrstka.controllers.ApiController.techs
-GET     /api/cities                 sk.hrstka.controllers.ApiController.cities
+GET     /api/companies                  sk.hrstka.controllers.ApiController.comps
+GET     /api/company/:businessNumber    sk.hrstka.controllers.ApiController.comp(businessNumber: String)
+GET     /api/technologies               sk.hrstka.controllers.ApiController.techs
+GET     /api/cities                     sk.hrstka.controllers.ApiController.cities
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
