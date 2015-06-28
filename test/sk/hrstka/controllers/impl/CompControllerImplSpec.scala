@@ -4,7 +4,7 @@ import org.mockito.Mockito._
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results
 import sk.hrstka.controllers.test.BaseControllerSpec
-import sk.hrstka.models.domain.{CompSpec, TechRatingSpec}
+import sk.hrstka.models.domain.{CompRatingSpec, CompSpec, TechRatingSpec}
 import sk.hrstka.services.{AuthService, CompService, MarkdownService}
 
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
   it should "get HTML view for companies with the most women" in new TestScope {
     // Prepare
     when(compService.topWomen())
-      .thenReturn(Future.successful(Seq(CompSpec.borci, CompSpec.avitech)))
+      .thenReturn(Future.successful(Seq(CompRatingSpec.borci, CompRatingSpec.avitech)))
     prepareMainModel()
 
     // Execute
@@ -55,7 +55,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
   it should "get HTML view containing all companies" in new TestScope {
     // Prepare
     when(compService.all(None, None))
-      .thenReturn(Future.successful(CompSpec.all))
+      .thenReturn(Future.successful(CompRatingSpec.all))
     prepareMainModel()
 
     // Execute
@@ -74,7 +74,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
   it should "get HTML view containing all companies if no city or tech is provided" in new TestScope {
     // Prepare
     when(compService.all(None, None))
-      .thenReturn(Future.successful(CompSpec.all))
+      .thenReturn(Future.successful(CompRatingSpec.all))
     prepareMainModel()
 
     // Execute
@@ -91,7 +91,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
   it should "get HTML view containing companies in Bratislava" in new TestScope {
     // Prepare
     when(compService.all(city = Some(CompSpec.avitech.city.handle), None))
-      .thenReturn(Future.successful(Seq(CompSpec.avitech)))
+      .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
     when(locationService.get(CompSpec.avitech.city.handle))
       .thenReturn(Future.successful(CompSpec.avitech.city))
     prepareMainModel(Some(CompSpec.avitech.city.handle))
@@ -111,7 +111,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
   it should "get HTML view containing companies in Bratislava that use Scala" in new TestScope {
     // Prepare
     when(compService.all(city = Some(CompSpec.avitech.city.handle), tech = Some(TechRatingSpec.scalaRating.tech.handle)))
-      .thenReturn(Future.successful(Seq(CompSpec.avitech)))
+      .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
     when(locationService.get(CompSpec.avitech.city.handle))
       .thenReturn(Future.successful(CompSpec.avitech.city))
     when(techService.getByHandle(TechRatingSpec.scalaRating.tech.handle))
