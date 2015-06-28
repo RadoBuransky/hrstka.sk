@@ -93,6 +93,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           name = "New comp",
           website = new URL("http://www.comp.top/"),
           city = CitySpec.noveZamky,
+          businessNumber = "123",
           employeeCount = None,
           codersCount = None,
           femaleCodersCount = None,
@@ -101,7 +102,8 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           services = true,
           internal = false,
           techRatings = Seq.empty,
-          joel = Set(3, 5, 11))
+          joel = Set(3, 5, 11),
+          govBiz = Some(42))
 
         // Prepare
         val techHandles = Set(
@@ -120,6 +122,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           "compName" -> comp.name,
           "website" -> comp.website.toString,
           "city" -> comp.city.sk,
+          "businessNumber" -> comp.businessNumber,
           "employeeCount" -> "",
           "codersCount" -> "",
           "femaleCodersCount" -> "",
@@ -132,7 +135,8 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           "techs[2]" -> "akka",
           "joel[0]" -> "3",
           "joel[1]" -> "5",
-          "joel[2]" -> "11"
+          "joel[2]" -> "11",
+          "govBiz" -> comp.govBiz.get.toString
         )
         assertAuthResult(eminentUser, authCompController, authCompController.save(compId), form) { result =>
           assert(status(result) == SEE_OTHER)
