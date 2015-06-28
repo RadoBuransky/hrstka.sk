@@ -11,9 +11,13 @@
     <div>Vráti firmu pre dané IČO.</div>
     <div>URL: <a href="@sk.hrstka.controllers.routes.ApiController.comp(":businessNumber").absoluteURL">@sk.hrstka.controllers.routes.ApiController.comp(":businessNumber").absoluteURL</a></div>
 
-    <h3>GET technolgies</h3>
+    <h3>GET technologies</h3>
     <div>Vráti zoznam všetkých technológii zoradených podľa hodnotenia.</div>
     <div>URL: <a href="@sk.hrstka.controllers.routes.ApiController.techs.absoluteURL">@sk.hrstka.controllers.routes.ApiController.techs.absoluteURL</a></div>
+
+    <h3>GET technology/:handle</h3>
+    <div>Vráti technológiu pre daný handle.</div>
+    <div>URL: <a href="@sk.hrstka.controllers.routes.ApiController.tech(":handle").absoluteURL">@sk.hrstka.controllers.routes.ApiController.tech(":handle").absoluteURL</a></div>
 
     <h3>GET cities</h3>
     <div>Vráti zoznam všetkých miest.</div>

@@ -79,7 +79,48 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
     // Execute
-    assert(contentAsJson(apiController.techs().apply(FakeRequest())) == Json.toJson(TechRatingSpec.allRatings.map(TechFactory.fromDomain)))
+    assert(contentAsJson(apiController.techs().apply(FakeRequest())) ==
+      Json.toJson(TechRatingSpec.allRatings.map{ techRating =>
+        TechFactory.fromDomain(
+          techRating,
+          sk.hrstka.controllers.routes.ApiController.tech(techRating.tech.handle.value).absoluteURL()(FakeRequest())
+        )
+      }))
+
+    // Verify
+    verify(techService).allRatings()
+    verifyNoMore()
+  }
+
+
+  behavior of "tech"
+
+  it should "return JSON of technology for the handle" in new TestScope {
+    // Prepare
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
+
+    // Execute
+    assert(contentAsJson(apiController.tech(TechRatingSpec.scalaRating.tech.handle.value).apply(FakeRequest())) ==
+      Json.toJson(
+        TechFactory.fromDomain(
+          TechRatingSpec.scalaRating,
+          sk.hrstka.controllers.routes.ApiController.tech(TechRatingSpec.scalaRating.tech.handle.value).absoluteURL()(FakeRequest())
+        )
+      ))
+
+    // Verify
+    verify(techService).allRatings()
+    verifyNoMore()
+  }
+
+  it should "return 404 if the technology does not exist" in new TestScope {
+    // Prepare
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
+
+    // Execute
+    assert(status(apiController.tech("123").apply(FakeRequest())) == NOT_FOUND)
 
     // Verify
     verify(techService).allRatings()

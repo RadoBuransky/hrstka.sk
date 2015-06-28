@@ -5,8 +5,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Request, Action, AnyContent, Controller}
 import sk.hrstka.common.Logging
 import sk.hrstka.controllers.ApiController
-import sk.hrstka.models.api.{Comp, CompFactory, JsonFormats, TechFactory}
-import sk.hrstka.models.domain.CompRating
+import sk.hrstka.models.api._
+import sk.hrstka.models.domain.{TechRating, CompRating}
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +35,16 @@ final class ApiControllerImpl @Inject() (compService: CompService,
 
   override def techs(): Action[AnyContent] = Action.async { implicit request =>
     techService.allRatings().map { techRatings =>
-      Ok(Json.toJson(techRatings.map(TechFactory.fromDomain)))
+      Ok(Json.toJson(techRatings.map(convertTechRating)))
+    }
+  }
+
+  override def tech(handle: String) = Action.async { implicit request =>
+    techService.allRatings().map { techRatings =>
+      techRatings.find(_.tech.handle.value == handle) match {
+        case Some(techRating) => Ok(Json.toJson(convertTechRating(techRating)))
+        case None => NotFound(s"Technology with handle [$handle] does not exist!")
+      }
     }
   }
 
@@ -49,6 +58,12 @@ final class ApiControllerImpl @Inject() (compService: CompService,
       }))
     }
   }
+
+  private def convertTechRating(techRating: TechRating)(implicit request: Request[AnyContent]): Tech =
+    TechFactory.fromDomain(
+      techRating,
+      sk.hrstka.controllers.routes.ApiController.tech(techRating.tech.handle.value).absoluteURL()
+    )
 
   private def convertCompRating(compRating: CompRating)(implicit request: Request[AnyContent]): Comp =
     CompFactory.fromDomain(

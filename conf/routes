@@ -31,6 +31,7 @@ GET     /programovanie/firma/:businessNumber/voteDown   sk.hrstka.controllers.au
 GET     /api/companies                  sk.hrstka.controllers.ApiController.comps
 GET     /api/company/:businessNumber    sk.hrstka.controllers.ApiController.comp(businessNumber: String)
 GET     /api/technologies               sk.hrstka.controllers.ApiController.techs
+GET     /api/technology/:handle         sk.hrstka.controllers.ApiController.tech(handle: String)
 GET     /api/cities                     sk.hrstka.controllers.ApiController.cities
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
