@@ -19,15 +19,15 @@ trait CompService {
    * @param userId The current user.
    * @return Identifier of the company.
    */
-  def upsert(comp: Comp, techHandles: Set[Handle], userId: Id): Future[Id]
+  def upsert(comp: Comp, techHandles: Set[Handle], userId: Id): Future[BusinessNumber]
 
   /**
    * Gets the company if exists or fails otherwise.
    *
-   * @param compId Company identifier.
-   * @return Company for the identifier.
+   * @param businessNumber Company business number.
+   * @return Company for the business number.
    */
-  def get(compId: Id): Future[Comp]
+  def get(businessNumber: BusinessNumber): Future[Comp]
 
   /**
    * Gets all company ratings for the provided city AND tech ordered by their rating.
@@ -48,27 +48,27 @@ trait CompService {
   /**
    * Gets vote for the user and the company.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @param userId User identifier.
    * @return Vote if exists.
    */
-  def voteFor(compId: Id, userId: Id):Future[Option[CompVote]]
+  def voteFor(businessNumber: BusinessNumber, userId: Id):Future[Option[CompVote]]
 
   /**
    * Increases value of user's vote for the company.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @param userId User identifier.
    * @return Nothing.
    */
-  def voteUp(compId: Id, userId: Id): Future[Unit]
+  def voteUp(businessNumber: BusinessNumber, userId: Id): Future[Unit]
 
   /**
    * Decreases value of user's vote for the company.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @param userId User identifier.
    * @return Nothing.
    */
-  def voteDown(compId: Id, userId: Id): Future[Unit]
+  def voteDown(businessNumber: BusinessNumber, userId: Id): Future[Unit]
 }

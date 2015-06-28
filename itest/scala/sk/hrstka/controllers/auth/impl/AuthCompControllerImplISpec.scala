@@ -51,19 +51,19 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
   it should "get HTML view with a form to edit a company" in new TestScope {
     withEminentUser() {
       // Prepare
-      when(compService.get(CompSpec.avitech.id))
+      when(compService.get(CompSpec.avitech.businessNumber))
         .thenReturn(Future.successful(CompSpec.avitech))
       when(techService.allRatings())
         .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
       // Execute
-      assertAuthView(eminentUser, authCompController, authCompController.editForm(CompSpec.avitech.id.value)) { content =>
+      assertAuthView(eminentUser, authCompController, authCompController.editForm(CompSpec.avitech.businessNumber.value)) { content =>
         assert(content.contains("<form action=\"/programovanie/firma?compId="))
       }
 
       // Verify
       verify(techService).allRatings()
-      verify(compService).get(CompSpec.avitech.id)
+      verify(compService).get(CompSpec.avitech.businessNumber)
     }
   }
 
@@ -93,7 +93,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           name = "New comp",
           website = new URL("http://www.comp.top/"),
           city = CitySpec.noveZamky,
-          businessNumber = "123",
+          businessNumber = BusinessNumber("35887401"),
           employeeCount = None,
           codersCount = None,
           femaleCodersCount = None,
@@ -115,14 +115,14 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         when(locationService.getOrCreateCity(CitySpec.noveZamky.sk))
           .thenReturn(Future.successful(CitySpec.noveZamky))
         when(compService.upsert(comp, techHandles, eminentUser.id))
-          .thenReturn(Future.successful(newCompId))
+          .thenReturn(Future.successful(comp.businessNumber))
 
         // Execute
         val form: Map[String, String] = Map(
           "compName" -> comp.name,
           "website" -> comp.website.toString,
           "city" -> comp.city.sk,
-          "businessNumber" -> comp.businessNumber,
+          "businessNumber" -> comp.businessNumber.value,
           "employeeCount" -> "",
           "codersCount" -> "",
           "femaleCodersCount" -> "",

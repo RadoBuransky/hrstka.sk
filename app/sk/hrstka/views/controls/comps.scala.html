@@ -4,7 +4,7 @@
 <article class="comp">
     <header>
         <h3>
-            <a href="@sk.hrstka.controllers.routes.CompController.get(compRating.comp.id)">@compRating.comp.name</a>
+            <a href="@sk.hrstka.controllers.routes.CompController.get(compRating.comp.businessNumber)">@compRating.comp.name</a>
             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                 <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(compRating.value)%</span>
             }
@@ -32,7 +32,7 @@
     </div>
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
-        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(compRating.comp.id)">Upraviť</a></div>
+        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(compRating.comp.businessNumber)">Upraviť</a></div>
     }
     <div id="comp-separator"></div>
 </article>

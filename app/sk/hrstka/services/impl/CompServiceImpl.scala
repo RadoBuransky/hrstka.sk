@@ -17,14 +17,14 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
                                        locationService: LocationService) extends CompService {
   import Identifiable._
 
-  override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[Id] = {
+  override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[BusinessNumber] = {
     compRepository.upsert(hrstka.models.db.Comp(
       _id = comp.id,
       authorId = userId,
       name = comp.name,
       website = comp.website.toString,
       city = comp.city.handle,
-      businessNumber = comp.businessNumber,
+      businessNumber = comp.businessNumber.value,
       employeeCount = comp.employeeCount,
       codersCount = comp.codersCount,
       femaleCodersCount = comp.femaleCodersCount,
@@ -35,7 +35,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       techs = techHandles.map(_.value),
       joel = comp.joel,
       govBiz = comp.govBiz
-    )).map(Identifiable.fromBSON)
+    )).map(_ => comp.businessNumber)
   }
 
   override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[CompRating]] = {
@@ -58,9 +58,9 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
-  override def get(compId: Id): Future[Comp] =
+  override def get(businessNumber: BusinessNumber): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>
-      compRepository.get(compId).flatMap(dbCompToDomain(techRatings, _))
+      compRepository.get(businessNumber.value).flatMap(dbCompToDomain(techRatings, _))
     }
 
   override def topWomen(): Future[Seq[CompRating]] = {
@@ -78,13 +78,15 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
-  override def voteFor(compId: Id, userId: Id): Future[Option[CompVote]] =
-    compVoteRepository.findValue(compId, userId).map { voteOption =>
-      voteOption.map(CompVote(compId, userId, _))
+  override def voteFor(businessNumber: BusinessNumber, userId: Id): Future[Option[CompVote]] =
+    compRepository.get(businessNumber.value).flatMap { dbComp =>
+      compVoteRepository.findValue(dbComp._id, userId).map { voteOption =>
+        voteOption.map(CompVote(dbComp._id, userId, _))
+      }
     }
 
-  override def voteUp(compId: Id, userId: Id): Future[Unit] = voteDelta(compId, userId, 1)
-  override def voteDown(compId: Id, userId: Id): Future[Unit] = voteDelta(compId, userId, -1)
+  override def voteUp(businessNumber: BusinessNumber, userId: Id): Future[Unit] = voteDelta(businessNumber, userId, 1)
+  override def voteDown(businessNumber: BusinessNumber, userId: Id): Future[Unit] = voteDelta(businessNumber, userId, -1)
 
   private def compRating(comp: Comp, allCompVotes: Traversable[db.CompVote]): CompRating = {
     val upVotesValue = allCompVotes.withFilter(v => Identifiable.fromBSON(v.entityId) == comp.id && v.value > 0).map(_.value).sum
@@ -98,12 +100,14 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     }
   }
 
-  private def voteDelta(compId: Id, userId: Id, delta: Int): Future[Unit] = {
-    compVoteRepository.findValue(compId, userId).map { latestVoteOption =>
-      val newVoteValue = latestVoteOption.getOrElse(0) + delta
-      if ((newVoteValue <= CompRatingFactory.maxVoteValue) &&
-        (newVoteValue >= CompRatingFactory.minVoteValue))
-        compVoteRepository.vote(compId, userId, newVoteValue)
+  private def voteDelta(businessNumber: BusinessNumber, userId: Id, delta: Int): Future[Unit] = {
+    compRepository.get(businessNumber.value).flatMap { dbComp =>
+      compVoteRepository.findValue(dbComp._id, userId).map { latestVoteOption =>
+        val newVoteValue = latestVoteOption.getOrElse(0) + delta
+        if ((newVoteValue <= CompRatingFactory.maxVoteValue) &&
+          (newVoteValue >= CompRatingFactory.minVoteValue))
+          compVoteRepository.vote(dbComp._id, userId, newVoteValue)
+      }
     }
   }
 }

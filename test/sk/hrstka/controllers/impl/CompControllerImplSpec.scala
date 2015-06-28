@@ -14,20 +14,20 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
   it should "get HTML view of a company for the provided identifier" in new TestScope {
     // Prepare
-    when(compService.get(CompSpec.avitech.id))
+    when(compService.get(CompSpec.avitech.businessNumber))
       .thenReturn(Future.successful(CompSpec.avitech))
     when(markdownService.toHtml(CompSpec.avitech.note))
       .thenReturn(CompSpec.avitech.note)
     prepareMainModel()
 
     // Execute
-    assertView(compController.get(CompSpec.avitech.id.value)) { result =>
+    assertView(compController.get(CompSpec.avitech.businessNumber.value)) { result =>
       assert(result.contains("<h2>Avitech</h2>"))
     }
 
     // Verify
     verifyMainModel()
-    verify(compService).get(CompSpec.avitech.id)
+    verify(compService).get(CompSpec.avitech.businessNumber)
     verifyNoMore()
   }
 

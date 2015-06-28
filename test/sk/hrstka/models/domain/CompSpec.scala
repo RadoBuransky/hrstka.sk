@@ -13,10 +13,6 @@ class CompSpec extends BaseSpec {
     intercept[IllegalArgumentException] { avitech.copy(name = "\t  ") }
   }
 
-  it should "fail if businessNumber is empty" in {
-    intercept[IllegalArgumentException] { avitech.copy(businessNumber = "\t  ") }
-  }
-
   it should "fail if number of all employees is negative" in {
     intercept[IllegalArgumentException] { avitech.copy(employeeCount = Some(-1)) }
   }

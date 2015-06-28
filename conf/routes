@@ -20,13 +20,13 @@ GET     /programovanie/firmy                    sk.hrstka.controllers.CompContro
 GET     /programovanie/zeny                     sk.hrstka.controllers.CompController.women
 GET     /programovanie/firmy/:city              sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
 GET     /programovanie/firmy/:city/:tech        sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
-GET     /programovanie/firma/:compId            sk.hrstka.controllers.CompController.get(compId: String)
+GET     /programovanie/firma/:businessNumber    sk.hrstka.controllers.CompController.get(businessNumber: String)
 
-GET     /programovanie/firma/:compId/uprav      sk.hrstka.controllers.auth.AuthCompController.editForm(compId: String)
-POST    /programovanie/firma                    sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
-GET     /programovanie/novaFirma                sk.hrstka.controllers.auth.AuthCompController.addForm
-GET     /programovanie/firma/:compId/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(compId: String)
-GET     /programovanie/firma/:compId/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(compId: String)
+GET     /programovanie/firma/:businessNumber/uprav      sk.hrstka.controllers.auth.AuthCompController.editForm(businessNumber: String)
+POST    /programovanie/firma                            sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
+GET     /programovanie/novaFirma                        sk.hrstka.controllers.auth.AuthCompController.addForm
+GET     /programovanie/firma/:businessNumber/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(businessNumber: String)
+GET     /programovanie/firma/:businessNumber/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(businessNumber: String)
 
 GET     /api/companies              sk.hrstka.controllers.ApiController.comps
 GET     /api/technologies           sk.hrstka.controllers.ApiController.techs

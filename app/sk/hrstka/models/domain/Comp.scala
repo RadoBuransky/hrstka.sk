@@ -8,7 +8,7 @@ case class Comp(id: Id,
                 name: String,
                 website: URL,
                 city: City,
-                businessNumber: String,
+                businessNumber: BusinessNumber,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
@@ -21,9 +21,6 @@ case class Comp(id: Id,
                 govBiz: Option[BigDecimal]) extends Identifiable {
   if (name.trim.isEmpty)
     throw new IllegalArgumentException(s"Name cannot be empty!")
-
-  if (businessNumber.trim.isEmpty)
-    throw new IllegalArgumentException(s"Business number cannot be empty!")
 
   employeeCount match {
     case Some(value) if value < 0 => throw new IllegalArgumentException(s"Number of employees cannot be negative! [$value]")
@@ -68,7 +65,7 @@ object CompFactory {
     name              = comp.name,
     website           = new URL(comp.website),
     city              = city,
-    businessNumber    = comp.businessNumber,
+    businessNumber    = BusinessNumber(comp.businessNumber),
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,

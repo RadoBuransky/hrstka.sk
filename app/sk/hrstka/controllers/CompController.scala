@@ -10,12 +10,12 @@ import sk.hrstka.controllers.impl.CompControllerImpl
 @ImplementedBy(classOf[CompControllerImpl])
 trait CompController {
   /**
-   * Gets HTML view of a company for the provided identifier.
+   * Gets HTML view of a company for the provided business number.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @return HTML view.
    */
-  def get(compId: String): Action[AnyContent]
+  def get(businessNumber: String): Action[AnyContent]
 
   /**
    * Gets HTML view for companies with the most women.

@@ -3,6 +3,7 @@ package sk.hrstka.repositories
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.db.Comp
 import sk.hrstka.models.db.Identifiable._
+import sk.hrstka.models.domain.BusinessNumber
 import sk.hrstka.repositories.mongoDb.MongoCompRepository
 
 import scala.concurrent.Future
@@ -21,12 +22,12 @@ trait CompRepository {
   def upsert(comp: Comp): Future[Id]
 
   /**
-   * Gets a company for the identifier if exists, fails otherwise.
+   * Gets a company for the business number if exists, fails otherwise.
    *
-   * @param id Company identifier.
+   * @param businessNumber Company business number.
    * @return Company.
    */
-  def get(id: Id): Future[Comp]
+  def get(businessNumber: String): Future[Comp]
 
   /**
    * Gets all companies for the provided city AND tech unordered.

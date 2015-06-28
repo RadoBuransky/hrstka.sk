@@ -76,7 +76,7 @@ object CompFactory {
     name              = comp.name,
     website           = comp.website.toString,
     city              = CityFactory(comp.city),
-    businessNumber    = comp.businessNumber,
+    businessNumber    = comp.businessNumber.value,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,

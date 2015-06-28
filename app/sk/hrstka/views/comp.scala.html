@@ -87,10 +87,10 @@
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
         <div>
             @vote.getOrElse(0)
-            <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.id)">Plus</a>
-            <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.id)">Mínus</a>
+            <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.businessNumber)">Plus</a>
+            <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.businessNumber)">Mínus</a>
         </div>
-        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.id)">Upraviť</a></div>
+        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)">Upraviť</a></div>
     }
 </article>
 }

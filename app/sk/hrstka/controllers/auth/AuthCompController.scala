@@ -34,10 +34,10 @@ trait AuthCompController {
   /**
    * Gets HTML view with a form to edit a company.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @return HTML view.
    */
-  def editForm(compId: String): Action[AnyContent]
+  def editForm(businessNumber: String): Action[AnyContent]
 
   /**
    * Handles sumbitted form with a company to add or update.
@@ -50,17 +50,17 @@ trait AuthCompController {
   /**
    * Handles vote up.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @return Redirect to the company page.
    */
-  def voteUp(compId: String): Action[AnyContent]
+  def voteUp(businessNumber: String): Action[AnyContent]
 
   /**
    * Handles vote down.
    *
-   * @param compId Company identifier.
+   * @param businessNumber Company business number.
    * @return Redirect to the company page.
    */
-  def voteDown(compId: String): Action[AnyContent]
+  def voteDown(businessNumber: String): Action[AnyContent]
 }
 

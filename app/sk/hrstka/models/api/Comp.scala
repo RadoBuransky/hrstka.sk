@@ -27,7 +27,7 @@ object CompFactory {
     name              = compRating.comp.name,
     website           = compRating.comp.website.toString,
     cityHandle        = compRating.comp.city.handle.value,
-    businessNumber    = compRating.comp.businessNumber,
+    businessNumber    = compRating.comp.businessNumber.value,
     employeeCount     = compRating.comp.employeeCount,
     codersCount       = compRating.comp.codersCount,
     femaleCodersCount = compRating.comp.femaleCodersCount,

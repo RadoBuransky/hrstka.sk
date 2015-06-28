@@ -7,7 +7,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
-import sk.hrstka.models.domain.{City, Handle, Id, Tech}
+import sk.hrstka.models.domain._
 import sk.hrstka.models.ui.{CompFactory, CompRatingFactory, Html}
 import sk.hrstka.models.{domain, ui}
 import sk.hrstka.services._
@@ -25,10 +25,10 @@ class CompControllerImpl @Inject() (compService: CompService,
                                     val messagesApi: MessagesApi)
   extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 
-  override def get(compId: String): Action[AnyContent] = AsyncStack { implicit request =>
+  override def get(businessNumber: String): Action[AnyContent] = AsyncStack { implicit request =>
     for {
-      comp    <- compService.get(Id(compId))
-      vote    <- transform(loggedIn.map(userId => compService.voteFor(comp.id, userId.id)))
+      comp    <- compService.get(BusinessNumber(businessNumber))
+      vote    <- transform(loggedIn.map(userId => compService.voteFor(comp.businessNumber, userId.id)))
       result  <- withMainModel(None, None, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.comp(compToUi(comp), vote.flatten.map(_.value)))
       }

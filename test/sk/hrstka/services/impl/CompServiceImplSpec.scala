@@ -28,7 +28,7 @@ class CompServiceImplSpec extends BaseSpec {
       comp        = avitech,
       techHandles = avitech.techRatings.map(_.tech.handle).toSet,
       userId      = Identifiable.fromBSON(db.CompSpec.avitech.authorId)
-    ).futureValue == Identifiable.fromBSON(compId))
+    ).futureValue == avitech.businessNumber)
 
     // Verify
     val compCaptor = ArgumentCaptor.forClass(classOf[db.Comp])
@@ -145,18 +145,18 @@ class CompServiceImplSpec extends BaseSpec {
     // Prepare
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(compRepository.get(db.CompSpec.avitech._id))
+    when(compRepository.get(db.CompSpec.avitech.businessNumber))
       .thenReturn(Future.successful(db.CompSpec.avitech))
     when(locationService.get(Handle(db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
 
     // Execute
-    val result = futureValue(compService.get(avitech.id))
+    val result = futureValue(compService.get(avitech.businessNumber))
     assertResult(avitech)(result)
 
     // Verify
     verify(techService).allRatings()
-    verify(compRepository).get(db.CompSpec.avitech._id)
+    verify(compRepository).get(db.CompSpec.avitech.businessNumber)
     verify(locationService).get(Handle(db.CompSpec.avitech.city))
     verifyNoMore()
   }
@@ -205,15 +205,18 @@ class CompServiceImplSpec extends BaseSpec {
 
   it should "return votes for the given user and company" in new TestScope {
     // Prepare
+    when(compRepository.get(CompSpec.avitech.businessNumber.value))
+      .thenReturn(Future.successful(db.CompSpec.avitech))
     when(compVoteRepository.findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id))
       .thenReturn(Future.successful(Some(db.CompVoteSpec.avitechRado.value)))
 
     // Execute
     assertResult(Some(CompVote(CompSpec.avitech.id, UserSpec.rado.id, db.CompVoteSpec.avitechRado.value))) {
-      futureValue(compService.voteFor(CompSpec.avitech.id, UserSpec.rado.id))
+      futureValue(compService.voteFor(CompSpec.avitech.businessNumber, UserSpec.rado.id))
     }
 
     // Verify
+    verify(compRepository).get(CompSpec.avitech.businessNumber.value)
     verify(compVoteRepository).findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id)
     verifyNoMore()
   }
@@ -259,14 +262,17 @@ class CompServiceImplSpec extends BaseSpec {
     def testVoteUp(original: Option[Int], expected: Int): Unit = testVote(original, expected, compService.voteUp)
     def testVoteDown(original: Option[Int], expected: Int): Unit = testVote(original, expected, compService.voteDown)
 
-    private def testVote(original: Option[Int], expected: Int, f: (Id, Id) => Future[Unit]): Unit = {
+    private def testVote(original: Option[Int], expected: Int, f: (BusinessNumber, Id) => Future[Unit]): Unit = {
       // Prepare
+      when(compRepository.get(CompSpec.avitech.businessNumber.value))
+        .thenReturn(Future.successful(db.CompSpec.avitech))
       when(compVoteRepository.findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id))
         .thenReturn(Future.successful(original))
 
       // Execute
-      whenReady(f(CompSpec.avitech.id, UserSpec.rado.id)) { _ =>
+      whenReady(f(CompSpec.avitech.businessNumber, UserSpec.rado.id)) { _ =>
         // Verify
+        verify(compRepository).get(CompSpec.avitech.businessNumber.value)
         verify(compVoteRepository).findValue(db.CompSpec.avitech._id, db.UserSpec.rado._id)
         if (!original.contains(expected))
           verify(compVoteRepository).vote(db.CompSpec.avitech._id, db.UserSpec.rado._id, expected)

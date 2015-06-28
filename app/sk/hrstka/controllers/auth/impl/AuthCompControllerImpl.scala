@@ -33,9 +33,9 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
     edit(None, sk.hrstka.controllers.auth.routes.AuthCompController.save(None))
   }
 
-  override def editForm(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    compService.get(Id(compId)).flatMap { comp =>
-      edit(Some(comp), sk.hrstka.controllers.auth.routes.AuthCompController.save(Some(compId)))
+  override def editForm(businessNumber: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    compService.get(BusinessNumber(businessNumber)).flatMap { comp =>
+      edit(Some(comp), sk.hrstka.controllers.auth.routes.AuthCompController.save(Some(comp.id.value)))
     }
   }
 
@@ -48,7 +48,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             name = form.name,
             website = new URL(form.website),
             city = city,
-            businessNumber = form.businessNumber,
+            businessNumber = BusinessNumber(form.businessNumber),
             employeeCount = form.employeeCount,
             codersCount = form.codersCount,
             femaleCodersCount = form.femaleCodersCount,
@@ -62,24 +62,24 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
           ),
           form.techs.map(Handle.apply).toSet,
           loggedIn.id
-        ).map { id =>
-          Redirect(sk.hrstka.controllers.routes.CompController.get(id.value))
+        ).map { businessNumber =>
+          Redirect(sk.hrstka.controllers.routes.CompController.get(businessNumber.value))
         }
       }
     }
   }
 
-  override def voteUp(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    vote(compId, compService.voteUp(Id(compId), loggedIn.id))
+  override def voteUp(businessNumber: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    vote(businessNumber, compService.voteUp(BusinessNumber(businessNumber), loggedIn.id))
   }
 
-  override def voteDown(compId: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-    vote(compId, compService.voteDown(Id(compId), loggedIn.id))
+  override def voteDown(businessNumber: String): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+    vote(businessNumber, compService.voteDown(BusinessNumber(businessNumber), loggedIn.id))
   }
 
-  private def vote[A](compId: String, action: Future[Unit])(implicit request: RequestWithAttributes[A]) =
+  private def vote[A](businessNumber: String, action: Future[Unit])(implicit request: RequestWithAttributes[A]) =
     action.map { Unit =>
-      Redirect(sk.hrstka.controllers.routes.CompController.get(compId))
+      Redirect(sk.hrstka.controllers.routes.CompController.get(businessNumber))
     }
 
   private def edit[A](comp: Option[Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
