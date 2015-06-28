@@ -60,7 +60,7 @@ object CompRatingFactory {
     }
   }
 
-  private[domain] def govBiz(comp: Comp): BigDecimal = comp.govBiz.map(1.0 - _ / 100.0).getOrElse(0.0)
+  private[domain] def govBiz(comp: Comp): BigDecimal = comp.govBiz.map(n => (100 - n) / 100.0).getOrElse(0)
 
   private[domain] def joelsTest(comp: Comp): BigDecimal = comp.joel.size / 12.0
 
