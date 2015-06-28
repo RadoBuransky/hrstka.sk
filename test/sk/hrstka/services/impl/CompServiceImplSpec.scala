@@ -4,10 +4,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
-import sk.hrstka.models
-import sk.hrstka.models.db.Comp
-import sk.hrstka.models.domain
 import sk.hrstka.models.domain._
+import sk.hrstka.models.{db, domain}
 import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
@@ -23,23 +21,23 @@ class CompServiceImplSpec extends BaseSpec {
     // Prepare
     val userId = BSONObjectID.generate.stringify
     val compId = BSONObjectID.generate
-    when(compRepository.upsert(any[Comp])).thenReturn(Future.successful(compId))
+    when(compRepository.upsert(any[db.Comp])).thenReturn(Future.successful(compId))
 
     // Execute
     assert(compService.upsert(
       comp        = avitech,
       techHandles = avitech.techRatings.map(_.tech.handle).toSet,
-      userId      = Identifiable.fromBSON(models.db.CompSpec.avitech.authorId)
+      userId      = Identifiable.fromBSON(db.CompSpec.avitech.authorId)
     ).futureValue == Identifiable.fromBSON(compId))
 
     // Verify
-    val compCaptor = ArgumentCaptor.forClass(classOf[Comp])
+    val compCaptor = ArgumentCaptor.forClass(classOf[db.Comp])
     verify(compRepository).upsert(compCaptor.capture())
     verifyNoMore()
     val comp = compCaptor.getValue
 
     // Assert
-    assert(comp == models.db.CompSpec.avitech)
+    assert(comp == db.CompSpec.avitech)
   }
 
   behavior of "all"
@@ -48,13 +46,15 @@ class CompServiceImplSpec extends BaseSpec {
 
     // Prepare
     when(compRepository.all(None, None))
-      .thenReturn(Future.successful(Seq(models.db.CompSpec.avitech, models.db.CompSpec.borci)))
+      .thenReturn(Future.successful(Seq(db.CompSpec.avitech, db.CompSpec.borci)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
-    when(locationService.get(Handle(models.db.CompSpec.borci.city)))
+    when(locationService.get(Handle(db.CompSpec.borci.city)))
       .thenReturn(Future.successful(CompSpec.borci.city))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
     val result = compService.all(None, None).futureValue
@@ -63,21 +63,24 @@ class CompServiceImplSpec extends BaseSpec {
     assertResult(Seq(CompRatingSpec.avitech, CompRatingSpec.borci))(result)
 
     // Verify
+    verify(compVoteRepository).all(None)
     verify(compRepository).all(None, None)
     verify(techService).allRatings()
-    verify(locationService).get(Handle(models.db.CompSpec.avitech.city))
-    verify(locationService).get(Handle(models.db.CompSpec.borci.city))
+    verify(locationService).get(Handle(db.CompSpec.avitech.city))
+    verify(locationService).get(Handle(db.CompSpec.borci.city))
     verifyNoMore()
   }
 
   it should "return all companies in Bratislava" in new TestScope {
     // Prepare
     when(compRepository.all(city = Some(avitech.city.handle.value), None))
-      .thenReturn(Future.successful(Seq(models.db.CompSpec.avitech)))
+      .thenReturn(Future.successful(Seq(db.CompSpec.avitech)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
     val result = futureValue(compService.all(city = Some(avitech.city.handle), None)).toSet
@@ -85,20 +88,23 @@ class CompServiceImplSpec extends BaseSpec {
     assertResult(Set(CompRatingSpec.avitech))(result)
 
     // Verify
+    verify(compVoteRepository).all(None)
     verify(compRepository).all(city = Some(avitech.city.handle.value), None)
     verify(techService).allRatings()
-    verify(locationService).get(Handle(models.db.CompSpec.avitech.city))
+    verify(locationService).get(Handle(db.CompSpec.avitech.city))
     verifyNoMore()
   }
 
   it should "return all companies that use PHP" in new TestScope {
     // Prepare
     when(compRepository.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
-      .thenReturn(Future.successful(Seq(models.db.CompSpec.borci)))
+      .thenReturn(Future.successful(Seq(db.CompSpec.borci)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.get(Handle(models.db.CompSpec.borci.city)))
+    when(locationService.get(Handle(db.CompSpec.borci.city)))
       .thenReturn(Future.successful(CompSpec.borci.city))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
     val result = futureValue(compService.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
@@ -106,9 +112,10 @@ class CompServiceImplSpec extends BaseSpec {
     assertResult(Set(CompRatingSpec.borci))(result)
 
     // Verify
+    verify(compVoteRepository).all(None)
     verify(compRepository).all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value))
     verify(techService).allRatings()
-    verify(locationService).get(Handle(models.db.CompSpec.borci.city))
+    verify(locationService).get(Handle(db.CompSpec.borci.city))
     verifyNoMore()
   }
 
@@ -118,12 +125,15 @@ class CompServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(Seq.empty))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
     val result = futureValue(compService.all(city = Some(avitech.city.handle), tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
     assertResult(Set.empty)(result)
 
     // Verify
+    verify(compVoteRepository).all(None)
     verify(compRepository).all(city = Some(avitech.city.handle.value), tech = Some(TechRatingSpec.phpRating.tech.handle.value))
     verify(techService).allRatings()
     verifyNoMore()
@@ -135,9 +145,9 @@ class CompServiceImplSpec extends BaseSpec {
     // Prepare
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(compRepository.get(models.db.CompSpec.avitech._id))
-      .thenReturn(Future.successful(models.db.CompSpec.avitech))
-    when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
+    when(compRepository.get(db.CompSpec.avitech._id))
+      .thenReturn(Future.successful(db.CompSpec.avitech))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
 
     // Execute
@@ -146,51 +156,54 @@ class CompServiceImplSpec extends BaseSpec {
 
     // Verify
     verify(techService).allRatings()
-    verify(compRepository).get(models.db.CompSpec.avitech._id)
-    verify(locationService).get(Handle(models.db.CompSpec.avitech.city))
+    verify(compRepository).get(db.CompSpec.avitech._id)
+    verify(locationService).get(Handle(db.CompSpec.avitech.city))
     verifyNoMore()
   }
 
   behavior of "topWomen"
 
   it should "return sorted list of companies with the most female programmers" in new TestScope {
-    val noCodersSetComp = models.db.CompSpec.avitech.copy(codersCount = None, femaleCodersCount = None)
-    val noCodersComp = models.db.CompSpec.avitech.copy(employeeCount = None, codersCount = None, femaleCodersCount = None)
-    val noFemaleCodersSetComp = models.db.CompSpec.avitech.copy(femaleCodersCount = None)
-    val noFemaleCodersComp = models.db.CompSpec.avitech.copy(femaleCodersCount = Some(0))
+    val noCodersSetComp = db.CompSpec.avitech.copy(codersCount = None, femaleCodersCount = None)
+    val noCodersComp = db.CompSpec.avitech.copy(employeeCount = None, codersCount = None, femaleCodersCount = None)
+    val noFemaleCodersSetComp = db.CompSpec.avitech.copy(femaleCodersCount = None)
+    val noFemaleCodersComp = db.CompSpec.avitech.copy(femaleCodersCount = Some(0))
 
     // Prepare
     when(compRepository.all(None, None))
       .thenReturn(Future.successful(Seq(
-        models.db.CompSpec.borci,
+        db.CompSpec.borci,
         noCodersSetComp,
         noCodersComp,
-        models.db.CompSpec.avitech,
+        db.CompSpec.avitech,
         noFemaleCodersSetComp,
         noFemaleCodersComp)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.get(Handle(models.db.CompSpec.avitech.city)))
+    when(locationService.get(Handle(db.CompSpec.avitech.city)))
       .thenReturn(Future.successful(CompSpec.avitech.city))
-    when(locationService.get(Handle(models.db.CompSpec.borci.city)))
+    when(locationService.get(Handle(db.CompSpec.borci.city)))
       .thenReturn(Future.successful(CompSpec.borci.city))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
-    assertResult(Seq(borci, avitech)) {
+    assertResult(Seq(CompRatingSpec.borci, CompRatingSpec.avitech)) {
       futureValue(compService.topWomen())
     }
 
     // Verify
+    verify(compVoteRepository).all(None)
     verify(compRepository).all(None, None)
     verify(techService).allRatings()
-    verify(locationService, times(5)).get(Handle(models.db.CompSpec.avitech.city))
-    verify(locationService).get(Handle(models.db.CompSpec.borci.city))
+    verify(locationService, times(5)).get(Handle(db.CompSpec.avitech.city))
+    verify(locationService).get(Handle(db.CompSpec.borci.city))
     verifyNoMore()
   }
 
   private def assertCompRating(expected: domain.CompRating, actual: domain.CompRating): Unit = {
     assertComp(expected.comp, actual.comp)
-    assert(expected.value == actual.value)
+    assert(expected.value == actual.value, expected.comp.name)
   }
 
   private def assertComp(expected: domain.Comp, actual: domain.Comp): Unit = {

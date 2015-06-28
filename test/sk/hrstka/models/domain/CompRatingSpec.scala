@@ -138,7 +138,12 @@ object CompRatingSpec {
     femaleCodersCount = None,
     govBiz            = None
   )
-  val avitech = CompRatingFactory(CompSpec.avitech, 5, 3)
-  val borci = CompRatingFactory(CompSpec.avitech, 1, 1)
+  val avitech = createCompRating(CompSpec.avitech)
+  val borci = createCompRating(CompSpec.borci)
   val all = Seq(avitech, borci)
+
+  private def createCompRating(comp: Comp): CompRating = {
+    val votes = CompVoteSpec.all.filter(_.entityId == comp.id)
+    CompRatingFactory(comp, votes.filter(_.value > 0).map(_.value).sum, votes.size)
+  }
 }
