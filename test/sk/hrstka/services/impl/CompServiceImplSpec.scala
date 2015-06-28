@@ -7,8 +7,8 @@ import reactivemongo.bson.BSONObjectID
 import sk.hrstka.models
 import sk.hrstka.models.db.Comp
 import sk.hrstka.models.domain
-import sk.hrstka.models.domain.{CompSpec, Handle, Identifiable, TechRatingSpec}
-import sk.hrstka.repositories.CompRepository
+import sk.hrstka.models.domain._
+import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
 import sk.hrstka.services.{LocationService, TechService}
 import sk.hrstka.test.BaseSpec
 
@@ -45,6 +45,7 @@ class CompServiceImplSpec extends BaseSpec {
   behavior of "all"
 
   it should "return all companies sorted by rating if no city or tech is provided" in new TestScope {
+
     // Prepare
     when(compRepository.all(None, None))
       .thenReturn(Future.successful(Seq(models.db.CompSpec.avitech, models.db.CompSpec.borci)))
@@ -57,9 +58,9 @@ class CompServiceImplSpec extends BaseSpec {
 
     // Execute
     val result = compService.all(None, None).futureValue
-    assertComp(avitech, result.find(_.id == avitech.id).get)
-    assertComp(borci, result.find(_.id == borci.id).get)
-    assertResult(Seq(avitech, borci))(result)
+    assertCompRating(CompRatingSpec.avitech, result.find(_.comp.id == avitech.id).get)
+    assertCompRating(CompRatingSpec.borci, result.find(_.comp.id == borci.id).get)
+    assertResult(Seq(CompRatingSpec.avitech, CompRatingSpec.borci))(result)
 
     // Verify
     verify(compRepository).all(None, None)
@@ -80,8 +81,8 @@ class CompServiceImplSpec extends BaseSpec {
 
     // Execute
     val result = futureValue(compService.all(city = Some(avitech.city.handle), None)).toSet
-    assertComp(avitech, result.find(_.id == avitech.id).get)
-    assertResult(Set(avitech))(result)
+    assertCompRating(CompRatingSpec.avitech, result.find(_.comp.id == avitech.id).get)
+    assertResult(Set(CompRatingSpec.avitech))(result)
 
     // Verify
     verify(compRepository).all(city = Some(avitech.city.handle.value), None)
@@ -101,8 +102,8 @@ class CompServiceImplSpec extends BaseSpec {
 
     // Execute
     val result = futureValue(compService.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
-    assertComp(borci, result.find(_.id == borci.id).get)
-    assertResult(Set(borci))(result)
+    assertCompRating(CompRatingSpec.borci, result.find(_.comp.id == borci.id).get)
+    assertResult(Set(CompRatingSpec.borci))(result)
 
     // Verify
     verify(compRepository).all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value))
@@ -187,6 +188,11 @@ class CompServiceImplSpec extends BaseSpec {
     verifyNoMore()
   }
 
+  private def assertCompRating(expected: domain.CompRating, actual: domain.CompRating): Unit = {
+    assertComp(expected.comp, actual.comp)
+    assert(expected.value == actual.value)
+  }
+
   private def assertComp(expected: domain.Comp, actual: domain.Comp): Unit = {
     // Partial assertions
     assertUnapplied(
@@ -204,9 +210,10 @@ class CompServiceImplSpec extends BaseSpec {
 
   private class TestScope {
     val compRepository = mock[CompRepository]
+    val compVoteRepository = mock[CompVoteRepository]
     val techService = mock[TechService]
     val locationService = mock[LocationService]
-    val compService = new CompServiceImpl(compRepository, techService, locationService)
+    val compService = new CompServiceImpl(compRepository, compVoteRepository, techService, locationService)
 
     def verifyNoMore(): Unit = {
       verifyNoMoreInteractions(compRepository)
