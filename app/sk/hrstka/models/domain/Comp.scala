@@ -55,6 +55,9 @@ case class Comp(id: Id,
     case _ =>
   }
 
+  if (joel.exists(_ < 0))
+    throw new IllegalArgumentException(s"Illegal The Joel Test question!")
+
   if (joel.exists(_ > 11))
     throw new IllegalArgumentException(s"The Joel Test has 12 questions, not more!")
 }
