@@ -14,7 +14,7 @@ trait ApiController {
    *
    * @return JSON array.
    */
-  def comps(): Action[AnyContent]
+  def comps(): EssentialAction
 
   /**
    * Gets JSON representation of company for the business number.
