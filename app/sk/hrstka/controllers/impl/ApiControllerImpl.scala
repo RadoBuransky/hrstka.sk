@@ -1,13 +1,13 @@
 package sk.hrstka.controllers.impl
 
 import com.google.inject.{Inject, Singleton}
-import play.api.cache.{Cached, CacheApi}
+import play.api.cache.Cached
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Action, AnyContent, Controller}
+import play.api.mvc.{Action, AnyContent, Controller, Request}
 import sk.hrstka.common.{HrstkaCache, Logging}
 import sk.hrstka.controllers.ApiController
 import sk.hrstka.models.api._
-import sk.hrstka.models.domain.{TechRating, CompRating}
+import sk.hrstka.models.domain.{CompRating, TechRating}
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,8 +30,6 @@ final class ApiControllerImpl @Inject() (compService: CompService,
   }
 
   override def comp(businessNumber: String) = Action.async { implicit request =>
-    hrstkaCache.invalidate()
-
     compService.all(None, None).map { compRatings =>
       compRatings.find(_.comp.businessNumber.value == businessNumber) match {
         case Some(compRating) => Ok(Json.toJson(convertCompRating(compRating)))
@@ -40,9 +38,11 @@ final class ApiControllerImpl @Inject() (compService: CompService,
     }
   }
 
-  override def techs(): Action[AnyContent] = Action.async { implicit request =>
-    techService.allRatings().map { techRatings =>
-      Ok(Json.toJson(techRatings.map(convertTechRating)))
+  override def techs() = cacheOkStatus {
+    Action.async { implicit request =>
+      techService.allRatings().map { techRatings =>
+        Ok(Json.toJson(techRatings.map(convertTechRating)))
+      }
     }
   }
 
@@ -55,14 +55,16 @@ final class ApiControllerImpl @Inject() (compService: CompService,
     }
   }
 
-  override def cities(): Action[AnyContent] = Action.async { implicit request =>
-    locationService.all().map { cities =>
-      Ok(Json.toJson(cities.map { city =>
-        Json.obj(
-          "handle" -> city.handle.value,
-          "sk" -> city.sk
-        )
-      }))
+  override def cities() = cacheOkStatus {
+    Action.async { implicit request =>
+      locationService.all().map { cities =>
+        Ok(Json.toJson(cities.map { city =>
+          Json.obj(
+            "handle" -> city.handle.value,
+            "sk" -> city.sk
+          )
+        }))
+      }
     }
   }
 

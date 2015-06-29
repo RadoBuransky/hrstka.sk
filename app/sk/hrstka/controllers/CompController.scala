@@ -22,14 +22,14 @@ trait CompController {
    *
    * @return HTML view.
    */
-  def women: Action[AnyContent]
+  def women: EssentialAction
 
   /**
    * Gets HTML view containing all companies.
    *
    * @return HTML view.
    */
-  def all: Action[AnyContent]
+  def all: EssentialAction
 
   /**
    * Gets HTML view containing companies for the provided city and tech handles.
@@ -38,6 +38,6 @@ trait CompController {
    * @param techHandle Tech handle.
    * @return HTML view.
    */
-  def cityTech(cityHandle: String, techHandle: String): Action[AnyContent]
+  def cityTech(cityHandle: String, techHandle: String): EssentialAction
 }
 

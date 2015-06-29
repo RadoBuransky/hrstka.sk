@@ -29,7 +29,7 @@ trait ApiController {
    *
    * @return JSON array.
    */
-  def techs(): Action[AnyContent]
+  def techs(): EssentialAction
 
   /**
    * Gets JSON representation of the technology.
@@ -44,5 +44,5 @@ trait ApiController {
    *
    * @return JSON array.
    */
-  def cities(): Action[AnyContent]
+  def cities(): EssentialAction
 }

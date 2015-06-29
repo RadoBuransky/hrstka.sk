@@ -17,8 +17,11 @@ private[impl] trait HrstkaCachedController {
 
   protected def cacheOkStatus(action: EssentialAction): EssentialAction = cacheOkStatus(_.uri)(action)
   protected def cacheOkStatus(key: String)(action: EssentialAction): EssentialAction = cacheOkStatus(_ => key)(action)
-  protected def cacheOkStatus(key: RequestHeader => String)(action: EssentialAction): EssentialAction =
-    cached.status(key, OK, oneDayDuration) { action }
+  protected def cacheOkStatus(key: RequestHeader => String)(action: EssentialAction): EssentialAction = {
+    cached.status(key, OK, oneDayDuration) {
+      action
+    }
+  }
 }
 
 private object HrstkaCachedController {

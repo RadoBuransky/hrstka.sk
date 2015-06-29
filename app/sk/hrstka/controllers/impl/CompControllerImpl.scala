@@ -3,8 +3,9 @@ package sk.hrstka.controllers.impl
 import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import play.api.Application
+import play.api.cache.Cached
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{EssentialAction, Action, AnyContent}
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
 import sk.hrstka.models.domain._
@@ -22,26 +23,29 @@ class CompControllerImpl @Inject() (compService: CompService,
                                     protected val techService: TechService,
                                     protected val locationService: LocationService,
                                     protected val application: Application,
-                                    val messagesApi: MessagesApi)
-  extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
+                                    val messagesApi: MessagesApi,
+                                    protected val cached: Cached)
+  extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement with HrstkaCachedController {
 
   override def get(businessNumber: String): Action[AnyContent] = AsyncStack { implicit request =>
     for {
-      comp    <- compService.get(BusinessNumber(businessNumber))
-      vote    <- transform(loggedIn.map(userId => compService.voteFor(comp.businessNumber, userId.id)))
-      result  <- withMainModel(None, None, loggedIn) { implicit mainModel =>
+      comp <- compService.get(BusinessNumber(businessNumber))
+      vote <- transform(loggedIn.map(userId => compService.voteFor(comp.businessNumber, userId.id)))
+      result <- withMainModel(None, None, loggedIn) { implicit mainModel =>
         Ok(sk.hrstka.views.html.comp(compToUi(comp), vote.flatten.map(_.value)))
       }
     } yield result
   }
 
-  override def women: Action[AnyContent] = AsyncStack { implicit request =>
-    for {
-      topWomen  <- compService.topWomen()
-      result    <- withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.women(topWomen.map(compRatingToUi)))
-      }
-    } yield result
+  override def women = cacheOkStatus {
+    AsyncStack { implicit request =>
+      for {
+        topWomen <- compService.topWomen()
+        result <- withMainModel(None, None, loggedIn) { implicit mainModel =>
+          Ok(sk.hrstka.views.html.women(topWomen.map(compRatingToUi)))
+        }
+      } yield result
+    }
   }
 
   override def all = cityTech("", "")
@@ -51,18 +55,21 @@ class CompControllerImpl @Inject() (compService: CompService,
   private def transform[A](o: Option[Future[A]]): Future[Option[A]] =
     o.map(f => f.map(Option(_))).getOrElse(Future.successful(None))
 
-  private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = AsyncStack { implicit request =>
-    for {
-      city        <- cityForHandle(cityHandle)
-      tech        <- techForHandle(techHandle)
-      compRatings <- compService.all(city.map(_.handle), tech.map(_.handle))
-      result      <- withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.index(
-          headline(city, tech),
-          compRatings.map(compRating => compRatingToUi(compRating))))
+  private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]): EssentialAction =
+    cacheOkStatus {
+      AsyncStack { implicit request =>
+        for {
+          city <- cityForHandle(cityHandle)
+          tech <- techForHandle(techHandle)
+          compRatings <- compService.all(city.map(_.handle), tech.map(_.handle))
+          result <- withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
+            Ok(sk.hrstka.views.html.index(
+              headline(city, tech),
+              compRatings.map(compRating => compRatingToUi(compRating))))
+          }
+        } yield result
       }
-    } yield result
-  }
+    }
 
   private def compRatingToUi(compRating: domain.CompRating): ui.CompRating =
     CompRatingFactory(compToUi(compRating.comp), compRating.value)
