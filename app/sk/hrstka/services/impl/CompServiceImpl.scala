@@ -1,6 +1,5 @@
 package sk.hrstka.services.impl
 
-import com.google.inject.{Inject, Singleton}
 import sk.hrstka
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.{Handle, _}
@@ -10,11 +9,10 @@ import sk.hrstka.services.{CompService, LocationService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-@Singleton
-final class CompServiceImpl @Inject() (compRepository: CompRepository,
-                                       compVoteRepository: CompVoteRepository,
-                                       techService: TechService,
-                                       locationService: LocationService) extends CompService {
+final class CompServiceImpl(compRepository: CompRepository,
+                            compVoteRepository: CompVoteRepository,
+                            techService: TechService,
+                            locationService: LocationService) extends CompService {
   import Identifiable._
 
   override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[BusinessNumber] = {
@@ -38,7 +36,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     )).map(_ => comp.businessNumber)
   }
 
-  override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[CompRating]] = {
+  override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[CompRating]] =
     // Get all technologies with ratings
     techService.allRatings().flatMap { techRatings =>
       // Get all companies for the city and the technology
@@ -56,7 +54,6 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
         }
       }
     }
-  }
 
   override def get(businessNumber: BusinessNumber): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>

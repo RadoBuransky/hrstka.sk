@@ -3,23 +3,30 @@ package sk.hrstka.common
 import com.google.inject.Binder
 import com.google.inject.binder.{AnnotatedBindingBuilder, ScopedBindingBuilder}
 import org.mockito.Mockito._
+import play.api.cache.CacheApi
+import sk.hrstka.common.impl.EhHrstkaCache
 import sk.hrstka.test.BaseSpec
 
-import scala.reflect._
-import scala.reflect.ClassTag
+import scala.reflect.{ClassTag, _}
 
 class HrstkaModuleSpec extends BaseSpec {
   behavior of "configure"
 
-  it should "bind ApplicationLifecycle to ApplicationLifecycleImpl as eager singleton" in new TestScope {
-    verifyBinding[ApplicationLifecycle, ApplicationLifecycleImpl]()
+  it should "setup all bindings" in new TestScope {
+    verifyBinding[ApplicationLifecycle, ApplicationLifecycleImpl] {
+      verifyBinding[CacheApi, EhHrstkaCache] {
+        verifyBinding[HrstkaCache, EhHrstkaCache] {
+          hrstkaModule.configure(binder)
+        }
+      }
+    }
   }
 
   private class TestScope {
     val binder = mock[Binder]
     val hrstkaModule = new HrstkaModule()
 
-    def verifyBinding[T : ClassTag, TImpl <: T : ClassTag]()(implicit ev: Manifest[AnnotatedBindingBuilder[T]]): Unit = {
+    def verifyBinding[T : ClassTag, TImpl <: T : ClassTag](action: => Unit)(implicit ev: Manifest[AnnotatedBindingBuilder[T]]): Unit = {
       val tClass = classTag[T].runtimeClass.asInstanceOf[Class[T]]
       val tImplClass = classTag[TImpl].runtimeClass.asInstanceOf[Class[TImpl]]
 
@@ -32,13 +39,11 @@ class HrstkaModuleSpec extends BaseSpec {
         .thenReturn(scopedBindingBuilder)
 
       // Execute
-      hrstkaModule.configure(binder)
+      action
 
       // Verify
-      verify(scopedBindingBuilder).asEagerSingleton()
       verify(bindingBuilder).to(tImplClass)
       verify(binder).bind(classOf[ApplicationLifecycle])
-
     }
   }
 }

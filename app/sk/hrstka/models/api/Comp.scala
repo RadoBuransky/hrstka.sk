@@ -3,11 +3,11 @@ package sk.hrstka.models.api
 import sk.hrstka.models.domain
 import sk.hrstka.models.domain.CompRatingFactory
 
-case class Comp(id: String,
+case class Comp(businessNumber: String,
                 name: String,
                 website: String,
                 cityHandle: String,
-                businessNumber: String,
+                country: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
                 femaleCodersCount: Option[Int],
@@ -18,17 +18,16 @@ case class Comp(id: String,
                 techHandles: Seq[String],
                 joel: Seq[Int],
                 govBiz: Option[BigDecimal],
-                apiUrl: String,
                 htmlUrl: String,
                 rating: BigDecimal)
 
 object CompFactory {
-  def fromDomain(compRating: domain.CompRating, apiUrl: String, htmlUrl: String) = Comp(
-    id                = compRating.comp.id.value,
+  def fromDomain(compRating: domain.CompRating, htmlUrl: String) = Comp(
+    businessNumber    = compRating.comp.businessNumber.value,
     name              = compRating.comp.name,
     website           = compRating.comp.website.toString,
     cityHandle        = compRating.comp.city.handle.value,
-    businessNumber    = compRating.comp.businessNumber.value,
+    country           = "sk",
     employeeCount     = compRating.comp.employeeCount,
     codersCount       = compRating.comp.codersCount,
     femaleCodersCount = compRating.comp.femaleCodersCount,
@@ -39,7 +38,6 @@ object CompFactory {
     techHandles       = compRating.comp.techRatings.map(_.tech.handle.value),
     joel              = compRating.comp.joel.toSeq.sorted,
     govBiz            = compRating.comp.govBiz,
-    apiUrl            = apiUrl,
     htmlUrl           = htmlUrl,
     rating            = compRating.value
   )

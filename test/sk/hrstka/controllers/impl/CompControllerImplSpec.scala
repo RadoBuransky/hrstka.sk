@@ -28,6 +28,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).get(CompSpec.avitech.businessNumber)
+    verify(markdownService).toHtml(CompSpec.avitech.note)
     verifyNoMore()
   }
 
@@ -47,6 +48,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).topWomen()
+    verify(markdownService).toHtml(CompSpec.borci.note)
+    verify(markdownService).toHtml(CompSpec.avitech.note)
     verifyNoMore()
   }
 
@@ -66,6 +69,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).all(None, None)
+    verify(markdownService).toHtml(CompSpec.borci.note)
+    verify(markdownService).toHtml(CompSpec.avitech.note)
     verifyNoMore()
   }
 
@@ -85,6 +90,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).all(None, None)
+    verify(markdownService).toHtml(CompSpec.borci.note)
+    verify(markdownService).toHtml(CompSpec.avitech.note)
     verifyNoMore()
   }
 
@@ -105,6 +112,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     verifyMainModel(Some(CompSpec.avitech.city.handle))
     verify(locationService).get(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), None)
+    verify(markdownService).toHtml(CompSpec.avitech.note)
     verifyNoMore()
   }
 
@@ -128,6 +136,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     verify(techService).getByHandle(TechRatingSpec.scalaRating.tech.handle)
     verify(locationService).get(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), Some(TechRatingSpec.scalaRating.tech.handle))
+    verify(markdownService).toHtml(CompSpec.avitech.note)
     verifyNoMore()
   }
 
@@ -148,6 +157,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     override def verifyNoMore(): Unit = {
       verifyNoMoreInteractions(compService)
+      verifyNoMoreInteractions(markdownService)
       verifyNoMoreInteractions(authService)
       verifyNoMoreInteractions(messagesApi)
       super.verifyNoMore()

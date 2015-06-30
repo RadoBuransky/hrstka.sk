@@ -2,12 +2,12 @@ package sk.hrstka.controllers
 
 import com.google.inject._
 import play.api.mvc._
-import sk.hrstka.controllers.impl.ApiControllerImpl
+import sk.hrstka.controllers.impl.{CachedApiControllerImpl, ApiControllerImpl}
 
 /**
  * API controller.
  */
-@ImplementedBy(classOf[ApiControllerImpl])
+@ImplementedBy(classOf[CachedApiControllerImpl])
 trait ApiController {
   /**
    * Gets JSON array with all companies.

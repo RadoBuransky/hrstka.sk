@@ -2,8 +2,7 @@ package sk.hrstka.controllers.test
 
 import org.mockito.Mockito._
 import org.mockito.internal.util.MockUtil
-import play.api.cache.{CacheApi, Cached}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, EssentialAction, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Mode}
@@ -14,8 +13,8 @@ import sk.hrstka.test.BaseSpec
 import scala.concurrent.Future
 
 abstract class BaseControllerSpec extends BaseSpec {
-  protected def assertView(action: Action[AnyContent])(f: (String) => Unit): Unit = {
-    val result = action(FakeRequest())
+  protected def assertView(action: EssentialAction)(f: (String) => Unit): Unit = {
+    val result = call(action, FakeRequest())
     assert(status(result) == OK)
     assert(contentType(result).contains("text/html"))
     f(contentAsString(result))

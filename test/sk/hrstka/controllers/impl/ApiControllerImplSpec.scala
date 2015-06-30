@@ -2,7 +2,7 @@ package sk.hrstka.controllers.impl
 
 import org.mockito.Mockito._
 import play.api.libs.json.{JsArray, JsValue, Json}
-import play.api.mvc.Results
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import sk.hrstka.models.api.JsonFormats._
@@ -22,10 +22,9 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(CompRatingSpec.all))
 
     // Execute
-    assert(contentAsJson(apiController.comps().apply(FakeRequest())) == Json.toJson(CompRatingSpec.all.map { compRating =>
+    assert(contentAsJson(call(apiController.comps(), FakeRequest())) == Json.toJson(CompRatingSpec.all.map { compRating =>
       CompFactory.fromDomain(
         compRating,
-        sk.hrstka.controllers.routes.ApiController.comp(compRating.comp.businessNumber.value).absoluteURL()(FakeRequest()),
         sk.hrstka.controllers.routes.CompController.get(compRating.comp.businessNumber.value).absoluteURL()(FakeRequest())
       )
     }))
@@ -47,7 +46,6 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       Json.toJson(
         CompFactory.fromDomain(
           CompRatingSpec.avitech,
-          sk.hrstka.controllers.routes.ApiController.comp(CompRatingSpec.avitech.comp.businessNumber.value).absoluteURL()(FakeRequest()),
           sk.hrstka.controllers.routes.CompController.get(CompRatingSpec.avitech.comp.businessNumber.value).absoluteURL()(FakeRequest())
         )
     ))
@@ -79,7 +77,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
     // Execute
-    assert(contentAsJson(apiController.techs().apply(FakeRequest())) ==
+    assert(contentAsJson(call(apiController.techs(), FakeRequest())) ==
       Json.toJson(TechRatingSpec.allRatings.map{ techRating =>
         TechFactory.fromDomain(
           techRating,
@@ -142,7 +140,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
       .thenReturn(Future.successful(CitySpec.all))
 
     // Execute
-    assert(contentAsJson(apiController.cities().apply(FakeRequest())) == JsArray(CitySpec.all.map(cityToJson)))
+    assert(contentAsJson(call(apiController.cities(), FakeRequest())) == JsArray(CitySpec.all.map(cityToJson)))
 
     // Verify
     verify(locationService).all()

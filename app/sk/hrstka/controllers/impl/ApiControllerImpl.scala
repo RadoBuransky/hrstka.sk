@@ -1,10 +1,8 @@
 package sk.hrstka.controllers.impl
 
-import com.google.inject.{Inject, Singleton}
-import play.api.cache.Cached
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Controller, Request}
-import sk.hrstka.common.{HrstkaCache, Logging}
+import sk.hrstka.common.Logging
 import sk.hrstka.controllers.ApiController
 import sk.hrstka.models.api._
 import sk.hrstka.models.domain.{CompRating, TechRating}
@@ -12,20 +10,15 @@ import sk.hrstka.services.{CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-@Singleton
-final class ApiControllerImpl @Inject() (compService: CompService,
-                                         techService: TechService,
-                                         locationService: LocationService,
-                                         hrstkaCache: HrstkaCache,
-                                         protected val cached: Cached)
-  extends Controller with ApiController with Logging with HrstkaCachedController {
+final class ApiControllerImpl(compService: CompService,
+                              techService: TechService,
+                              locationService: LocationService)
+  extends Controller with ApiController with Logging {
   import JsonFormats._
 
-  override def comps() = cacheOkStatus {
-    Action.async { implicit request =>
-      compService.all(None, None).map { compRatings =>
-        Ok(Json.toJson(compRatings.map(convertCompRating)))
-      }
+  override def comps() = Action.async { implicit request =>
+    compService.all(None, None).map { compRatings =>
+      Ok(Json.toJson(compRatings.map(convertCompRating)))
     }
   }
 
@@ -38,11 +31,9 @@ final class ApiControllerImpl @Inject() (compService: CompService,
     }
   }
 
-  override def techs() = cacheOkStatus {
-    Action.async { implicit request =>
-      techService.allRatings().map { techRatings =>
-        Ok(Json.toJson(techRatings.map(convertTechRating)))
-      }
+  override def techs() = Action.async { implicit request =>
+    techService.allRatings().map { techRatings =>
+      Ok(Json.toJson(techRatings.map(convertTechRating)))
     }
   }
 
@@ -55,16 +46,14 @@ final class ApiControllerImpl @Inject() (compService: CompService,
     }
   }
 
-  override def cities() = cacheOkStatus {
-    Action.async { implicit request =>
-      locationService.all().map { cities =>
-        Ok(Json.toJson(cities.map { city =>
-          Json.obj(
-            "handle" -> city.handle.value,
-            "sk" -> city.sk
-          )
-        }))
-      }
+  override def cities() = Action.async { implicit request =>
+    locationService.all().map { cities =>
+      Ok(Json.toJson(cities.map { city =>
+        Json.obj(
+          "handle" -> city.handle.value,
+          "sk" -> city.sk
+        )
+      }))
     }
   }
 
@@ -77,7 +66,6 @@ final class ApiControllerImpl @Inject() (compService: CompService,
   private def convertCompRating(compRating: CompRating)(implicit request: Request[AnyContent]): Comp =
     CompFactory.fromDomain(
       compRating,
-      sk.hrstka.controllers.routes.ApiController.comp(compRating.comp.businessNumber.value).absoluteURL(),
       sk.hrstka.controllers.routes.CompController.get(compRating.comp.businessNumber.value).absoluteURL()
     )
 }

@@ -4,6 +4,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
+import sk.hrstka.common.HrstkaCache
 import sk.hrstka.models.domain._
 import sk.hrstka.models.{db, domain}
 import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
@@ -286,7 +287,11 @@ class CompServiceImplSpec extends BaseSpec {
     val compVoteRepository = mock[CompVoteRepository]
     val techService = mock[TechService]
     val locationService = mock[LocationService]
-    val compService = new CompServiceImpl(compRepository, compVoteRepository, techService, locationService)
+    val compService = new CompServiceImpl(
+      compRepository,
+      compVoteRepository,
+      techService,
+      locationService)
 
     def verifyNoMore(): Unit = {
       verifyNoMoreInteractions(compRepository)

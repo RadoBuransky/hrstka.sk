@@ -8,6 +8,7 @@ import sk.hrstka.common.{Logging, HrstkaCache}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.reflect.ClassTag
 
 @Singleton
@@ -19,6 +20,22 @@ final class EhHrstkaCache @Inject() (applicationLifecycle: ApplicationLifecycle)
   override def get[T: ClassTag](key: String): Option[T] = playEhCacheApi.get[T](key)
   override def getOrElse[A: ClassTag](key: String, expiration: Duration)(orElse: => A): A = playEhCacheApi.getOrElse[A](key, expiration)(orElse)
   override def remove(key: String): Unit = playEhCacheApi.remove(key)
+
+  override def cacheSuccess[T: ClassTag](key: String)(value: => Future[T]): Future[T] = {
+    get[T](key) match {
+      case Some(result) =>
+        logger.info(s"Getting from cache. [$key]")
+        Future.successful(result)
+      case None =>
+        value.onSuccess {
+          case result =>
+            logger.info(s"Putting to cache. [$key]")
+            set(key, result)
+        }
+        value
+    }
+  }
+
   override def invalidate(): Unit = {
     cache.removeAll()
     logger.debug("Cache invalidated.")

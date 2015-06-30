@@ -1,7 +1,8 @@
 package sk.hrstka.controllers.impl
 
 import play.api.cache.Cached
-import play.api.mvc.{Controller, EssentialAction, RequestHeader}
+import play.api.http.Status
+import play.api.mvc.{EssentialAction, RequestHeader}
 
 import scala.concurrent.duration._
 
@@ -9,8 +10,6 @@ import scala.concurrent.duration._
  * Hrstka-specific controller caching.
  */
 private[impl] trait HrstkaCachedController {
-  self: Controller =>
-
   import HrstkaCachedController._
 
   protected def cached: Cached
@@ -18,7 +17,7 @@ private[impl] trait HrstkaCachedController {
   protected def cacheOkStatus(action: EssentialAction): EssentialAction = cacheOkStatus(_.uri)(action)
   protected def cacheOkStatus(key: String)(action: EssentialAction): EssentialAction = cacheOkStatus(_ => key)(action)
   protected def cacheOkStatus(key: RequestHeader => String)(action: EssentialAction): EssentialAction = {
-    cached.status(key, OK, oneDayDuration) {
+    cached.status(key, Status.OK, oneDayDuration) {
       action
     }
   }
