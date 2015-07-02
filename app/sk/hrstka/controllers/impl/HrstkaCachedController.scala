@@ -3,7 +3,7 @@ package sk.hrstka.controllers.impl
 import play.api.cache.Cached
 import play.api.http.Status
 import play.api.mvc.{EssentialAction, RequestHeader}
-import sk.hrstka.common.Logging
+import sk.hrstka.common.{HrstkaCache, Logging}
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
 
 import scala.concurrent.duration._
@@ -14,7 +14,9 @@ import scala.concurrent.duration._
 private[impl] trait HrstkaCachedController extends Logging {
   import HrstkaCachedController._
 
-  protected def cached: Cached
+  private lazy val cached = new Cached(hrstkaCache)
+
+  protected def hrstkaCache: HrstkaCache
 
   protected def cacheOkStatus(action: EssentialAction): EssentialAction = cacheOkStatus(_.uri)(action)
   protected def cacheOkStatus(key: String)(action: EssentialAction): EssentialAction = cacheOkStatus(_ => key)(action)

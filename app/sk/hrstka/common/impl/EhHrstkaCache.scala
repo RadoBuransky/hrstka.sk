@@ -21,7 +21,7 @@ final class HrstkaEhHrstkaCache @Inject() (applicationLifecycle: ApplicationLife
 
 abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
                                      cacheName: String)
-  extends HrstkaCache with CacheApi with Logging {
+  extends HrstkaCache with Logging {
   import EhHrstkaCache._
 
   override def set(key: String, value: Any, expiration: Duration): Unit = playEhCacheApi.set(key, value, expiration)
@@ -46,10 +46,11 @@ abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
   }
 
   override def invalidateOnSuccess[T](action: => Future[T]): Future[T] = {
-    action.onSuccess {
+    val actionFuture = action
+    actionFuture.onSuccess {
       case _ => invalidate()
     }
-    action
+    actionFuture
   }
 
   override def invalidate(): Unit = {

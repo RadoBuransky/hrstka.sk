@@ -47,11 +47,16 @@ body {
     article.comp {
         h3 {
             margin-bottom: 0px;
-        }
+            position: relative;
 
-        .city {
-            float: right;
-            color: @hrstka-color-city;
+            .city {
+                float: right;
+                color: @hrstka-color-city;
+                font-size: 14px;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+            }
         }
 
         margin-top: 20px;
@@ -84,6 +89,14 @@ body {
             padding-right: 0px;
             margin-top: 20px;
             margin-bottom: 20px;
+        }
+
+        .comp-edit-btn {
+            .btn;
+            .btn-default;
+
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
     }
 
@@ -189,9 +202,15 @@ body {
     font-weight: 700;
 }
 
+.hrstka-govBiz {
+    .label;
+    background-color: @hrstka-color-grey;
+    font-weight: 700;
+}
+
 .hrstka-emp-count {
     .label;
-    background-color: #a0a0a0;
+    background-color: @hrstka-color-green;
     font-weight: 700;
 }
 

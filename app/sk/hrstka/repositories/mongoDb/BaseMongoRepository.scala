@@ -6,7 +6,7 @@ import play.modules.reactivemongo.json.BSONFormats._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.QueryOpts
 import reactivemongo.bson.BSONObjectID
-import sk.hrstka.common.HrstkaException
+import sk.hrstka.common.{Logging, HrstkaException}
 import sk.hrstka.models.db.Identifiable
 import sk.hrstka.models.db.Identifiable.Id
 
@@ -23,7 +23,7 @@ import scala.reflect.ClassTag
  * @param writes Json writes.
  * @tparam T Entity type.
  */
-abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoCollection)(implicit reads: Reads[T], writes: Writes[T]) {
+abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoCollection)(implicit reads: Reads[T], writes: Writes[T]) extends Logging {
   protected def reactiveMongoApi: ReactiveMongoApi
   /**
    * Inserts new entity. Generates identifier for it.
@@ -35,7 +35,9 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
     if (value._id != Identifiable.empty)
       throw new HrstkaException(s"Value to be inserted cannot have ID set! [$value]")
     val id = BSONObjectID.generate
-    collection.insert(Json.toJson(value).as[JsObject] ++ Json.obj("_id" -> id)).recover {
+    val entity = Json.toJson(value).as[JsObject] ++ Json.obj("_id" -> id)
+    logger.info(entity.toString())
+    collection.insert(entity).recover {
       case ex: Exception => throw new HrstkaException(s"Could not insert ${coll.name}! [$value]", ex)
     }.map(_ => id)
   }

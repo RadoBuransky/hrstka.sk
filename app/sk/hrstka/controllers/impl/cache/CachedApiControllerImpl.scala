@@ -1,7 +1,7 @@
 package sk.hrstka.controllers.impl.cache
 
 import com.google.inject.{Inject, Singleton}
-import play.api.cache.Cached
+import sk.hrstka.common.HrstkaCache
 import sk.hrstka.controllers.ApiController
 import sk.hrstka.controllers.impl.{ApiControllerImpl, HrstkaCachedController}
 import sk.hrstka.services.{CompService, LocationService, TechService}
@@ -10,7 +10,7 @@ import sk.hrstka.services.{CompService, LocationService, TechService}
 final class CachedApiControllerImpl @Inject() (compService: CompService,
                                                techService: TechService,
                                                locationService: LocationService,
-                                               protected val cached: Cached)
+                                               protected val hrstkaCache: HrstkaCache)
   extends ApiController with HrstkaCachedController {
   private val underlying = new ApiControllerImpl(
     compService,

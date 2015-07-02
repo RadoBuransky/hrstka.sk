@@ -1,8 +1,6 @@
 package sk.hrstka.common
 
-import com.google.inject.ImplementedBy
-import play.api.mvc.EssentialAction
-import sk.hrstka.common.impl.EhHrstkaCache
+import play.api.cache.CacheApi
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -10,7 +8,7 @@ import scala.reflect.ClassTag
 /**
  * Shared Hrstka cache interface.
  */
-trait HrstkaCache {
+trait HrstkaCache extends CacheApi {
   /**
    * Caches result produced by the Future is completes with success.
    *

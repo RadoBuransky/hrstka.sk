@@ -90,7 +90,8 @@
             <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.businessNumber)">Plus</a>
             <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.businessNumber)">Mínus</a>
         </div>
-        <div><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)">Upraviť</a></div>
+        <a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)"
+           class="comp-edit-btn">Upraviť</a>
     }
 </article>
 }
