@@ -10,7 +10,6 @@ import scala.reflect.ClassTag
 /**
  * Shared Hrstka cache interface.
  */
-@ImplementedBy(classOf[EhHrstkaCache])
 trait HrstkaCache {
   /**
    * Caches result produced by the Future is completes with success.
@@ -21,6 +20,15 @@ trait HrstkaCache {
    * @return
    */
   def cacheSuccess[T: ClassTag](key: String)(value: => Future[T]): Future[T]
+
+  /**
+   * Invalidates everything if the action completes with success.
+   *
+   * @param action Action to trigger invalidation.
+   * @tparam T Action result type.
+   * @return Action itself.
+   */
+  def invalidateOnSuccess[T](action: => Future[T]): Future[T]
 
   /**
    * Invalidates everything.

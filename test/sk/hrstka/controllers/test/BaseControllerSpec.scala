@@ -2,7 +2,7 @@ package sk.hrstka.controllers.test
 
 import org.mockito.Mockito._
 import org.mockito.internal.util.MockUtil
-import play.api.mvc.{Action, AnyContent, EssentialAction, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Mode}
@@ -38,11 +38,16 @@ abstract class BaseControllerSpec extends BaseSpec {
     }
 
     protected def assertResult(action: Action[AnyContent],
-                               form: Map[String, String] = Map.empty)(f: (Future[Result]) => Unit): Unit = {
+                               form: Map[String, String] = Map.empty, cookie: Option[Cookie] = None)(f: (Future[Result]) => Unit): Unit = {
       val requestWithForm = if (form.isEmpty)
         FakeRequest()
       else
         FakeRequest().withFormUrlEncodedBody(form.toSeq:_*)
+
+      val requestWithCookie = if (cookie.isEmpty)
+        requestWithForm
+      else
+        requestWithForm.withCookies(cookie.get)
 
       val result = action(requestWithForm)
       f(result)

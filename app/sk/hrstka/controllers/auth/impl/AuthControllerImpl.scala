@@ -9,7 +9,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.auth.{AuthController, LoginForm, RegisterForm}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
-import sk.hrstka.models.domain.{Admin, Email, Eminent}
+import sk.hrstka.models.domain.{Admin, Email}
 import sk.hrstka.services.{AuthService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,7 +30,7 @@ final class AuthControllerImpl @Inject() (protected val authService: AuthService
     }
   }
 
-  def logout = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
+  def logout = Action.async { implicit request =>
     gotoLogoutSucceeded
   }
 

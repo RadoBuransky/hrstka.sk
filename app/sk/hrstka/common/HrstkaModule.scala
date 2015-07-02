@@ -2,7 +2,7 @@ package sk.hrstka.common
 
 import com.google.inject.AbstractModule
 import play.api.cache.CacheApi
-import sk.hrstka.common.impl.EhHrstkaCache
+import sk.hrstka.common.impl.{DefaultEhHrstkaCache, HrstkaEhHrstkaCache}
 
 /**
  * Main dependency injection module for the application.
@@ -14,9 +14,9 @@ final class HrstkaModule extends AbstractModule {
       .asEagerSingleton()
 
     bind(classOf[CacheApi])
-      .to(classOf[EhHrstkaCache])
+      .to(classOf[DefaultEhHrstkaCache])
 
     bind(classOf[HrstkaCache])
-      .to(classOf[EhHrstkaCache])
+      .to(classOf[HrstkaEhHrstkaCache])
   }
 }

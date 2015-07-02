@@ -2,12 +2,12 @@ package sk.hrstka.controllers
 
 import com.google.inject.ImplementedBy
 import play.api.mvc._
-import sk.hrstka.controllers.impl.CachedCompControllerImpl
+import sk.hrstka.controllers.impl.CompControllerImpl
 
 /**
  * Company controller.
  */
-@ImplementedBy(classOf[CachedCompControllerImpl])
+@ImplementedBy(classOf[CompControllerImpl])
 trait CompController {
   /**
    * Gets HTML view of a company for the provided business number.

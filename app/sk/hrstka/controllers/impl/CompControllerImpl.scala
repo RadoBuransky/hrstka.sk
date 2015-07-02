@@ -1,5 +1,6 @@
 package sk.hrstka.controllers.impl
 
+import com.google.inject.{Singleton, Inject}
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import play.api.Application
 import play.api.i18n.MessagesApi
@@ -14,13 +15,14 @@ import sk.hrstka.services._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CompControllerImpl(compService: CompService,
-                         markdownService: MarkdownService,
-                         protected val authService: AuthService,
-                         protected val techService: TechService,
-                         protected val locationService: LocationService,
-                         protected val application: Application,
-                         val messagesApi: MessagesApi)
+@Singleton
+final class CompControllerImpl @Inject() (compService: CompService,
+                                          markdownService: MarkdownService,
+                                          protected val authService: AuthService,
+                                          protected val techService: TechService,
+                                          protected val locationService: LocationService,
+                                          protected val application: Application,
+                                          val messagesApi: MessagesApi)
   extends BaseController with CompController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement {
 
   override def get(businessNumber: String): Action[AnyContent] = AsyncStack { implicit request =>

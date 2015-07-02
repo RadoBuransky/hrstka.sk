@@ -6,7 +6,6 @@ import play.api.Application
 import play.api.test.Helpers._
 import sk.hrstka.BaseStandaloneFakeApplicationSuites
 import sk.hrstka.controllers.itest.BaseControllerISpec
-import sk.hrstka.models.domain.User
 
 import scala.concurrent.Future
 
@@ -36,15 +35,10 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
   behavior of "logout"
 
   it should "not authorize anonymous user" in new TestScope {
-    assertAnonymousUser(authController.logout())
-  }
-
-  it should "log out an eminent user and redirect somewhere" in new LogoutTestScope {
-    logout(eminentUser)
-  }
-
-  it should "log out an admin user and redirect somewhere" in new LogoutTestScope {
-    logout(adminUser)
+    assertResult(authController.logout()) { result =>
+      assert(status(result) == SEE_OTHER)
+      assert(redirectLocation(result).contains("/"))
+    }
   }
 
   behavior of "authenticate"
@@ -163,18 +157,6 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
 
       // Verify
       verify(authService).createUser(adminUser.email, "123")
-    }
-  }
-
-  private class LogoutTestScope extends TestScope {
-    def logout(user: User): Unit = {
-      withUser(user, mainModel = false) {
-        assertAuthResult(user, authController, authController.logout()) { result =>
-          assert(status(result) == SEE_OTHER)
-          assert(redirectLocation(result).contains("/"))
-        }
-      }
-      verifyNoMore()
     }
   }
 

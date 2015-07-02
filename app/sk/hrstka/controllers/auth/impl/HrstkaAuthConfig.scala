@@ -5,6 +5,7 @@ import java.util.Base64
 import jp.t2v.lab.play2.auth._
 import play.api.Application
 import play.api.mvc.{Controller, RequestHeader, Result}
+import sk.hrstka.common.Logging
 import sk.hrstka.models.domain
 import sk.hrstka.models.domain.{Email, Role}
 import sk.hrstka.services.AuthService
@@ -12,7 +13,7 @@ import sk.hrstka.services.AuthService
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 
-trait HrstkaAuthConfig extends AuthConfig {
+trait HrstkaAuthConfig extends AuthConfig with Logging {
   self: Controller =>
   
   protected def authService: AuthService
@@ -110,14 +111,17 @@ trait HrstkaAuthConfig extends AuthConfig {
 
 object HrstkaAuthConfig {
   val sessionTimeoutInSeconds: Int = 3600
+  val cookieName = "HRSTKA_AUTH"
 }
 
 /**
  * Encode cookie to base 64 due to some validation issues.
  */
 class Base64CookieTokenAccessor(application: Application) extends CookieTokenAccessor(
-  cookieSecureOption = play.api.Play.isProd(application),
-  cookieMaxAge       = Some(HrstkaAuthConfig.sessionTimeoutInSeconds)) {
+  cookieSecureOption = false, //play.api.Play.isProd(application),
+  cookieMaxAge       = Some(HrstkaAuthConfig.sessionTimeoutInSeconds)) with Logging {
+  override val cookieName = HrstkaAuthConfig.cookieName
+
   override protected def verifyHmac(token: SignedToken): Option[AuthenticityToken] =
     super.verifyHmac(new String(Base64.getDecoder.decode(token)))
 

@@ -3,15 +3,16 @@ package sk.hrstka.repositories.mongoDb
 import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
-import sk.hrstka.models.db.Identifiable.Id
+import sk.hrstka.common.HrstkaCache
 import sk.hrstka.models.db.JsonFormats._
-import sk.hrstka.models.db.{JsonFormats, Tech}
+import sk.hrstka.models.db.Tech
 import sk.hrstka.repositories.TechRepository
 
-import scala.concurrent.Future
-
 @Singleton
-final class MongoTechRepository @Inject() (protected val reactiveMongoApi: ReactiveMongoApi)
+final class MongoTechRepository @Inject() (hrstkaCache: HrstkaCache,
+                                           protected val reactiveMongoApi: ReactiveMongoApi)
   extends BaseMongoRepository[Tech](TechCollection) with TechRepository {
+  override def upsert(tech: Tech) = hrstkaCache.invalidateOnSuccess(super.upsert(tech))
+  override def remove(handle: String) = hrstkaCache.invalidateOnSuccess(super.remove(handle))
   override def all() = find(Json.obj(), sort = Json.obj("handle" -> 1))
 }
