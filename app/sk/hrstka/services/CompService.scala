@@ -2,7 +2,7 @@ package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.domain._
-import sk.hrstka.services.impl.CachedCompServiceImpl
+import sk.hrstka.services.impl.cache.CachedCompServiceImpl
 
 import scala.concurrent.Future
 

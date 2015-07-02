@@ -1,6 +1,6 @@
 package sk.hrstka.common.impl
 
-import com.google.inject.{ Inject, Singleton }
+import com.google.inject.{Inject, Singleton}
 import net.sf.ehcache.{CacheManager, Ehcache}
 import play.api.cache.{CacheApi, EhCacheApi}
 import play.api.inject.ApplicationLifecycle
@@ -33,13 +33,13 @@ abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
     val prefixedKey = prefixKey(key)
     get[T](prefixedKey) match {
       case Some(result) =>
-        logger.info(s"Getting from cache. [$prefixedKey]")
+        logger.debug(s"Getting from cache. [$prefixedKey]")
         Future.successful(result)
       case None =>
         value.onSuccess {
           case result =>
-            logger.info(s"Putting to cache. [$prefixedKey]")
-            set(key, result)
+            logger.debug(s"Putting to cache. [$prefixedKey]")
+            set(prefixedKey, result)
         }
         value
     }
@@ -54,19 +54,19 @@ abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
 
   override def invalidate(): Unit = {
     cache.removeAll()
-    logger.info("Cache invalidated.")
+    logger.debug("Cache invalidated.")
   }
 
   private def prefixKey(key: String) = prefix + key
 
   private lazy val cacheManager = {
     val result = CacheManager.create()
-    logger.info("CacheManager created.")
+    logger.debug("CacheManager created.")
 
     applicationLifecycle.addStopHook { () =>
       Future.successful {
         result.shutdown()
-        logger.info("CacheManager shut down.")
+        logger.debug("CacheManager shut down.")
       }
     }
 
@@ -74,7 +74,7 @@ abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
   }
   private lazy val playEhCacheApi = new EhCacheApi(cache)
   private lazy val cache: Ehcache = {
-    logger.info("Ehcache created")
+    logger.debug("Ehcache created")
     cacheManager.addCache(cacheName)
     cacheManager.getEhcache(cacheName)
   }

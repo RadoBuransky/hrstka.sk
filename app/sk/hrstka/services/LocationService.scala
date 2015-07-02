@@ -2,14 +2,14 @@ package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.domain.{City, Handle}
-import sk.hrstka.services.impl.LocationServiceImpl
+import sk.hrstka.services.impl.cache.CachedLocationServiceImpl
 
 import scala.concurrent.Future
 
 /**
  * Geographical location service. Currently cities only.
  */
-@ImplementedBy(classOf[LocationServiceImpl])
+@ImplementedBy(classOf[CachedLocationServiceImpl])
 trait LocationService {
   /**
    * Gets all cities ordered by number of companies.

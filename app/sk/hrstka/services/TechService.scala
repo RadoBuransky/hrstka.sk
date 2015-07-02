@@ -2,14 +2,14 @@ package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.domain._
-import sk.hrstka.services.impl.TechServiceImpl
+import sk.hrstka.services.impl.cache.CachedTechServiceImpl
 
 import scala.concurrent.Future
 
 /**
  * Technology service.
  */
-@ImplementedBy(classOf[TechServiceImpl])
+@ImplementedBy(classOf[CachedTechServiceImpl])
 trait TechService {
   /**
    * Inserts or updates a technology.

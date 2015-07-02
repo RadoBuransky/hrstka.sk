@@ -1,8 +1,9 @@
-package sk.hrstka.controllers.impl
+package sk.hrstka.controllers.impl.cache
 
 import com.google.inject.{Inject, Singleton}
 import play.api.cache.Cached
 import sk.hrstka.controllers.ApiController
+import sk.hrstka.controllers.impl.{ApiControllerImpl, HrstkaCachedController}
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
 @Singleton

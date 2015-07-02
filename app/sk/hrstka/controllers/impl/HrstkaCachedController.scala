@@ -22,12 +22,12 @@ private[impl] trait HrstkaCachedController extends Logging {
     EssentialAction { requestHeader =>
       requestHeader.cookies.get(HrstkaAuthConfig.cookieName) match {
         case Some(_) => action(requestHeader)
-        case None => cached.status(key, Status.OK, oneDayDuration)(action)(requestHeader)
+        case None => cached.status(key, Status.OK, oneHourDuration)(action)(requestHeader)
       }
     }
   }
 }
 
 private object HrstkaCachedController {
-  val oneDayDuration = 24.hours.toSeconds.toInt
+  val oneHourDuration = 1.hours.toSeconds.toInt
 }

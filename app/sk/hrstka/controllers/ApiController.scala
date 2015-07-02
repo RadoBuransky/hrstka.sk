@@ -2,7 +2,8 @@ package sk.hrstka.controllers
 
 import com.google.inject._
 import play.api.mvc._
-import sk.hrstka.controllers.impl.{CachedApiControllerImpl, ApiControllerImpl}
+import sk.hrstka.controllers.impl.ApiControllerImpl
+import sk.hrstka.controllers.impl.cache.CachedApiControllerImpl
 
 /**
  * API controller.

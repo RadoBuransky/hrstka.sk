@@ -26,8 +26,7 @@ final class MongoCompRepository @Inject() (hrstkaCache: HrstkaCache,
   }
 
   override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Iterable[Comp]] = {
-    logger.info(s"all [$city, $tech]")
-
+    logger.debug(s"all [$city, $tech]")
     val cityQuery = city match {
       case Some(cityHandle) => Json.obj("city" -> cityHandle)
       case None => Json.obj()

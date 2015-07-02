@@ -4,7 +4,7 @@ import com.google.inject.Binder
 import com.google.inject.binder.{AnnotatedBindingBuilder, ScopedBindingBuilder}
 import org.mockito.Mockito._
 import play.api.cache.CacheApi
-import sk.hrstka.common.impl.EhHrstkaCache
+import sk.hrstka.common.impl.{DefaultEhHrstkaCache, HrstkaEhHrstkaCache}
 import sk.hrstka.test.BaseSpec
 
 import scala.reflect.{ClassTag, _}
@@ -14,8 +14,8 @@ class HrstkaModuleSpec extends BaseSpec {
 
   it should "setup all bindings" in new TestScope {
     verifyBinding[ApplicationLifecycle, ApplicationLifecycleImpl] {
-      verifyBinding[CacheApi, EhHrstkaCache] {
-        verifyBinding[HrstkaCache, EhHrstkaCache] {
+      verifyBinding[CacheApi, DefaultEhHrstkaCache] {
+        verifyBinding[HrstkaCache, HrstkaEhHrstkaCache] {
           hrstkaModule.configure(binder)
         }
       }
