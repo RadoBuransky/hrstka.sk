@@ -38,9 +38,18 @@ body {
         }
     }
 
-    #headline-separator {
+    .dotted-separator {
         background: url('/assets/images/dot.png') repeat;
         height: 15px;
+    }
+
+    .solid-separator {
+        background-color: @hrstka-color-blue;
+        height: 15px;
+    }
+
+    #headline-separator {
+        .solid-separator;
         width: 100%;
         margin-top: 20px;
         margin-bottom: 30px;
@@ -98,7 +107,6 @@ body {
     }
 
     article.comp-details {
-
         .container-fluid {
             padding-left: 0px;
             padding-right: 0px;

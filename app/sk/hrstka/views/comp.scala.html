@@ -10,6 +10,7 @@
 <article class="comp-details">
     @if(comp.note.html.nonEmpty) {
         <div class="container-fluid">@Html(comp.note.html)</div>
+        <div class="dotted-separator">&nbsp;</div>
     }
     <div class="container-fluid">
     @if(comp.products || comp.services || comp.internal) {
@@ -26,8 +27,8 @@
     }
     @if(comp.employeeCount.isDefined || comp.maleCodersCount.isDefined || comp.codersCount.isDefined) {
         <h4>Počet zamestnancov</h4>
-        @if(comp.employeeCount.isDefined) {
-        <div>Všetkých spolu <span class="hrstka-emp-count">@comp.employeeCount</span></div>
+        @if(comp.femaleCodersCount.isDefined) {
+            <div>Žien programátoriek <span class="hrstka-emp-count">@comp.femaleCodersCount</span></div>
         }
         @if(comp.maleCodersCount.isDefined) {
             <div>Mužov programátorov <span class="hrstka-emp-count">@comp.maleCodersCount</span></div>
@@ -36,8 +37,8 @@
                 <div>Všetkých programátorov <span class="hrstka-emp-count">@comp.codersCount</span></div>
             }
         }
-        @if(comp.femaleCodersCount.isDefined) {
-            <div>Žien programátoriek <span class="hrstka-emp-count">@comp.femaleCodersCount</span></div>
+        @if(comp.employeeCount.isDefined) {
+            <div>Všetkých spolu <span class="hrstka-emp-count">@comp.employeeCount</span></div>
         }
     }
     <h4>Identifikačné číslo organizácie (IČO)</h4>

@@ -52,7 +52,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             employeeCount = form.employeeCount,
             codersCount = form.codersCount,
             femaleCodersCount = form.femaleCodersCount,
-            note = form.note,
+            markdownNote = form.note,
             products = form.products,
             services = form.services,
             internal = form.internal,
@@ -89,7 +89,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(c => CompFactory.apply(c, Markdown(c.note))), companyTechnologies, CompFactory.joelQuestions, action))
+        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(c => CompFactory.apply(c, Markdown(c.markdownNote))), companyTechnologies, CompFactory.joelQuestions, action))
       }
     } yield result
 }

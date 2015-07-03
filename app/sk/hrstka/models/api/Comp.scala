@@ -31,7 +31,7 @@ object CompFactory {
     employeeCount     = compRating.comp.employeeCount,
     codersCount       = compRating.comp.codersCount,
     femaleCodersCount = compRating.comp.femaleCodersCount,
-    markdown          = compRating.comp.note,
+    markdown          = compRating.comp.markdownNote,
     products          = compRating.comp.products,
     services          = compRating.comp.services,
     internal          = compRating.comp.internal,

@@ -16,8 +16,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Prepare
     when(compService.get(CompSpec.avitech.businessNumber))
       .thenReturn(Future.successful(CompSpec.avitech))
-    when(markdownService.toHtml(CompSpec.avitech.note))
-      .thenReturn(CompSpec.avitech.note)
+    when(markdownService.toHtml(CompSpec.avitech.markdownNote))
+      .thenReturn(CompSpec.avitech.markdownNote)
     prepareMainModel()
 
     // Execute
@@ -28,7 +28,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).get(CompSpec.avitech.businessNumber)
-    verify(markdownService).toHtml(CompSpec.avitech.note)
+    verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
@@ -48,8 +48,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).topWomen()
-    verify(markdownService).toHtml(CompSpec.borci.note)
-    verify(markdownService).toHtml(CompSpec.avitech.note)
+    verify(markdownService).toHtml(CompSpec.borci.markdownNote)
+    verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
@@ -69,8 +69,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).all(None, None)
-    verify(markdownService).toHtml(CompSpec.borci.note)
-    verify(markdownService).toHtml(CompSpec.avitech.note)
+    verify(markdownService).toHtml(CompSpec.borci.markdownNote)
+    verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
@@ -90,8 +90,8 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel()
     verify(compService).all(None, None)
-    verify(markdownService).toHtml(CompSpec.borci.note)
-    verify(markdownService).toHtml(CompSpec.avitech.note)
+    verify(markdownService).toHtml(CompSpec.borci.markdownNote)
+    verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
@@ -112,7 +112,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     verifyMainModel(Some(CompSpec.avitech.city.handle))
     verify(locationService).get(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), None)
-    verify(markdownService).toHtml(CompSpec.avitech.note)
+    verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
@@ -136,7 +136,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     verify(techService).getByHandle(TechRatingSpec.scalaRating.tech.handle)
     verify(locationService).get(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), Some(TechRatingSpec.scalaRating.tech.handle))
-    verify(markdownService).toHtml(CompSpec.avitech.note)
+    verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 

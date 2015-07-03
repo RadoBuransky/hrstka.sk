@@ -1,6 +1,6 @@
 package sk.hrstka.controllers.impl
 
-import com.google.inject.{Singleton, Inject}
+import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import play.api.Application
 import play.api.i18n.MessagesApi
@@ -67,8 +67,21 @@ final class CompControllerImpl @Inject() (compService: CompService,
   private def compRatingToUi(compRating: domain.CompRating): ui.CompRating =
     CompRatingFactory(compToUi(compRating.comp), compRating.value)
 
-  private def compToUi(comp: domain.Comp): ui.Comp =
-    CompFactory(comp, Html(markdownService.toHtml(comp.note)))
+  private def compToUi(comp: domain.Comp): ui.Comp = {
+    CompFactory(comp, Html(markdownService.toHtml(preprocessMarkdown(comp.markdownNote))))
+  }
+
+  private def preprocessMarkdown(markdownNote: String): String = {
+    // Find all headings and increase their level +3
+    val processedLines = markdownNote.lines.map { line =>
+      if (line.startsWith("#"))
+        "###" + line
+      else
+        line
+    }
+
+    processedLines.mkString(System.lineSeparator)
+  }
 
   private def headline(city: Option[City], tech: Option[Tech]): String = {
     val cityHeadline = city
