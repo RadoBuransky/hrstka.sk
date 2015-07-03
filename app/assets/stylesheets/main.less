@@ -22,6 +22,20 @@ body {
     h2 {
         margin-top: 0;
         color: @hrstka-color-grey;
+        position: relative;
+
+        .city {
+            float: right;
+            color: @hrstka-color-city;
+            font-size: 14px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        a {
+            font-size: 14px;
+        }
     }
 
     #headline-separator {
@@ -84,6 +98,7 @@ body {
     }
 
     article.comp-details {
+
         .container-fluid {
             padding-left: 0px;
             padding-right: 0px;

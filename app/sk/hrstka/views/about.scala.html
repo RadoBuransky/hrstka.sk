@@ -1,6 +1,8 @@
 @()(implicit mainModel: sk.hrstka.models.ui.MainModel, request: RequestHeader)
 
-@main("O Hŕstke") {
+@main {
+    O Hŕstke
+} {
     <p>Hŕstka vznikla z potreby zistiť kde sa dá zamestnať, ak chcem
         <a href="@sk.hrstka.controllers.routes.CompController.cityTech("bratislava", "scala")">programovať v Scale a žiť
         v Bratislave</a>. Firmy nemajú na svojich stránkach detaily o tom aké programovacie jazyky, frameworky a tooly

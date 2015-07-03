@@ -1,88 +1,64 @@
 @(comp: sk.hrstka.models.ui.Comp, vote: Option[Int] = None)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
-@main(comp.name) {
+@import sk.hrstka.views.helpers.Formatting._
+
+@main {
+    @comp.name
+    <a href="@comp.website" rel="nofollow">@comp.website</a>
+    <div class="city">@comp.city.sk</div>
+} {
 <article class="comp-details">
-    <div><a href="@comp.website" rel="nofollow">@comp.website</a></div>
-    <div class="hrstka-city">@comp.city.sk</div>
-    <div>IČO: @comp.businessNumber</div>
     @if(comp.note.html.nonEmpty) {
         <div class="container-fluid">@Html(comp.note.html)</div>
     }
     <div class="container-fluid">
-        <ul>
-            @if(comp.products) {
-            <li>Vývoj softvérových produktov</li>
-            }
-            @if(comp.services) {
-            <li>Poskytovanie softvérových služieb</li>
-            }
-            @if(comp.internal) {
-            <li>Interný vývoj</li>
-            }
-        </ul>
-    </div>
-    <div class="container-fluid">
+    @if(comp.products || comp.services || comp.internal) {
+        <h4>Zameranie</h4>
+        @if(comp.products) {
+        <div>Vývoj softvérových produktov</div>
+        }
+        @if(comp.services) {
+        <div>Poskytovanie softvérových služieb</div>
+        }
+        @if(comp.internal) {
+        <div>Interný vývoj</div>
+        }
+    }
+    @if(comp.employeeCount.isDefined || comp.maleCodersCount.isDefined || comp.codersCount.isDefined) {
+        <h4>Počet zamestnancov</h4>
         @if(comp.employeeCount.isDefined) {
-        <div class="row">
-            <div class="col-sm-5 col-lg-4">Všetkých zamestnancov:</div>
-            <div class="col-sm-1"><span class="hrstka-emp-count">@comp.employeeCount</span></div>
-        </div>
+        <div>Všetkých spolu <span class="hrstka-emp-count">@comp.employeeCount</span></div>
         }
         @if(comp.maleCodersCount.isDefined) {
-        <div class="row">
-            <div class="col-sm-5 col-lg-4">Mužov programátorov:</div>
-            <div class="col-sm-1"><span class="hrstka-emp-count">@comp.maleCodersCount</span></div>
-        </div>
+            <div>Mužov programátorov <span class="hrstka-emp-count">@comp.maleCodersCount</span></div>
         } else {
             @if(comp.codersCount.isDefined) {
-            <div class="row">
-                <div class="col-sm-5 col-lg-4">Všetkých programátorov:</div>
-                <div class="col-sm-1"><span class="hrstka-emp-count">@comp.codersCount</span></div>
-            </div>
+                <div>Všetkých programátorov <span class="hrstka-emp-count">@comp.codersCount</span></div>
             }
         }
         @if(comp.femaleCodersCount.isDefined) {
-        <div class="row">
-            <div class="col-sm-5 col-lg-4">Žien programátoriek:</div>
-            <div class="col-sm-1"><span class="hrstka-emp-count">@comp.femaleCodersCount</span></div>
-        </div>
+            <div>Žien programátoriek <span class="hrstka-emp-count">@comp.femaleCodersCount</span></div>
         }
-    </div>
-    @if(comp.joel.nonEmpty) {
-    <div class="container-fluid">
-        @for(j <- comp.joel) {
-        <div class="row">
-            <div class="col-sm-3">
-            @if(j == comp.joel.head) {
-                <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow">The Joel Test</a>:
-            }
-            </div>
-            <div class="col-sm-9"><span class="hrstka-joel">@j._1</span>@j._2</div>
-        </div>
-        }
-    </div>
     }
+    <h4>Identifikačné číslo organizácie (IČO)</h4>
+    <a href="http://finstat.sk/@comp.businessNumber" rel="nofollow"><div>@comp.businessNumber</div></a>
     @if(comp.govBiz.isDefined) {
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3">
-                Podiel obchodu so štátom na minuloročnom obrate firmy:
-            </div>
-            <div class="col-sm-9">
-                @comp.govBiz.get
-            </div>
-        </div>
-    </div>
+        <h4>Podiel obchodu so štátom na minuloročnom obrate firmy</h4>
+        @govBizToString(comp.govBiz)
+    }
+    @if(comp.joel.nonEmpty) {
+        <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow"><h4>The Joel Test</h4></a>
+        @for(j <- comp.joel) {
+        <div><span class="hrstka-joel">@j._1</span>@j._2</div>
+        }
     }
     @if(comp.techRatings.nonEmpty) {
-    <div class="container-fluid">
         @for(techRating <- comp.techRatings) {
-        <div class="row">
-            <div class="col-sm-3 col-md-2">@if(techRating == comp.techRatings.head) { Technológie: }</div>
-            <div class="col-sm-3"><span class="hrstka-tech">@techRating.tech.name</span></div>
-        </div>
+            @if(techRating == comp.techRatings.head) {
+                <h4>Technológie</h4>
+            }
+            <a href="@techRating.tech.website" rel="nofollow"><div class="hrstka-tech">@techRating.tech.name</div></a>
         }
-    </div>
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
         <div>
@@ -93,5 +69,6 @@
         <a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)"
            class="comp-edit-btn">Upraviť</a>
     }
+    </div>
 </article>
 }

@@ -1,6 +1,8 @@
 @(comp: Option[sk.hrstka.models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
-@sk.hrstka.views.html.main("Pridať/upraviť firmu") {
+@sk.hrstka.views.html.main {
+    Pridať/upraviť firmu
+} {
     <form action="@action" method="post">
         <div class="form-group">
             <label for="compName">Názov</label>

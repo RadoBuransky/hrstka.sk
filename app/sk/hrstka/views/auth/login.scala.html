@@ -1,6 +1,8 @@
 @(form: Form[sk.hrstka.controllers.auth.LoginForm])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
-@sk.hrstka.views.html.main("Prihlásenie") {
+@sk.hrstka.views.html.main {
+    Prihlásenie
+} {
     <form class="form-signin" action="@sk.hrstka.controllers.auth.routes.AuthController.authenticate()" method="post">
         <h2>Prihlasovanie pre eminentov</h2>
 

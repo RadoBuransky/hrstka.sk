@@ -6,7 +6,7 @@ name := "website"
 
 version := "1.0.0-SNAPSHOT"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 lazy val integrationTest = config("it") extend Test
 
@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "jp.t2v"              %%  "play2-auth"            % "0.13.2",
   "com.github.t3hnar"   %%  "scala-bcrypt"          % "2.4",
   "com.github.rjeschke" %   "txtmark"               % "0.13",
-  "com.typesafe.play"   %%  "play-test"             % "2.4.0"             % "it",
+  "com.typesafe.play"   %%  "play-test"             % "2.4.2"             % "it",
   "org.scalatest"       %%  "scalatest"             % "2.2.4"             % "it,test",
   "org.mockito"         %   "mockito-all"           % "1.10.19"           % "it,test",
   "org.scalatestplus"   %%  "play"                  % "1.4.0-M3"          % "it,test",
