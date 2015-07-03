@@ -1,7 +1,7 @@
 @(comp: Option[sk.hrstka.models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
-    Pridať/upraviť firmu
+    Pridať / upraviť firmu
 } {
     <form action="@action" method="post">
         <div class="form-group">
@@ -17,23 +17,11 @@
             <input type="text" class="form-control" id="city" name="city" value="@comp.map(_.city.sk)" required />
         </div>
         <div class="form-group">
-            <label for="businessNumber">IČO</label>
-            <input type="text" class="form-control" id="businessNumber" name="businessNumber" value="@comp.map(_.businessNumber)" required />
+            <label for="note">Markdown profil</label>
+            <textarea class="form-control" id="note" name="note" rows="25">@comp.map(_.note.markdown)</textarea>
         </div>
         <div class="form-group">
-            <label for="codersCount">Počet zamestnancov</label>
-            <input type="number" class="form-control" id="employeeCount" name="employeeCount" value="@comp.map(_.employeeCount)" />
-        </div>
-        <div class="form-group">
-            <label for="codersCount">Z toho programátorov</label>
-            <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.codersCount)" />
-        </div>
-        <div class="form-group">
-            <label for="femaleCodersCount">Z toho žien programátoriek</label>
-            <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount" value="@comp.map(_.femaleCodersCount)" />
-        </div>
-        <div class="form-group">
-            <label>Čo sa programuje</label>
+            <label>Zameranie</label>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" id="products" name="products" value="true" @if(comp.map(_.products).getOrElse(false)) { checked } /> SW/HW produkt (web, appka, robot, ...)
@@ -49,6 +37,26 @@
                     <input type="checkbox" id="internal" name="internal" value="true" @if(comp.map(_.internal).getOrElse(false)) { checked } /> Interné SW/HW oddelenie (biznis firmy nie je IT)
                 </label>
             </div>
+        </div>
+        <div class="form-group">
+            <label for="codersCount">Počet všetkých zamestnancov</label>
+            <input type="number" class="form-control" id="employeeCount" name="employeeCount" value="@comp.map(_.employeeCount)" />
+        </div>
+        <div class="form-group">
+            <label for="codersCount">Z toho programátorov</label>
+            <input type="number" class="form-control" id="codersCount" name="codersCount" value="@comp.map(_.codersCount)" />
+        </div>
+        <div class="form-group">
+            <label for="femaleCodersCount">Z toho žien programátoriek</label>
+            <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount" value="@comp.map(_.femaleCodersCount)" />
+        </div>
+        <div class="form-group">
+            <label for="businessNumber">Identifikačné číslo organizácie (IČO)</label>
+            <input type="text" class="form-control" id="businessNumber" name="businessNumber" value="@comp.map(_.businessNumber)" required />
+        </div>
+        <div class="form-group">
+            <label for="govBiz">Podiel obchodu so štátom na minuloročnom príjme firmy</label>
+            <input type="number" class="form-control" id="govBiz" name="govBiz" value="@comp.map(_.govBiz)" />
         </div>
         <div class="form-group">
             <label>
@@ -67,10 +75,6 @@
             </ol>
         </div>
         <div class="form-group">
-            <label for="govBiz">Podiel obchodu so štátom na minuloročnom obrate firmy</label>
-            <input type="number" class="form-control" id="govBiz" name="govBiz" value="@comp.map(_.govBiz)" />
-        </div>
-        <div class="form-group">
             <label>Technológie</label>
             @for(tech <- techs) {
             <div class="checkbox">
@@ -80,10 +84,6 @@
             </div>
             }
         </div>
-        <div class="form-group">
-            <label for="note">Všetko ostatné čo sa nezmestilo inde</label>
-            <textarea class="form-control" id="note" name="note" rows="10">@comp.map(_.note.markdown)</textarea>
-        </div>
-        <button type="submit" class="btn btn-default">Uložiť</button>
+        <button type="submit" class="btn btn-primary">Uložiť</button>
     </form>
 }

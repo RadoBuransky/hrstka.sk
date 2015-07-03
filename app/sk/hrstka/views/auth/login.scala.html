@@ -1,21 +1,23 @@
 @(form: Form[sk.hrstka.controllers.auth.LoginForm])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
-    Prihlásenie
+    Prihlasovanie pre eminentov
 } {
-    <form class="form-signin" action="@sk.hrstka.controllers.auth.routes.AuthController.authenticate()" method="post">
-        <h2>Prihlasovanie pre eminentov</h2>
-
+    <form action="@sk.hrstka.controllers.auth.routes.AuthController.authenticate()" method="post">
         @form.globalError.map { error =>
         <p class="error">
             @error.message
         </p>
         }
 
-        <label for="email" class="sr-only">Email</label>
-        <input type="email" id="email" name="email" class="form-control" placeholder="Email" required="" autofocus="">
-        <label for="password" class="sr-only">Heslo</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
-        <button class="btn btn-primary btn-block" type="submit">Prihlásiť</button>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="Email" required="" autofocus="">
+        </div>
+        <div class="form-group">
+            <label for="password">Heslo</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
+        </div>
+        <button class="btn btn-primary" type="submit">Prihlásiť</button>
     </form>
 }

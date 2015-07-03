@@ -8,11 +8,11 @@
     <div class="city">@comp.city.sk</div>
 } {
 <article class="comp-details">
+    <div class="container-fluid">
     @if(comp.note.html.nonEmpty) {
-        <div class="container-fluid">@Html(comp.note.html)</div>
+        @Html(comp.note.html)
         <div class="dotted-separator">&nbsp;</div>
     }
-    <div class="container-fluid">
     @if(comp.products || comp.services || comp.internal) {
         <h4>Zameranie</h4>
         @if(comp.products) {
@@ -27,48 +27,59 @@
     }
     @if(comp.employeeCount.isDefined || comp.maleCodersCount.isDefined || comp.codersCount.isDefined) {
         <h4>Počet zamestnancov</h4>
+        <ol class="list-unstyled">
         @if(comp.femaleCodersCount.isDefined) {
-            <div>Žien programátoriek <span class="hrstka-emp-count">@comp.femaleCodersCount</span></div>
+            <li>Žien programátoriek <span class="hrstka-emp-count">@comp.femaleCodersCount</span></li>
         }
         @if(comp.maleCodersCount.isDefined) {
-            <div>Mužov programátorov <span class="hrstka-emp-count">@comp.maleCodersCount</span></div>
+            <li>Mužov programátorov <span class="hrstka-emp-count">@comp.maleCodersCount</span></li>
         } else {
             @if(comp.codersCount.isDefined) {
-                <div>Všetkých programátorov <span class="hrstka-emp-count">@comp.codersCount</span></div>
+                <li>Všetkých programátorov <span class="hrstka-emp-count">@comp.codersCount</span></li>
             }
         }
         @if(comp.employeeCount.isDefined) {
-            <div>Všetkých spolu <span class="hrstka-emp-count">@comp.employeeCount</span></div>
+            <li>Všetkých spolu <span class="hrstka-emp-count">@comp.employeeCount</span></li>
         }
+        </ol>
     }
     <h4>Identifikačné číslo organizácie (IČO)</h4>
-    <a href="http://finstat.sk/@comp.businessNumber" rel="nofollow"><div>@comp.businessNumber</div></a>
+    <div><a href="http://finstat.sk/@comp.businessNumber" rel="nofollow">@comp.businessNumber</a></div>
     @if(comp.govBiz.isDefined) {
-        <h4>Podiel obchodu so štátom na minuloročnom obrate firmy</h4>
+        <h4>Podiel obchodu so štátom na minuloročnom príjme firmy</h4>
         @govBizToString(comp.govBiz)
     }
     @if(comp.joel.nonEmpty) {
         <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow"><h4>The Joel Test</h4></a>
+        <ol class="list-unstyled">
         @for(j <- comp.joel) {
-        <div><span class="hrstka-joel">@j._1</span>@j._2</div>
+            <li><span class="hrstka-joel">@j._1</span>@j._2</li>
         }
+        </ol>
     }
     @if(comp.techRatings.nonEmpty) {
+        <ol class="list-unstyled">
         @for(techRating <- comp.techRatings) {
             @if(techRating == comp.techRatings.head) {
                 <h4>Technológie</h4>
             }
-            <a href="@techRating.tech.website" rel="nofollow"><div class="hrstka-tech">@techRating.tech.name</div></a>
+            <li>
+                <a href="@techRating.tech.website" rel="nofollow"><span class="hrstka-tech">@techRating.tech.name</span></a>
+            </li>
         }
+        </ol>
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
-        <div>
-            @vote.getOrElse(0)
-            <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.businessNumber)">Plus</a>
-            <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.businessNumber)">Mínus</a>
+        <div id="eminence-section">
+            <div class="dotted-separator">&nbsp;</div>
+            <span class="voting">
+                <a class="vote-minus-btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteDown(comp.businessNumber)">-</a>
+                <span class="vote-value">@vote.getOrElse(0)</span>
+                <a class="vote-plus-btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.businessNumber)">+</a>
+            </span>
+            <a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)"
+               class="comp-edit-btn">Upraviť</a>
         </div>
-        <a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)"
-           class="comp-edit-btn">Upraviť</a>
     }
     </div>
 </article>
