@@ -8,7 +8,6 @@
     <div class="city">@comp.city.sk</div>
 } {
 <article class="comp-details">
-    <div class="container-fluid">
     @if(comp.note.html.nonEmpty) {
         @Html(comp.note.html)
         <div class="dotted-separator">&nbsp;</div>
@@ -81,6 +80,5 @@
                class="comp-edit-btn">Upraviť</a>
         </div>
     }
-    </div>
 </article>
 }

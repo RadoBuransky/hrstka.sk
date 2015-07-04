@@ -23,21 +23,22 @@
             <label for="website">Website:</label>
             <input type="url" class="form-control" id="website" name="website" required>
         </div>
-        <button type="submit" class="btn btn-default">Pridať</button>
+        <button type="submit" class="btn btn-primary">Pridať</button>
     </form>
+    <div class="dotted-separator">&nbsp;</div>
 
-    <h2>Technológie</h2>
     @for(techCategory <- techCategories) {
         <h3>@techCategory.en</h3>
-        <ul>
+        <ul class="list-unstyled">
         @for(techRating <- techRatings.filter(_.tech.categoryHandle == techCategory.handle)) {
-            <li>
+            <li style="margin-bottom: 3px; text-align: right; font-weight: 700; font-size: 20px;">
                 <a href="@techRating.tech.website" target="_blank">@techRating.tech.name</a>
-                @techRating.value
-                @techVotes.get(techRating.tech.id).getOrElse(0)
-                <a class="btn btn-success" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteUp(techRating.tech.handle)">Plus</a>
-                <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteDown(techRating.tech.handle)">Mínus</a>
-                <a class="btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.remove(techRating.tech.handle)">Zmazať</a>
+                <span class="voting">
+                    <a class="vote-minus-btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteDown(techRating.tech.handle)">-</a>
+                    <span class="vote-value">@techVotes.get(techRating.tech.id).getOrElse(0)</span>
+                    <a class="vote-plus-btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.voteUp(techRating.tech.handle)">+</a>
+                </span>
+                <a class="btn btn-danger" role="button" href="@sk.hrstka.controllers.auth.routes.AuthTechController.remove(techRating.tech.handle)">Zmazať</a>
             </li>
         }
         </ul>
