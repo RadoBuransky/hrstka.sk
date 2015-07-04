@@ -22,4 +22,4 @@
 - `cd ~/workspace/hrstka.sk`
 - `./activator stopProd` if the application is already running
 - `./activator stage`
-- `nohup ./target/universal/stage/bin/website`
+- `nohup ./target/universal/stage/bin/website &` (hit enter)
