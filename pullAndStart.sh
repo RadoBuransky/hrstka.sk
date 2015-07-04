@@ -1,4 +1,5 @@
 #!/bin/bash
 git pull
-./activator stopProd stage
+./activator stopProd
+./activator stage
 nohup ./target/universal/stage/bin/website &
