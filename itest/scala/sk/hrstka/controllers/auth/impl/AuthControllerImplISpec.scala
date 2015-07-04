@@ -24,7 +24,7 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
 
     // Execute
     assertView(authController.login()) { content =>
-      assert(content.contains("<form class=\"form-signin\" action=\"/authenticate\" method=\"post\">"))
+      assert(content.contains("<form action=\"/authenticate\" method=\"post\">"))
     }
 
     // Verify

@@ -6,7 +6,7 @@ import play.modules.reactivemongo.json.BSONFormats._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.api.QueryOpts
 import reactivemongo.bson.BSONObjectID
-import sk.hrstka.common.{Logging, HrstkaException}
+import sk.hrstka.common.{HrstkaException, Logging}
 import sk.hrstka.models.db.Identifiable
 import sk.hrstka.models.db.Identifiable.Id
 
@@ -36,7 +36,6 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
       throw new HrstkaException(s"Value to be inserted cannot have ID set! [$value]")
     val id = BSONObjectID.generate
     val entity = Json.toJson(value).as[JsObject] ++ Json.obj("_id" -> id)
-    logger.info(entity.toString())
     collection.insert(entity).recover {
       case ex: Exception => throw new HrstkaException(s"Could not insert ${coll.name}! [$value]", ex)
     }.map(_ => id)

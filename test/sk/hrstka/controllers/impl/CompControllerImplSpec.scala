@@ -22,7 +22,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(compController.get(CompSpec.avitech.businessNumber.value)) { result =>
-      assert(result.contains("<h2>Avitech</h2>"))
+      assert(result.contains("<a href=\"http://avitech.aero/\" rel=\"nofollow\">http://avitech.aero/</a>"))
     }
 
     // Verify
