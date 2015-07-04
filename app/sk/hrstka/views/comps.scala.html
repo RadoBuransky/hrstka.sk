@@ -22,7 +22,11 @@
     }
     @if(compRating.comp.govBiz.nonEmpty) {
     <div class="comp-line">
-        Obchod so štátom <span class="hrstka-govBiz">@govBizToString(compRating.comp.govBiz)</span> minuloročného obratu
+        @if(compRating.comp.govBiz.getOrElse(1) == 0) {
+            Neobchoduje so štátom
+        } else {
+            Obchod so štátom <span class="hrstka-govBiz">@govBizToString(compRating.comp.govBiz)</span> minuloročného príjmu
+        }
     </div>
     }
     @if(compRating.comp.joel.nonEmpty) {

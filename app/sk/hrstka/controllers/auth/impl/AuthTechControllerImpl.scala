@@ -5,7 +5,7 @@ import java.net.URL
 import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
-import play.api.{Logger, Application}
+import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
@@ -29,19 +29,16 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
   extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
   import AuthTechControllerImpl._
 
-  //override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
-  override def all: Action[AnyContent] = Action.async { implicit request =>
+  override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     val serviceResult = for {
       allRatings <- techService.allRatings()
       allCategories <- techService.allCategories()
-      //userVotes <- techService.votesFor(loggedIn.id)
-      userVotes <- techService.votesFor(Id("558f01400f1300088b298736"))
+      userVotes <- techService.votesFor(loggedIn.id)
     } yield (allRatings, allCategories, userVotes)
 
     serviceResult.flatMap {
       case (techRatings, allCategories, userVotes) =>
-        //withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        withMainModel(None, None, None) { implicit mainModel =>
+        withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
           Ok(sk.hrstka.views.html.auth.techs(
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),
