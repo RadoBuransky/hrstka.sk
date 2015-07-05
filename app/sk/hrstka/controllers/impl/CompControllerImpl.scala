@@ -75,7 +75,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
     // Find all headings and increase their level +3
     val processedLines = markdownNote.lines.map { line =>
       if (line.startsWith("#"))
-        "###" + line
+        "##" + line
       else
         line
     }
