@@ -2,8 +2,9 @@ package sk.hrstka.repositories.mongoDb
 
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
-import play.modules.reactivemongo.json.BSONFormats._
-import play.modules.reactivemongo.json.collection.JSONCollection
+import play.modules.reactivemongo.json._
+import play.modules.reactivemongo.json.collection.{JSONCollection, _}
+import play.modules.reactivemongo.json.ImplicitBSONHandlers._
 import reactivemongo.api.QueryOpts
 import reactivemongo.bson.BSONObjectID
 import sk.hrstka.common.{HrstkaException, Logging}
@@ -19,11 +20,10 @@ import scala.reflect.ClassTag
  *
  * @param coll MongoDB collection.
  * @param ev1 Scala type evidence.
- * @param reads Json reads.
- * @param writes Json writes.
+ * @param oFormat Json object format.
  * @tparam T Entity type.
  */
-abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoCollection)(implicit reads: Reads[T], writes: Writes[T]) extends Logging {
+abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoCollection)(implicit oFormat: OFormat[T]) extends Logging {
   protected def reactiveMongoApi: ReactiveMongoApi
   /**
    * Inserts new entity. Generates identifier for it.
@@ -104,7 +104,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
    */
   def all(): Future[Traversable[T]] = find(Json.obj())
 
-  protected def find(selector: JsValue, sort: JsValue = JsNull, first: Boolean = false): Future[Seq[T]] = {
+  protected def find(selector: JsObject, sort: JsValue = JsNull, first: Boolean = false): Future[Seq[T]] = {
     val findResult = collection.find(selector)
     val sortResult = sort match {
       case sortValue: JsObject => findResult.sort(sortValue)
@@ -120,7 +120,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
   }
 
 
-  protected def get(selector: JsValue): Future[T] = find(selector).map {
+  protected def get(selector: JsObject): Future[T] = find(selector).map {
     _.headOption match {
       case Some(result) => result
       case None => throw new HrstkaException(s"No ${coll.name} for $selector!")
