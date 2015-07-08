@@ -3,6 +3,7 @@ package sk.hrstka.repositories.itest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Outcome, fixture}
 import play.api.libs.json.Json
+import play.modules.reactivemongo.json._
 import play.modules.reactivemongo.json.collection.JSONCollection
 import sk.hrstka.itest.TestApplication
 import sk.hrstka.repositories.mongoDb.MongoCollection
