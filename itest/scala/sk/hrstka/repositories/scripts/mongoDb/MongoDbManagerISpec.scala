@@ -20,14 +20,16 @@ class StandaloneMongoDbManagerISpec extends Suites with TestApplication {
 class MongoDbManagerISpec(testApplication: TestApplication) extends FlatSpec with ScalaFutures {
   behavior of "applicationInit"
 
-  it should "create compNameIndex" in { assert(indexExists(MongoDbManager.compNameIndex).futureValue) }
-  it should "create compWebsiteIndex" in { assert(indexExists(MongoDbManager.compWebsiteIndex).futureValue) }
-  it should "create compBusinessNumberIndex" in { assert(indexExists(MongoDbManager.compBusinessNumberIndex).futureValue) }
-  it should "create techHandleIndex" in { assert(indexExists(MongoDbManager.techHandleIndex).futureValue) }
-  it should "create userEmailIndex" in { assert(indexExists(MongoDbManager.userEmailIndex).futureValue) }
-  it should "create cityHandleIndex" in { assert(indexExists(MongoDbManager.cityHandleIndex).futureValue) }
-  it should "create techVoteUserTechIndex" in { assert(indexExists(MongoDbManager.techVoteUserTechIndex).futureValue) }
-  it should "create compVoteUserTechIndex" in { assert(indexExists(MongoDbManager.compVoteUserTechIndex).futureValue) }
+  lazy val dbName = testApplication.db.name
+
+  it should "create compNameIndex" in { assert(indexExists(MongoDbManager.compNameIndex(dbName)).futureValue) }
+  it should "create compWebsiteIndex" in { assert(indexExists(MongoDbManager.compWebsiteIndex(dbName)).futureValue) }
+  it should "create compBusinessNumberIndex" in { assert(indexExists(MongoDbManager.compBusinessNumberIndex(dbName)).futureValue) }
+  it should "create techHandleIndex" in { assert(indexExists(MongoDbManager.techHandleIndex(dbName)).futureValue) }
+  it should "create userEmailIndex" in { assert(indexExists(MongoDbManager.userEmailIndex(dbName)).futureValue) }
+  it should "create cityHandleIndex" in { assert(indexExists(MongoDbManager.cityHandleIndex(dbName)).futureValue) }
+  it should "create techVoteUserTechIndex" in { assert(indexExists(MongoDbManager.techVoteUserTechIndex(dbName)).futureValue) }
+  it should "create compVoteUserTechIndex" in { assert(indexExists(MongoDbManager.compVoteUserTechIndex(dbName)).futureValue) }
 
   private def indexExists(nsIndex: NSIndex): Future[Boolean] = {
     testApplication.db match {

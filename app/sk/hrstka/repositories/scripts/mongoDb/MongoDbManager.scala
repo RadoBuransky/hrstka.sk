@@ -17,7 +17,6 @@ import scala.concurrent.Future
 class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbManager {
   private val logger = Logger(getClass)
 
-  import MongoDbManager._
   override def applicationInit(): Future[Unit] = {
     reactiveMongoApi.db match {
       case dbMetaCommands: DBMetaCommands => applicationInit(dbMetaCommands)
@@ -29,6 +28,7 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbMa
     logger.info(s"Initializing MongoDB [${reactiveMongoApi.db.name}].")
 
     // Ensure all indexes exist
+    val allIndexes = MongoDbManager.allIndexes(reactiveMongoApi.db.name)
     Future.sequence(allIndexes.map(dBMetaCommands.indexesManager.ensure)).map { indexes =>
       val createdIndexes = indexes.zipWithIndex.filter(_._1)
       createdIndexes.foreach { createdIndex =>
@@ -44,27 +44,27 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbMa
 }
 
 private object MongoDbManager {
-  lazy val allIndexes = Seq(
-    compNameIndex,
-    compWebsiteIndex,
-    compBusinessNumberIndex,
-    techHandleIndex,
-    userEmailIndex,
-    cityHandleIndex,
-    techVoteUserTechIndex,
-    compVoteUserTechIndex
+  def allIndexes(dbName: String) = Seq(
+    compNameIndex(dbName),
+    compWebsiteIndex(dbName),
+    compBusinessNumberIndex(dbName),
+    techHandleIndex(dbName),
+    userEmailIndex(dbName),
+    cityHandleIndex(dbName),
+    techVoteUserTechIndex(dbName),
+    compVoteUserTechIndex(dbName)
   )
 
-  lazy val compNameIndex = createUniqueIndex(CompCollection, "name")
-  lazy val compWebsiteIndex = createUniqueIndex(CompCollection, "website")
-  lazy val compBusinessNumberIndex = createUniqueIndex(CompCollection, "businessNumber")
-  lazy val techHandleIndex = createUniqueIndex(TechCollection, "handle")
-  lazy val userEmailIndex = createUniqueIndex(UserCollection, "email")
-  lazy val cityHandleIndex = createUniqueIndex(CityCollection, "handle")
-  lazy val techVoteUserTechIndex = createUniqueIndex(TechVoteCollection, "userId", "entityId")
-  lazy val compVoteUserTechIndex = createUniqueIndex(CompVoteCollection, "userId", "entityId")
+  def compNameIndex(dbName: String) = createUniqueIndex(dbName, CompCollection, "name")
+  def compWebsiteIndex(dbName: String) = createUniqueIndex(dbName, CompCollection, "website")
+  def compBusinessNumberIndex(dbName: String) = createUniqueIndex(dbName, CompCollection, "businessNumber")
+  def techHandleIndex(dbName: String) = createUniqueIndex(dbName, TechCollection, "handle")
+  def userEmailIndex(dbName: String) = createUniqueIndex(dbName, UserCollection, "email")
+  def cityHandleIndex(dbName: String) = createUniqueIndex(dbName, CityCollection, "handle")
+  def techVoteUserTechIndex(dbName: String) = createUniqueIndex(dbName, TechVoteCollection, "userId", "entityId")
+  def compVoteUserTechIndex(dbName: String) = createUniqueIndex(dbName, CompVoteCollection, "userId", "entityId")
 
-  private def createUniqueIndex(coll: MongoCollection, fieldNames: String*) = NSIndex("db." + coll.name,
+  private def createUniqueIndex(dbName: String, coll: MongoCollection, fieldNames: String*) = NSIndex(dbName + "." + coll.name,
     Index(
       key     = fieldNames.map(_ -> Ascending),
       unique  = true
