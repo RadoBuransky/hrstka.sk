@@ -38,5 +38,8 @@ ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages :=
   ".*Reverse.*Controller;" +
   "router.*;" +
   "sk.hrstka.repositories.*;" +
+  "sk.hrstka.common.impl.EhHrstkaCache.*;" +
   "sk.hrstka.controllers.auth.impl.*;" +
   "sk.hrstka.views.html.auth.*"
+
+org.scoverage.coveralls.Imports.CoverallsKeys.coverallsToken := Some("1GNicvuJbISxJHIXvjsm4wg5ZZBCJ0lRU")

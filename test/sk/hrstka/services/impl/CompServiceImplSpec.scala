@@ -1,5 +1,6 @@
 package sk.hrstka.services.impl
 
+import com.google.inject.name.Named
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._

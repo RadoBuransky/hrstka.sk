@@ -1,5 +1,6 @@
 package sk.hrstka.services.impl
 
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import sk.hrstka
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.{Handle, _}
@@ -9,10 +10,17 @@ import sk.hrstka.services.{CompService, LocationService, TechService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-final class CompServiceImpl(compRepository: CompRepository,
-                            compVoteRepository: CompVoteRepository,
-                            techService: TechService,
-                            locationService: LocationService) extends CompService {
+/**
+ * Marker trait.
+ */
+@ImplementedBy(classOf[CompServiceImpl])
+private[impl] trait NotCachedCompService extends CompService
+
+@Singleton
+final class CompServiceImpl @Inject() (compRepository: CompRepository,
+                                       compVoteRepository: CompVoteRepository,
+                                       techService: TechService,
+                                       locationService: LocationService) extends NotCachedCompService {
   import Identifiable._
 
   override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[BusinessNumber] = {

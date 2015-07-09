@@ -14,7 +14,9 @@ install:
 before_script:
     - mongod --version
 script:
+   - sbt ++$TRAVIS_SCALA_VERSION coverage
    - sbt ++$TRAVIS_SCALA_VERSION test
+   - sbt ++$TRAVIS_SCALA_VERSION coveralls
    - sbt ++$TRAVIS_SCALA_VERSION it:test
 services:
    - mongodb

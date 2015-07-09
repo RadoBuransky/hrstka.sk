@@ -20,7 +20,7 @@ final class HrstkaEhHrstkaCache @Inject() (applicationLifecycle: ApplicationLife
   extends EhHrstkaCache(applicationLifecycle, EhHrstkaCache.hrsktaCacheName)
 
 abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
-                                     cacheName: String)
+                             cacheName: String)
   extends HrstkaCache with Logging {
   import EhHrstkaCache._
 
