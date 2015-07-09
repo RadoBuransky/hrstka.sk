@@ -1,8 +1,22 @@
 language: scala
+env:
+  global:
+    - MONGO_REPO="http://repo.mongodb.com/apt/ubuntu"
 jdk:
    - oraclejdk8
 scala:
    - 2.11.7
+before_install:
+   # MongoDB 3
+   - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+   - echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+   - sudo apt-get update
+install:
+   # MongoDB 3
+   - sudo apt-get install -y mongodb-org
+before_script:
+    - mongod --version
+    - sudo service mongod start
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test
    - sbt ++$TRAVIS_SCALA_VERSION it:test
