@@ -1,7 +1,4 @@
 language: scala
-env:
-  global:
-    - MONGO_REPO="http://repo.mongodb.com/apt/ubuntu"
 jdk:
    - oraclejdk8
 scala:
@@ -16,7 +13,6 @@ install:
    - sudo apt-get install -y mongodb-org
 before_script:
     - mongod --version
-    - sudo service mongod start
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test
    - sbt ++$TRAVIS_SCALA_VERSION it:test
