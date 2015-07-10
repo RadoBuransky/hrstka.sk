@@ -19,9 +19,6 @@ case class SlovakBusinessNumber(value: String) extends BusinessNumber {
 
   if (SlovakBusinessNumberDefinition.pattern.findFirstIn(value).isEmpty)
     throw new IllegalArgumentException(s"Only numbers are allowed! [$value]")
-
-  if (value.length == 8 && value.toLong % 11 != 0)
-    throw new IllegalArgumentException(s"Not dividable by 11! [$value]")
 }
 
 private object SlovakBusinessNumberDefinition {

@@ -25,8 +25,4 @@ class BusinessNumberSpec extends BaseSpec {
   it should "fail if it contains anything else but digits" in {
     intercept[IllegalArgumentException](SlovakBusinessNumber("12s456-8"))
   }
-
-  it should "be dividable by 11 if it has 8 digits" in {
-    SlovakBusinessNumber("35887401")
-  }
 }
