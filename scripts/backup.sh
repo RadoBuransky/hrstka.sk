@@ -79,7 +79,7 @@ checkParentDir
 createBackupDir
 
 # Do the backup
-echo "Running mongodump..."
+echo "Doing backup to $DUMP_DIR..."
 mongodump --host $MONGO_HOST:$MONGO_PORT --db $MONGO_DB --out $DUMP_DIR
 
 # Check dump directory
