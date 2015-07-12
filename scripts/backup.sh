@@ -4,10 +4,13 @@
 # Script parameters
 #------------------------------------------------------------------------------
 
-MONGO_HOST=localhost
-MONGO_PORT=27017
-PARENT_DIR="/home/rado/backup"
-DB=hrstka
+# Usage example:
+# $ backup.sh localhost 27017 hrstka /home/rado/backup
+
+MONGO_HOST=$1
+MONGO_PORT=$2
+MONGO_DB=$3
+BACKUP_DIR=$4
 
 #------------------------------------------------------------------------------
 # Helper methods
@@ -15,23 +18,23 @@ DB=hrstka
 
 checkParentDir()
 {
-    if [ ! -d "$PARENT_DIR" ]; then
-        echo "ERROR: Backup directory does not exist! [$PARENT_DIR]"
+    if [ ! -d "$BACKUP_DIR" ]; then
+        echo "ERROR: Backup directory does not exist! [$BACKUP_DIR]"
         exit 1;
     fi
 }
 
 createBackupDir()
 {
-    export BACKUP_NAME=$(date '+%Y_%m_%d_%H_%M_%S')
-    export BACKUP_DIR="$PARENT_DIR/$BACKUP_NAME"
-    echo "Creating backup directory $BACKUP_DIR..."
-    mkdir "$BACKUP_DIR"
+    export DUMP_NAME=$(date '+%Y_%m_%d_%H_%M_%S')
+    export DUMP_DIR="$BACKUP_DIR/$DUMP_NAME"
+    echo "Creating backup directory $DUMP_DIR..."
+    mkdir "$DUMP_DIR"
 }
 
 checkDump()
 {
-    if [ ! "$(ls -A $BACKUP_DIR/$DB)" ]; then
+    if [ ! "$(ls -A $DUMP_DIR/$MONGO_DB)" ]; then
         echo "ERROR: Dump is empty!"
         exit 1;
     fi
@@ -39,13 +42,13 @@ checkDump()
 
 zipDump()
 {
-    export ZIP_PATH="$PARENT_DIR/$BACKUP_NAME.tar.gz"
+    export ZIP_PATH="$BACKUP_DIR/$DUMP_NAME.tar.gz"
 
     echo "Zipping dump to $ZIP_PATH..."
-    tar -C "$PARENT_DIR" -zcvf "$ZIP_PATH" "$BACKUP_NAME"
+    tar -C "$BACKUP_DIR" -zcvf "$ZIP_PATH" "$DUMP_NAME"
 
     echo "Removing dump directory..."
-    rm -rf "$BACKUP_DIR"
+    rm -rf "$DUMP_DIR"
 }
 
 checkSuccess()
@@ -55,8 +58,8 @@ checkSuccess()
         exit 1;
     fi
 
-    if [ -d "$BACKUP_DIR" ]; then
-        echo "ERROR: Backup directory still exists! [$BACKUP_DIR]"
+    if [ -d "$DUMP_DIR" ]; then
+        echo "ERROR: Backup directory still exists! [$DUMP_DIR]"
         exit 1;
     fi
 
@@ -67,7 +70,7 @@ checkSuccess()
 # Main
 #------------------------------------------------------------------------------
 
-echo "Performing backup of MongoDB $MONGO_HOST:$MONGO_PORT to $PARENT_DIR..."
+echo "Performing backup of MongoDB $MONGO_HOST:$MONGO_PORT to $BACKUP_DIR..."
 
 # Check if parent backup directory exists
 checkParentDir
@@ -77,7 +80,7 @@ createBackupDir
 
 # Do the backup
 echo "Running mongodump..."
-mongodump --host $MONGO_HOST:$MONGO_PORT --db $DB --out $BACKUP_DIR
+mongodump --host $MONGO_HOST:$MONGO_PORT --db $MONGO_DB --out $DUMP_DIR
 
 # Check dump directory
 checkDump
