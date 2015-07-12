@@ -1,0 +1,8 @@
+#!/bin/bash
+"$HRSTKA_DEPLOYMENT_DIR/scripts/backup.sh" $HRSTKA_MONGO_HOST $HRSTKA_MONGO_PORT $HRSTKA_MONGO_DB $HRSTKA_BACKUP_DIR
+
+# To test this script run:
+# $ sudo run-parts -v /etc/cron.daily
+
+# ... but before doing so make sure you reduce apt randomSleep to 5 for example:
+# http://askubuntu.com/questions/259372/what-can-be-causing-etc-cron-daily-apt-to-hang
