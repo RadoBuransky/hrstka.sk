@@ -24,6 +24,13 @@
 - `./activator stage`
 - `nohup ./target/universal/stage/bin/website &` (hit enter)
 
+## Set environment variables
+
+- Copypaste contents of `scripts/hrstka-env` to `~/.bashrc` and set the values properly.
+
 ## MongoDB backup
 
-- Check `scripts/backup.sh`.
+- If you have set environment variables, then the only thing you have to do is to copy `scripts/cron.daily/hrstka-backup.sh`
+to `/etc/cron.daily`.
+
+## MongoDB restore

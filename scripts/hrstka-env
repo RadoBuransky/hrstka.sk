@@ -1,0 +1,8 @@
+# This is not a real script to run. It's just a list of environment variables that you should set for your deployment.
+# Perhaps it's a good idea to copy & paste this code to ~/.bashrc and set proper values.
+
+export HRSTKA_DEPLOYMENT_DIR=
+export HRSTKA_BACKUP_DIR=
+export HRSTKA_MONGO_HOST=localhost
+export HRSTKA_MONGO_PORT=27017
+export HRSTKA_MONGO_DB=hrstka
