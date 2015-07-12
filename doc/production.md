@@ -23,3 +23,7 @@
 - `./activator stopProd` if the application is already running
 - `./activator stage`
 - `nohup ./target/universal/stage/bin/website &` (hit enter)
+
+## MongoDB backup
+
+- Check `scripts/backup.sh`.
