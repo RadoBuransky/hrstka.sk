@@ -11,7 +11,7 @@
      - [Clone my fork](https://github.com/RadoBuransky/Play-ReactiveMongo)
      - Switch to `play240` branch.
      - `sbt publishLocal`
-- [Redirect port 80 to 9000] (http://serverfault.com/a/112798)
+- Do this only in case you don't have NGINX: [Redirect port 80 to 9000] (http://serverfault.com/a/112798)
 - Upload `he.png` to S3.
   - Create bucket `hrstka.sk`
   - Create folder `assets`
@@ -23,6 +23,15 @@
 - `./activator stopProd` if the application is already running
 - `./activator stage`
 - `nohup ./target/universal/stage/bin/website &` (hit enter)
+
+## Install NGINX with PageSpeed
+
+- [https://developers.google.com/speed/pagespeed/module/build_ngx_pagespeed_from_source]()
+- `sudo vim /usr/local/nginx/conf/nginx.conf`
+- enter configuration from `scripts/nginx.conf`
+- `sudo mkdir /var/ngx_pagespeed_cache`
+- `sudo chown ubuntu:ubuntu /var/ngx_pagespeed_cache`
+- `sudo service nginx restart`
 
 ## Set environment variables
 
