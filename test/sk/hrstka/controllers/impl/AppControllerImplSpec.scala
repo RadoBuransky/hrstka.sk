@@ -39,7 +39,7 @@ class AppControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(appController.about()) { content =>
-      assert(content.contains("<h2>O Hŕstke</h2>"))
+      assert(content.contains("<h2>About Hŕstka</h2>"))
     }
 
     // Verify
@@ -55,7 +55,7 @@ class AppControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(appController.addCompInfo()) { content =>
-      assert(content.contains("<h2>Ako pridať firmu</h2>"))
+      assert(content.contains("<h2>How to add a company</h2>"))
     }
 
     // Verify

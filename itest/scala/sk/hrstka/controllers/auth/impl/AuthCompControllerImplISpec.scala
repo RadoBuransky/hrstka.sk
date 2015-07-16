@@ -34,7 +34,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         .thenReturn(Future.successful(TechRatingSpec.allRatings))
 
       assertAuthView(eminentUser, authCompController, authCompController.addForm()) { content =>
-        assert(content.contains("<form action=\"/programovanie/firma\" method=\"post\">"))
+        assert(content.contains("<form action=\"/programming/company\" method=\"post\">"))
       }
 
       // Verify
@@ -58,7 +58,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
 
       // Execute
       assertAuthView(eminentUser, authCompController, authCompController.editForm(CompSpec.avitech.businessNumber.value)) { content =>
-        assert(content.contains("<form action=\"/programovanie/firma?compId="))
+        assert(content.contains("<form action=\"/programming/company?compId="))
       }
 
       // Verify

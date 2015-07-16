@@ -37,7 +37,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
 
       // Execute
       assertAuthView(eminentUser, authTechController, authTechController.all) { content =>
-        assert(content.contains("<form action=\"/technologia\" method=\"post\">"))
+        assert(content.contains("<form action=\"/technology\" method=\"post\">"))
         assert(content.contains("<a href=\"http://www.scala-lang.org/\" target=\"_blank\">Scala</a>"))
         assert(content.contains("<a href=\"https://www.java.com/en/\" target=\"_blank\">Java</a>"))
         assert(content.contains("<a href=\"http://php.net/\" target=\"_blank\">PHP</a>"))
@@ -77,7 +77,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
       )
       assertAuthResult(eminentUser, authTechController, authTechController.add(), form) { result =>
         assert(status(result) == SEE_OTHER)
-        assert(redirectLocation(result).contains("/technologie"))
+        assert(redirectLocation(result).contains("/technologies"))
       }
 
       // Verify
@@ -100,7 +100,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
       // Execute
       assertAuthResult(eminentUser, authTechController, authTechController.remove(TechRatingSpec.scalaRating.tech.handle.value)) { result =>
         assert(status(result) == SEE_OTHER)
-        assert(redirectLocation(result).contains("/technologie"))
+        assert(redirectLocation(result).contains("/technologies"))
       }
 
       // Verify
@@ -123,7 +123,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
       // Execute
       assertAuthResult(eminentUser, authTechController, authTechController.voteUp(TechRatingSpec.scalaRating.tech.handle.value)) { result =>
         assert(status(result) == SEE_OTHER)
-        assert(redirectLocation(result).contains("/technologie"))
+        assert(redirectLocation(result).contains("/technologies"))
       }
 
       // Verify
@@ -146,7 +146,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
       // Execute
       assertAuthResult(eminentUser, authTechController, authTechController.voteDown(TechRatingSpec.phpRating.tech.handle.value)) { result =>
         assert(status(result) == SEE_OTHER)
-        assert(redirectLocation(result).contains("/technologie"))
+        assert(redirectLocation(result).contains("/technologies"))
       }
 
       // Verify

@@ -1,8 +1,8 @@
 GET     /                           sk.hrstka.controllers.CompController.all
 GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
 GET     /api                        sk.hrstka.controllers.AppController.api
-GET     /o                          sk.hrstka.controllers.AppController.about
-GET     /pridatFirmu                sk.hrstka.controllers.AppController.addCompInfo
+GET     /about                      sk.hrstka.controllers.AppController.about
+GET     /addCompany                 sk.hrstka.controllers.AppController.addCompInfo
 
 GET     /login                      sk.hrstka.controllers.auth.AuthController.login
 GET     /logout                     sk.hrstka.controllers.auth.AuthController.logout
@@ -10,23 +10,23 @@ POST    /authenticate               sk.hrstka.controllers.auth.AuthController.au
 GET     /register                   sk.hrstka.controllers.auth.AuthController.registerView
 POST    /register                   sk.hrstka.controllers.auth.AuthController.register
 
-GET     /technologie                    sk.hrstka.controllers.auth.AuthTechController.all
-POST    /technologia                    sk.hrstka.controllers.auth.AuthTechController.add
-GET     /technologia/:handle/remove     sk.hrstka.controllers.auth.AuthTechController.remove(handle: String)
-GET     /technologia/:handle/voteUp     sk.hrstka.controllers.auth.AuthTechController.voteUp(handle: String)
-GET     /technologia/:handle/voteDown   sk.hrstka.controllers.auth.AuthTechController.voteDown(handle: String)
+GET     /technologies                   sk.hrstka.controllers.auth.AuthTechController.all
+POST    /technology                     sk.hrstka.controllers.auth.AuthTechController.add
+GET     /technology/:handle/remove      sk.hrstka.controllers.auth.AuthTechController.remove(handle: String)
+GET     /technology/:handle/voteUp      sk.hrstka.controllers.auth.AuthTechController.voteUp(handle: String)
+GET     /technology/:handle/voteDown    sk.hrstka.controllers.auth.AuthTechController.voteDown(handle: String)
 
-GET     /programovanie/firmy                    sk.hrstka.controllers.CompController.all
-GET     /programovanie/zeny                     sk.hrstka.controllers.CompController.women
-GET     /programovanie/firmy/:city              sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
-GET     /programovanie/firmy/:city/:tech        sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
-GET     /programovanie/firma/:businessNumber    sk.hrstka.controllers.CompController.get(businessNumber: String)
+GET     /programming/companies                  sk.hrstka.controllers.CompController.all
+GET     /programming/women                      sk.hrstka.controllers.CompController.women
+GET     /programming/companies/:city            sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
+GET     /programming/companies/:city/:tech      sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
+GET     /programming/company/:businessNumber    sk.hrstka.controllers.CompController.get(businessNumber: String)
 
-GET     /programovanie/firma/:businessNumber/uprav      sk.hrstka.controllers.auth.AuthCompController.editForm(businessNumber: String)
-POST    /programovanie/firma                            sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
-GET     /programovanie/novaFirma                        sk.hrstka.controllers.auth.AuthCompController.addForm
-GET     /programovanie/firma/:businessNumber/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(businessNumber: String)
-GET     /programovanie/firma/:businessNumber/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(businessNumber: String)
+GET     /programming/company/:businessNumber/edit       sk.hrstka.controllers.auth.AuthCompController.editForm(businessNumber: String)
+POST    /programming/company                            sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
+GET     /programming/newCompany                         sk.hrstka.controllers.auth.AuthCompController.addForm
+GET     /programming/company/:businessNumber/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(businessNumber: String)
+GET     /programming/company/:businessNumber/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(businessNumber: String)
 
 GET     /api/companies                  sk.hrstka.controllers.ApiController.comps
 GET     /api/company/:businessNumber    sk.hrstka.controllers.ApiController.comp(businessNumber: String)
