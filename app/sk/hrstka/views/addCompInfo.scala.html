@@ -1,21 +1,33 @@
 @()(implicit mainModel: sk.hrstka.models.ui.MainModel, request: RequestHeader)
 
-@main {Ako pridať firmu} {
-    <p>Napíšte mi mail na <a href="mailto:rado@@buransky.com">rado@@buransky.com</a> a pridajte nasledovné informácie:</p>
+@main {How to add a company} {
+    <p>Simply contact me by any means and add following info:</p>
     <ul>
-        <li>Názov</li>
-        <li>Web</li>
-        <li>Sídlo</li>
-        <li>Identifikačné číslo organizácie (IČO)</li>
-        <li>Programuje sa SW/HW produkt?</li>
-        <li>Poskytujú sa SW/HW služby?</li>
-        <li>Biznis firmy nie je IT ale má interné programátorské oddelenie?</li>
-        <li>Počet všetkých zamestnancov, mužov programátorov, žien programátoriek</li>
-        <li>Podiel obchodu so štátom na minuloročnom príjme firmy</li>
-        <li>Ktoré body <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow">Joelovho testu</a> spĺňate?</li>
-        <li>Zoznam technológii. Inšpirujte sa tu: <a href="http://stackoverflow.com/tags" rel="nofollow">StackOverflow tags</a></li>
+        <li>Company name</li>
+        <li>Website</li>
+        <li>City</li>
+        <li>Business number</li>
+        <li>Do you create software/hardware products?</li>
+        <li>Do you offer software/hardware services?</li>
+        <li>Company business is not IT but you have an internal development department?</li>
+        <li>Total employee count, male programmers count, female programmers count</li>
+        <li>Last year's business with government (percentage)</li>
+        <li>Which points of <a href="http://www.joelonsoftware.com/articles/fog0000000043.html" rel="nofollow">The Joel test</a> do you fulfill?</li>
+        <li>List of technologies. Get inspiration here: <a href="http://stackoverflow.com/tags" rel="nofollow">StackOverflow tags</a></li>
     </ul>
-    <p>Najväčší dôraz ale dajte na napísanie technologického profilu. Ten uvedie vymenované technológie do kontextu a
-    vysvetlí ako sa používajú. Podporovaný je formát <a href="http://daringfireball.net/projects/markdown/" rel="nofollow">Markdown</a>,
-    čiže môžete používať nadpisy, odseky, bold, ... a dokonca aj obrázky, ale umiestnené musia byť na vašom serveri.</p>
+    <p>Put the most emphasis on writing a perfect technology profile. It should focus on listed technologies, explain
+    how are they used. Talk about the dev environment, tools, build system, programming languages, frameworks, test
+    coverage, team organization, etc. Classic rant during an job interview. Actually this written tech profile can be
+    later used to attract new employees in job postings. We support <a href="http://daringfireball.net/projects/markdown/" rel="nofollow">Markdown</a>
+    format, which means that you can use headings, paragraphs, bold ... and even images too, but they have to be hosted
+    on your server.</p>
+
+    <div id="about-contact">
+        <h3>Rado Buranský</h3>
+        <a href="mailto:rado@@buransky.com" rel="author" alt="email" title="email"><i class="fa fa-envelope"></i></a>
+        <a href="https://www.facebook.com/buransky" rel="author" alt="Facebook" title="Facebook"><i class="fa fa-facebook"></i></a>
+        <a href="https://twitter.com/radoburansky" rel="author" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+        <a href="https://plus.google.com/u/0/+radoburansky" rel="author" alt="Google+" title="Google+"><i class="fa fa-google-plus"></i></a>
+        <a href="https://github.com/RadoBuransky" rel="author" alt="GitHub" title="GitHub"><i class="fa fa-github"></i></a>
+    </div>
 }
