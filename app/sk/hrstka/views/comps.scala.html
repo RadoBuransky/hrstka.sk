@@ -23,9 +23,9 @@
     @if(compRating.comp.govBiz.nonEmpty) {
     <div class="comp-line">
         @if(compRating.comp.govBiz.getOrElse(1) == 0) {
-            Neobchoduje so štátom
+            No business with government
         } else {
-            Obchod so štátom <span class="hrstka-govBiz">@govBizToString(compRating.comp.govBiz)</span> minuloročného príjmu
+            Business with government <span class="hrstka-govBiz">@govBizToString(compRating.comp.govBiz)</span> of last year's income
         }
     </div>
     }
@@ -38,9 +38,9 @@
     </div>
     }
     <div class="comp-line">
-        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.femaleCodersCount</span> programátoriek</span>
-        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.maleCodersCount</span> programátorov</span>
-        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.employeeCount</span> zamestnancov</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.femaleCodersCount</span> female programmers</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.maleCodersCount</span> male programmers</span>
+        <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.employeeCount</span> employees</span>
     </div>
     <div id="comp-separator"></div>
 </article>

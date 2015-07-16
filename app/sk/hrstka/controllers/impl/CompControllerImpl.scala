@@ -85,14 +85,14 @@ final class CompControllerImpl @Inject() (compService: CompService,
 
   private def headline(city: Option[City], tech: Option[Tech]): String = {
     val cityHeadline = city
-      .map(c => " v meste " + c.sk)
+      .map(c => " in " + c.sk + " city")
       .getOrElse("")
     val techHeadline = tech.map(_.name).getOrElse("")
     if (city.isEmpty && tech.isEmpty)
-      "Všetky firmy kde sa programuje"
+      "All technology companies"
     else
       if (tech.isEmpty)
-        "Firmy" + cityHeadline
+        "Companies" + cityHeadline
       else
         techHeadline + cityHeadline
   }

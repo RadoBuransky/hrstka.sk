@@ -13,39 +13,39 @@
         <div class="dotted-separator">&nbsp;</div>
     }
     @if(comp.products || comp.services || comp.internal) {
-        <h3>Zameranie</h3>
+        <h3>Business</h3>
         @if(comp.products) {
-        <div>Vývoj softvérových produktov</div>
+        <div>Software products development</div>
         }
         @if(comp.services) {
-        <div>Poskytovanie softvérových služieb</div>
+        <div>Software/hardware services</div>
         }
         @if(comp.internal) {
-        <div>Interný vývoj</div>
+        <div>Internal development department</div>
         }
     }
     @if(comp.employeeCount.isDefined || comp.maleCodersCount.isDefined || comp.codersCount.isDefined) {
-        <h3>Počet zamestnancov</h3>
+        <h3>Employee count</h3>
         <ol class="list-unstyled">
         @if(comp.femaleCodersCount.isDefined) {
-            <li>Žien programátoriek <span class="hrstka-emp-count">@comp.femaleCodersCount</span></li>
+            <li>Female programmers <span class="hrstka-emp-count">@comp.femaleCodersCount</span></li>
         }
         @if(comp.maleCodersCount.isDefined) {
-            <li>Mužov programátorov <span class="hrstka-emp-count">@comp.maleCodersCount</span></li>
+            <li>Male programmers <span class="hrstka-emp-count">@comp.maleCodersCount</span></li>
         } else {
             @if(comp.codersCount.isDefined) {
-                <li>Všetkých programátorov <span class="hrstka-emp-count">@comp.codersCount</span></li>
+                <li>All programmers <span class="hrstka-emp-count">@comp.codersCount</span></li>
             }
         }
         @if(comp.employeeCount.isDefined) {
-            <li>Všetkých spolu <span class="hrstka-emp-count">@comp.employeeCount</span></li>
+            <li>All employees <span class="hrstka-emp-count">@comp.employeeCount</span></li>
         }
         </ol>
     }
-    <h3>Identifikačné číslo organizácie (IČO)</h3>
+    <h3>Business number</h3>
     <div><a href="http://finstat.sk/@comp.businessNumber" rel="nofollow">@comp.businessNumber</a></div>
     @if(comp.govBiz.isDefined) {
-        <h3>Podiel obchodu so štátom na minuloročnom príjme firmy</h3>
+        <h3>Last year's business with government</h3>
         @govBizToString(comp.govBiz)
     }
     @if(comp.joel.nonEmpty) {
@@ -60,7 +60,7 @@
         <ol class="list-unstyled">
         @for(techRating <- comp.techRatings) {
             @if(techRating == comp.techRatings.head) {
-                <h3>Technológie</h3>
+                <h3>Technologies</h3>
             }
             <li>
                 <a href="@techRating.tech.website" rel="nofollow"><span class="hrstka-tech">@techRating.tech.name</span></a>
@@ -77,7 +77,7 @@
                 <a class="vote-plus-btn" role="button" href="@sk.hrstka.controllers.auth.routes.AuthCompController.voteUp(comp.businessNumber)">+</a>
             </span>
             <a href="@sk.hrstka.controllers.auth.routes.AuthCompController.editForm(comp.businessNumber)"
-               class="comp-edit-btn">Upraviť</a>
+               class="comp-edit-btn">Edit</a>
         </div>
     }
 </article>

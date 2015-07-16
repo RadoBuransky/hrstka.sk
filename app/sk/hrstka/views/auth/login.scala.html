@@ -1,7 +1,7 @@
 @(form: Form[sk.hrstka.controllers.auth.LoginForm])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
-    Prihlasovanie pre eminentov
+    Login for users
 } {
     <form action="@sk.hrstka.controllers.auth.routes.AuthController.authenticate()" method="post">
         @form.globalError.map { error =>
@@ -15,9 +15,9 @@
             <input type="email" id="email" name="email" class="form-control" placeholder="Email" required="" autofocus="">
         </div>
         <div class="form-group">
-            <label for="password">Heslo</label>
+            <label for="password">Password</label>
             <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
         </div>
-        <button class="btn btn-primary" type="submit">Prihlásiť</button>
+        <button class="btn btn-primary" type="submit">Login</button>
     </form>
 }

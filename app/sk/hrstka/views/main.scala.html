@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html lang="sk">
+<html lang="en">
 <head>
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:700|Open+Sans:400" rel="stylesheet" type="text/css">
     <link href="@routes.Assets.at("stylesheets/main.css")" rel="stylesheet">
@@ -13,7 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hŕstka</title>
-    <meta name="description" content="Hŕstka programátorských dobrôt"/>
+    <meta name="description" content="Corder's delicatessen"/>
     <meta name="author" content="Rado Buranský"/>
     <meta name="copyright" content="Rado Buranský"/>
     <meta name="application-name" content="Hŕstka"/>
@@ -55,31 +55,31 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="@sk.hrstka.controllers.routes.CompController.women">Ženy</a></li>
+                    <li><a href="@sk.hrstka.controllers.routes.CompController.women">Women</a></li>
                     <li><a href="@sk.hrstka.controllers.routes.AppController.api">API</a></li>
                     <li><a href="https://github.com/RadoBuransky/hrstka.sk" rel="nofollow"><i class="fa fa-github"></i> GitHub</a></li>
-                    <li><a href="@sk.hrstka.controllers.routes.AppController.about">O Hŕstke</a></li>
+                    <li><a href="@sk.hrstka.controllers.routes.AppController.about">About</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="@sk.hrstka.controllers.routes.AppController.addCompInfo">+ Pridať firmu</a></li>
+                    <li><a href="@sk.hrstka.controllers.routes.AppController.addCompInfo">+ Add company</a></li>
                     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             @mainModel.user.get.email.value<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.addForm">Pridať firmu</a></li>
-                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthTechController.all">Technológie</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.addForm">Add company</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthTechController.all">Technologies</a></li>
                             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Admin)) {
-                                <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.register">Pridať eminenta</a></li>
+                                <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.register">Add user</a></li>
                             }
                             <li class="divider"></li>
-                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.logout">Odhlásiť</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.logout">Logout</a></li>
                         </ul>
                     </li>
                     } else {
                         @if(mainModel.mode == play.api.Mode.Dev) {
-                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.login">Prihlásiť</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.login">Login</a></li>
                         }
                     }
                 </ul>
@@ -94,10 +94,10 @@
                     <h1>Hŕstka</h1>
                     <img src="https://s3-eu-west-1.amazonaws.com/hrstka.sk/assets/he.png" alt="Hŕstka" class="hidden-xs">
                 </a>
-                <p class="hidden-xs hidden-sm">PROGRAMÁTORSKÝCH DOBRÔT</p>
+                <p class="hidden-xs hidden-sm">CODER'S DELICATESSEN</p>
             </header>
             <section id="section-cities">
-                <h2>MESTÁ</h2>
+                <h2>CITIES</h2>
                 <nav>
                     <ol>
                     @for(city <- mainModel.cities) {
@@ -111,7 +111,7 @@
                 </nav>
             </section>
             <section id="section-techs">
-                <h2>TECHNOLÓGIE</h2>
+                <h2>TECHNOLOGIES</h2>
                 <nav>
                     <ol>
                     @for(techRating <- mainModel.techRatings) {
@@ -150,7 +150,6 @@
 
       ga('create', 'UA-64787535-1', 'auto');
       ga('send', 'pageview');
-
     </script>
 </body>
 </html>

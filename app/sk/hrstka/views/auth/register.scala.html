@@ -1,22 +1,21 @@
 @()(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
-    Registrácia
+    Registration for eminence
 } {
-    <h2>Registrácia eminenta</h2>
     <form action="@sk.hrstka.controllers.auth.routes.AuthController.register" method="post">
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" class="form-control" id="email" name="email">
         </div>
         <div class="form-group">
-            <label for="password">Heslo</label>
+            <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="form-group">
-            <label for="passwordAgain">Zopakuj heslo</label>
+            <label for="passwordAgain">Password again</label>
             <input type="password" class="form-control" id="passwordAgain" name="passwordAgain">
         </div>
-        <button type="submit" class="btn btn-default">Zaregistruj</button>
+        <button type="submit" class="btn btn-default">Register</button>
     </form>
 }
