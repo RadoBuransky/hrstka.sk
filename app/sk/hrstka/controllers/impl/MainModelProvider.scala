@@ -39,7 +39,7 @@ trait MainModelProvider {
     val top10percOpacity = top10perc.map(_.copy(opacity = 1.0))
 
     // Bottom 30% have 30% transparency
-    val bottom30percOpacity = top10perc.map(_.copy(opacity = 0.3))
+    val bottom30percOpacity = bottom30perc.map(_.copy(opacity = 0.3))
 
     // The middle gets gradually transparent
     val step = (1.0 - 0.3) / middle60perc.size.toDouble
