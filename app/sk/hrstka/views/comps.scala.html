@@ -10,7 +10,7 @@
             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                 <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(compRating.value)%</span>
             }
-            @if(mainModel.city.isEmpty) { <div class="city">@compRating.comp.city.sk</div> }
+            @if(mainModel.city.isEmpty) { <div class="city">@compRating.comp.city.en</div> }
         </h3>
     </header>
     @if(compRating.comp.techRatings.nonEmpty) {

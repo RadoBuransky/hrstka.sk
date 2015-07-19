@@ -7,6 +7,7 @@ import sk.hrstka.models
  *
  * @param handle Human-friendly identifier.
  * @param en English name of the city.
+ * @param country Country where the city is located.
  */
 case class City(handle: Handle,
                 en: String,

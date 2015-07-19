@@ -7,7 +7,10 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import sk.hrstka.controllers.auth.AuthLocationController
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
+import sk.hrstka.models.ui.CityFactory
 import sk.hrstka.services.{AuthService, LocationService, TechService}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 final class AuthLocationControllerImpl @Inject() (protected val authService: AuthService,
@@ -17,8 +20,13 @@ final class AuthLocationControllerImpl @Inject() (protected val authService: Aut
                                                   val messagesApi: MessagesApi)
   extends BaseController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement with AuthLocationController {
   override def all: Action[AnyContent] = AsyncStack { implicit request =>
-    withMainModel(None, None, loggedIn) { implicit mainModel =>
-      Ok(sk.hrstka.views.html.auth.locations())
+    locationService.cities().flatMap { cities =>
+      val uiCities = cities.map(CityFactory.apply)
+      val uiCountries = uiCities.map(_.country).distinct
+      val citiesMap = uiCities.groupBy(_.country)
+      withMainModel(None, None, loggedIn) { implicit mainModel =>
+        Ok(sk.hrstka.views.html.auth.locations(uiCountries, citiesMap))
+      }
     }
   }
 

@@ -70,6 +70,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="@sk.hrstka.controllers.auth.routes.AuthCompController.addForm">Add company</a></li>
                             <li><a href="@sk.hrstka.controllers.auth.routes.AuthTechController.all">Technologies</a></li>
+                            <li><a href="@sk.hrstka.controllers.auth.routes.AuthLocationController.all">Cities</a></li>
                             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Admin)) {
                                 <li><a href="@sk.hrstka.controllers.auth.routes.AuthController.register">Add user</a></li>
                             }
@@ -103,7 +104,7 @@
                     @for(city <- mainModel.cities) {
                         <li>
                             <a href="@sk.hrstka.controllers.routes.CompController.cityTech(city.handle, "")">
-                                @city.sk
+                                @city.en
                             </a>
                         </li>
                     }
