@@ -32,15 +32,15 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi,
 
     for {
       metadata  <- ensureMetadata()
-      _         = logger.info(s"Database schema version ${metadata.dbVersion}.")
-      _         = logger.info(s"Application schema version ${MongoDbManager.dbVersion}.")
-      _         = upgradeDatabase(metadata)
+      _         = migrateDatabase(metadata)
       indexes   <- ensureIndexes(dBMetaCommands)
       result    = logger.info("Initialization of MongoDB done.")
     } yield result
   }
 
-  private def upgradeDatabase(metadata: Metadata): Future[Unit] = {
+  private def migrateDatabase(metadata: Metadata): Future[Unit] = {
+    logger.info(s"Database schema version ${metadata.dbVersion}.")
+    logger.info(s"Application schema version ${MongoDbManager.dbVersion}.")
     if (metadata.dbVersion < MongoDbManager.dbVersion) {
       // Get the migration script and run it
       MigrationScript
@@ -48,7 +48,7 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi,
         .run(reactiveMongoApi, metadataRepository)
         .flatMap { newMetadata =>
           // Recursively upgrade
-          upgradeDatabase(newMetadata)
+          migrateDatabase(newMetadata)
         }
     }
     else
@@ -92,7 +92,7 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi,
 }
 
 private object MongoDbManager {
-  val dbVersion = 1
+  val dbVersion = 2
 
   def allIndexes(dbName: String) = Seq(
     compNameIndex(dbName),
