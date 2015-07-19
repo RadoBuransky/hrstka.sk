@@ -4,8 +4,8 @@ import com.google.inject.ImplementedBy
 import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.auth.impl.AuthLocationControllerImpl
 
-case class AddCityForm(country: String,
-                       name: String)
+case class AddCityForm(countryCode: String,
+                       city: String)
 
 /**
  * Location controller.

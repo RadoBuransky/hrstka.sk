@@ -3,11 +3,14 @@ package sk.hrstka.controllers.auth.impl
 import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.OptionalAuthElement
 import play.api.Application
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import sk.hrstka.controllers.auth.AuthLocationController
+import sk.hrstka.controllers.auth.{AddCityForm, AuthLocationController}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
-import sk.hrstka.models.ui.CityFactory
+import sk.hrstka.models.domain.{City, Handle, HandleFactory, Iso3166}
+import sk.hrstka.models.ui.{CityFactory, CountryFactory}
 import sk.hrstka.services.{AuthService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,17 +23,44 @@ final class AuthLocationControllerImpl @Inject() (protected val authService: Aut
                                                   val messagesApi: MessagesApi)
   extends BaseController with MainModelProvider with HrstkaAuthConfig with OptionalAuthElement with AuthLocationController {
   override def all: Action[AnyContent] = AsyncStack { implicit request =>
-    locationService.cities().flatMap { cities =>
-      val uiCities = cities.map(CityFactory.apply)
-      val uiCountries = uiCities.map(_.country).distinct
-      val citiesMap = uiCities.groupBy(_.country)
-      withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.auth.locations(uiCountries, citiesMap))
+    locationService.countries().flatMap { allCountries =>
+      val uiCountries = allCountries.map(CountryFactory.apply)
+      locationService.cities().flatMap { cities =>
+        val uiCities = cities.map(CityFactory.apply)
+        val citiesForCountries = uiCities.groupBy(_.country).toSeq
+        withMainModel(None, None, loggedIn) { implicit mainModel =>
+          Ok(sk.hrstka.views.html.auth.cities(uiCountries, citiesForCountries))
+        }
       }
     }
   }
 
-  override def remove(handle: String): Action[AnyContent] = ???
+  override def add: Action[AnyContent] = AsyncStack { implicit request =>
+    withForm(AuthLocationControllerImpl.addCityForm) { form =>
+      locationService.getCountryByCode(Iso3166(form.countryCode)).flatMap { country =>
+        locationService.upsert(City(
+          handle = HandleFactory.fromHumanName(form.city),
+          en = form.city,
+          country = country
+        )).map { _ =>
+          Redirect(sk.hrstka.controllers.auth.routes.AuthLocationController.all())
+        }
+      }
+    }
+  }
 
-  override def add: Action[AnyContent] = ???
+  override def remove(handle: String): Action[AnyContent] = AsyncStack { implicit request =>
+    locationService.remove(Handle(handle)).map { _ =>
+      Redirect(sk.hrstka.controllers.auth.routes.AuthLocationController.all())
+    }
+  }
+}
+
+private object AuthLocationControllerImpl {
+  val addCityForm = Form(
+    mapping(
+      "countryCode" -> text,
+      "city"        -> text
+    )(AddCityForm.apply)(AddCityForm.unapply)
+  )
 }

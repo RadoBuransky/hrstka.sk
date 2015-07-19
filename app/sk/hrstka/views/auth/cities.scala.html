@@ -1,0 +1,30 @@
+@(countries: Seq[sk.hrstka.models.ui.Country],
+  citiesForCountries: Seq[(sk.hrstka.models.ui.Country, Seq[sk.hrstka.models.ui.City])])(implicit mainModel: sk.hrstka.models.ui.MainModel)
+
+@sk.hrstka.views.html.main {Cities} {
+    <form action="@sk.hrstka.controllers.auth.routes.AuthLocationController.add" method="post">
+        <div class="form-group">
+            <label for="countryCode">Country:</label>
+            <select class="form-control" id="countryCode" name="countryCode" required>
+                @for(country <- countries) {
+                <option value="@country.code">@country.en</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+    <div class="dotted-separator">&nbsp;</div>
+
+    @for(citiesInCountry <- citiesForCountries) {
+        <h3>@citiesInCountry._1.en</h3>
+        <ol class="list-unstyled">
+            @for(city <- citiesInCountry._2) {
+                <li>@city.en</li>
+            }
+        </ol>
+    }
+}
