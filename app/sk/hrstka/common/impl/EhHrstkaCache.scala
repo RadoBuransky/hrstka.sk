@@ -29,7 +29,7 @@ abstract class EhHrstkaCache(applicationLifecycle: ApplicationLifecycle,
   override def getOrElse[A: ClassTag](key: String, expiration: Duration)(orElse: => A): A = playEhCacheApi.getOrElse[A](key, expiration)(orElse)
   override def remove(key: String): Unit = playEhCacheApi.remove(key)
 
-  override def cacheSuccess[T: ClassTag](key: String)(value: => Future[T]): Future[T] = {
+  override def cacheSuccess[T: ClassTag](key: String, value: => Future[T]): Future[T] = {
     val prefixedKey = prefixKey(key)
     get[T](prefixedKey) match {
       case Some(result) =>

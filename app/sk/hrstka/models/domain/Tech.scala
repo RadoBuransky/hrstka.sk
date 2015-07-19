@@ -1,6 +1,6 @@
 package sk.hrstka.models.domain
 
-import java.net.URL
+import java.net.URI
 
 import sk.hrstka
 
@@ -17,7 +17,7 @@ case class Tech(id: Id,
                 handle: Handle,
                 category: TechCategory,
                 name: String,
-                website: URL) extends Identifiable
+                website: URI) extends Identifiable
 
 object TechFactory {
   def apply(src: hrstka.models.db.Tech): Tech =
@@ -26,5 +26,5 @@ object TechFactory {
       handle    = Handle(src.handle),
       category  = TechCategory(src.categoryHandle),
       name      = src.name,
-      website   = new URL(src.website))
+      website   = new URI(src.website))
 }

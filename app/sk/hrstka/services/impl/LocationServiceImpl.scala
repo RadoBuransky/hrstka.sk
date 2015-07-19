@@ -1,6 +1,6 @@
 package sk.hrstka.services.impl
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import sk.hrstka.common.HrstkaException
 import sk.hrstka.models.db
 import sk.hrstka.models.domain._
@@ -10,9 +10,15 @@ import sk.hrstka.services.LocationService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+/**
+ * Marker trait.
+ */
+@ImplementedBy(classOf[LocationServiceImpl])
+private[impl] trait NotCachedLocationService extends LocationService
+
 @Singleton
 final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
-                                           compRepository: CompRepository) extends LocationService {
+                                           compRepository: CompRepository) extends NotCachedLocationService {
   override def upsert(city: City): Future[Handle] =
     cityRepository.insert(db.City(
       _id         = db.Identifiable.empty,

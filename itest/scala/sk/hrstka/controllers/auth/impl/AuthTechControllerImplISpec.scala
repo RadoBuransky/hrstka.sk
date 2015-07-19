@@ -1,6 +1,6 @@
 package sk.hrstka.controllers.auth.impl
 
-import java.net.URL
+import java.net.URI
 
 import org.mockito.Mockito._
 import org.scalatest.DoNotDiscover
@@ -64,7 +64,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
         handle    = HandleFactory.fromHumanName("IIS"),
         category  = TechCategory("server"),
         name      = "IIS",
-        website   = new URL("http://www.iis.com/")
+        website   = new URI("http://www.iis.com/")
       )
       when(techService.upsert(tech))
         .thenReturn(Future.successful(tech.handle))

@@ -1,6 +1,6 @@
 package sk.hrstka.controllers.auth.impl
 
-import java.net.URL
+import java.net.URI
 
 import org.mockito.Mockito._
 import org.scalatest.DoNotDiscover
@@ -91,7 +91,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         val comp = Comp(
           id = compId.map(Id).getOrElse(Identifiable.empty),
           name = "New comp",
-          website = new URL("http://www.comp.top/"),
+          website = new URI("http://www.comp.top/"),
           city = CitySpec.noveZamky,
           businessNumber = BusinessNumber("35887401"),
           employeeCount = None,

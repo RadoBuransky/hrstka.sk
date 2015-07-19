@@ -17,7 +17,7 @@ trait HrstkaCache extends CacheApi {
    * @tparam T Type of value to cache.
    * @return
    */
-  def cacheSuccess[T: ClassTag](key: String)(value: => Future[T]): Future[T]
+  def cacheSuccess[T: ClassTag](key: String, value: => Future[T]): Future[T]
 
   /**
    * Invalidates everything if the action completes with success.

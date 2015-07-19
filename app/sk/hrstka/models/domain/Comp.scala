@@ -1,12 +1,12 @@
 package sk.hrstka.models.domain
 
-import java.net.URL
+import java.net.URI
 
 import sk.hrstka.models
 
 case class Comp(id: Id,
                 name: String,
-                website: URL,
+                website: URI,
                 city: City,
                 businessNumber: BusinessNumber,
                 employeeCount: Option[Int],
@@ -63,7 +63,7 @@ object CompFactory {
   def apply(comp: models.db.Comp, techRatings: Seq[TechRating], city: City): Comp = Comp(
     id                = Identifiable.fromBSON(comp._id),
     name              = comp.name,
-    website           = new URL(comp.website),
+    website           = new URI(comp.website),
     city              = city,
     businessNumber    = BusinessNumber(comp.businessNumber),
     employeeCount     = comp.employeeCount,

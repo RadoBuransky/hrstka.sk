@@ -28,7 +28,7 @@ object CompSpec {
     _id               = BSONObjectID.generate,
     authorId          = BSONObjectID.generate,
     name              = "Borci",
-    website           = new URL("http://borci.sk/").toString,
+    website           = new URL("http://www.borci.sk/").toString,
     city              = CitySpec.noveZamky.handle,
     businessNumber    = "654321",
     employeeCount     = Some(23),

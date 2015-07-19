@@ -1,11 +1,9 @@
 package sk.hrstka.services.impl
 
-import com.google.inject.name.Named
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
-import sk.hrstka.common.HrstkaCache
 import sk.hrstka.models.domain._
 import sk.hrstka.models.{db, domain}
 import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
@@ -45,7 +43,6 @@ class CompServiceImplSpec extends BaseSpec {
   behavior of "all"
 
   it should "return all companies sorted by rating if no city or tech is provided" in new TestScope {
-
     // Prepare
     when(compRepository.all(None, None))
       .thenReturn(Future.successful(Seq(db.CompSpec.avitech, db.CompSpec.borci)))
@@ -258,7 +255,7 @@ class CompServiceImplSpec extends BaseSpec {
   private def assertUnapplied(expected: Seq[Any], actual: Seq[Any]): Unit =
     expected.zip(actual).foreach { pair =>
       assertResult(pair._1)(pair._2)
-  }
+    }
 
   private class VoteTestScope extends TestScope {
     def testVoteUp(original: Option[Int], expected: Int): Unit = testVote(original, expected, compService.voteUp)

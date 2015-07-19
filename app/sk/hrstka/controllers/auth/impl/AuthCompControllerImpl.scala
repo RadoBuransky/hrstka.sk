@@ -1,6 +1,6 @@
 package sk.hrstka.controllers.auth.impl
 
-import java.net.URL
+import java.net.URI
 
 import com.google.inject._
 import jp.t2v.lab.play2.auth.AuthElement
@@ -46,7 +46,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
           Comp(
             id = compId.map(Id).getOrElse(Identifiable.empty),
             name = form.name,
-            website = new URL(form.website),
+            website = new URI(form.website),
             city = city,
             businessNumber = BusinessNumber(form.businessNumber),
             employeeCount = form.employeeCount,

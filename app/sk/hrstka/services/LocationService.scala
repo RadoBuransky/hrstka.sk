@@ -1,7 +1,8 @@
 package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
-import sk.hrstka.models.domain.{Iso3166, Country, City, Handle}
+import sk.hrstka.models.domain.{City, Country, Handle, Iso3166}
+import sk.hrstka.services.impl.LocationServiceImpl
 import sk.hrstka.services.impl.cache.CachedLocationServiceImpl
 
 import scala.concurrent.Future

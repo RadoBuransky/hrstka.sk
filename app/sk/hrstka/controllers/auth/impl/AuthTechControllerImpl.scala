@@ -1,6 +1,6 @@
 package sk.hrstka.controllers.auth.impl
 
-import java.net.URL
+import java.net.URI
 
 import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.AuthElement
@@ -55,7 +55,7 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
         handle    = HandleFactory.fromHumanName(form.name),
         category  = TechCategory(form.categoryHandle),
         name      = form.name,
-        website   = new URL(form.website)
+        website   = new URI(form.website)
       )).map { _ =>
         Redirect(sk.hrstka.controllers.auth.routes.AuthTechController.all())
       }
