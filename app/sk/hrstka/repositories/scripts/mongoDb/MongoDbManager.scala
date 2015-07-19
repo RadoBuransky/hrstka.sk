@@ -7,14 +7,17 @@ import reactivemongo.api.DBMetaCommands
 import reactivemongo.api.indexes.IndexType.Ascending
 import reactivemongo.api.indexes.{Index, NSIndex}
 import sk.hrstka.common.HrstkaException
+import sk.hrstka.models.db.{Identifiable, Metadata}
 import sk.hrstka.repositories.mongoDb._
 import sk.hrstka.repositories.scripts.DbManager
+import sk.hrstka.repositories.scripts.mongoDb.migration.MigrationScript
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbManager {
+class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi,
+                                metadataRepository: MongoMetadataRepository) extends DbManager {
   private val logger = Logger(getClass)
 
   override def applicationInit(): Future[Unit] = {
@@ -27,7 +30,53 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbMa
   private def applicationInit(dBMetaCommands: DBMetaCommands): Future[Unit] = {
     logger.info(s"Initializing MongoDB [${reactiveMongoApi.db.name}].")
 
-    // Ensure all indexes exist
+    for {
+      metadata  <- ensureMetadata()
+      _         = logger.info(s"Database schema version ${metadata.dbVersion}.")
+      _         = logger.info(s"Application schema version ${MongoDbManager.dbVersion}.")
+      _         = upgradeDatabase(metadata)
+      indexes   <- ensureIndexes(dBMetaCommands)
+      result    = logger.info("Initialization of MongoDB done.")
+    } yield result
+  }
+
+  private def upgradeDatabase(metadata: Metadata): Future[Unit] = {
+    if (metadata.dbVersion < MongoDbManager.dbVersion) {
+      // Get the migration script and run it
+      MigrationScript
+        .get(metadata.dbVersion)
+        .run(reactiveMongoApi, metadataRepository)
+        .flatMap { newMetadata =>
+          // Recursively upgrade
+          upgradeDatabase(newMetadata)
+        }
+    }
+    else
+      Future.successful()
+  }
+
+  private def ensureMetadata(): Future[Metadata] = {
+    metadataRepository.get().recoverWith {
+      case _: NoSuchElementException =>
+        Logger.info("Creating metadata.")
+
+        // Create new metadata
+        val metadata = Metadata(
+          _id       = Identifiable.empty,
+          dbVersion = MongoDbManager.dbVersion
+        )
+
+        // Insert to DB
+        metadataRepository.insert(metadata).map { _ =>
+          Logger.info("Metadata inserted.")
+          metadata
+        }
+
+      case ex: Throwable => throw new HrstkaException(s"Cannot get metadata!", ex)
+    }
+  }
+
+  private def ensureIndexes(dBMetaCommands: DBMetaCommands): Future[Unit] = {
     val allIndexes = MongoDbManager.allIndexes(reactiveMongoApi.db.name)
     Future.sequence(allIndexes.map(dBMetaCommands.indexesManager.ensure)).map { indexes =>
       val createdIndexes = indexes.zipWithIndex.filter(_._1)
@@ -38,12 +87,13 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi) extends DbMa
       if (createdIndexes.isEmpty)
         logger.info("No indexes created.")
 
-      logger.info("Initialization of MongoDB done.")
     }
   }
 }
 
 private object MongoDbManager {
+  val dbVersion = 1
+
   def allIndexes(dbName: String) = Seq(
     compNameIndex(dbName),
     compWebsiteIndex(dbName),
