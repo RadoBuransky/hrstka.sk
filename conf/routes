@@ -16,6 +16,8 @@ GET     /technology/:handle/remove      sk.hrstka.controllers.auth.AuthTechContr
 GET     /technology/:handle/voteUp      sk.hrstka.controllers.auth.AuthTechController.voteUp(handle: String)
 GET     /technology/:handle/voteDown    sk.hrstka.controllers.auth.AuthTechController.voteDown(handle: String)
 
+GET     /locations                  sk.hrstka.controllers.auth.AuthLocationController.all
+
 GET     /programming/companies                  sk.hrstka.controllers.CompController.all
 GET     /programming/women                      sk.hrstka.controllers.CompController.women
 GET     /programming/companies/:city            sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")

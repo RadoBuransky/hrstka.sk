@@ -3,9 +3,7 @@
   techVotes: Map[String, Int],
   techCategories: Seq[sk.hrstka.models.ui.TechCategory])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
-@sk.hrstka.views.html.main {
-    Technologies
-} {
+@sk.hrstka.views.html.main {Technologies} {
     <form action="@sk.hrstka.controllers.auth.routes.AuthTechController.add" method="post">
         <div class="form-group">
             <label for="categoryHandle">Category:</label>
