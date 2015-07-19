@@ -11,6 +11,6 @@ object CitySpec {
   private def createCity(sk: String) = City(
     _id     = Identifiable.empty,
     handle  = HandleFactory.fromHumanName(sk).value,
-    sk      = sk
+    en      = sk
   )
 }

@@ -49,7 +49,7 @@ class BaseMongoRepositoryISpec(testApplication: TestApplication)
     val result = baseMongoRepository.upsert(kosice).flatMap { kosiceId =>
       baseMongoRepository.upsert(kosice.copy(
         _id = kosiceId,
-        sk  = "abc"
+        en  = "abc"
       ))
     }
     val id = result.futureValue
@@ -58,7 +58,7 @@ class BaseMongoRepositoryISpec(testApplication: TestApplication)
     val updatedCity = baseMongoRepository.get(id).futureValue
     assert(updatedCity._id == id)
     assert(updatedCity.handle == kosice.handle)
-    assert(updatedCity.sk == "abc")
+    assert(updatedCity.en == "abc")
   }
 
   behavior of "getByHandle"

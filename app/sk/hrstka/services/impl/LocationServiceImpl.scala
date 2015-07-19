@@ -15,9 +15,10 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
                                            compRepository: CompRepository) extends LocationService {
   override def upsert(city: City): Future[Handle] =
     cityRepository.insert(db.City(
-      _id     = db.Identifiable.empty,
-      handle  = city.handle.value,
-      sk      = city.en)).map { _ =>
+      _id         = db.Identifiable.empty,
+      handle      = city.handle.value,
+      en          = city.en,
+      countryCode = city.country.code.value)).map { _ =>
       city.handle
     }
 
@@ -52,14 +53,7 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
     val handle = HandleFactory.fromHumanName(humanName)
     cityRepository.findByHandle(handle.value).map {
       case Some(city) => CityFactory(city)
-      case None =>
-        val newCity = db.City(
-        _id     = db.Identifiable.empty,
-        handle  = handle.value,
-        sk      = humanName)
-
-        cityRepository.insert(newCity)
-        CityFactory(newCity)
+      case None => ???
     }
   }
 }
