@@ -4,14 +4,14 @@ import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
 import play.modules.reactivemongo.json.ImplicitBSONHandlers._
-import play.modules.reactivemongo.json._
+import reactivemongo.api.collections.bson.BSONCollection
+import reactivemongo.api.commands.bson.{BSONFindAndModifyImplicits, BSONFindAndModifyCommand}
 import reactivemongo.bson.{BSONDocument, _}
-import reactivemongo.core.commands.{FindAndModify, Update}
 import sk.hrstka.common.{HrstkaCache, HrstkaException}
 import sk.hrstka.models.db.Identifiable.Id
 import sk.hrstka.models.db._
-import sk.hrstka.models.db.JsonFormats._
 import sk.hrstka.repositories.{CompVoteRepository, TechVoteRepository, VoteRepository}
+import sk.hrstka.models.db.JsonFormats._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -25,8 +25,10 @@ sealed class MongoVoteRepository[TEntity <: Vote : ClassTag](hrstkaCache: Hrstka
   import MongoVoteRepository._
 
   override def vote(entityId: Id, userId: Id, value: Int): Future[Boolean] = {
+    import BSONFindAndModifyCommand._
+    import BSONFindAndModifyImplicits._
+
     val findAndModify = FindAndModify(
-      collection  = collection.name,
       query       = BSONDocument(entityIdField -> entityId, userIdField -> userId),
       modify      = Update(BSONDocument(
         entityIdField -> entityId,
@@ -36,13 +38,13 @@ sealed class MongoVoteRepository[TEntity <: Vote : ClassTag](hrstkaCache: Hrstka
       sort        = Some(BSONDocument("_id" -> 1)),
       fields      = None)
 
-    val result = db.connection.ask(findAndModify.apply(db.name).maker, false).map(FindAndModify(_)).map {
-      case Right(Some(findAndModifyResult)) => findAndModifyResult.getAs[Int](valueField).getOrElse(value + 1) != value
-      case Right(None) => true
-      case Left(error) => throw new HrstkaException(s"Vote error! [$error]")
+    val result = db.collection[BSONCollection](coll.name).runCommand(findAndModify).map {
+      case FindAndModifyResult(Some(UpdateLastError(_, _, _, Some(error))), _) => throw new HrstkaException(s"Vote error! [$error]")
+      case FindAndModifyResult(_, Some(document)) => document.getAs[Int](valueField).getOrElse(value + 1) != value
+      case FindAndModifyResult(_, _) => true
     }
 
-    // Invalidate cache if vote is stored
+    // Invalidate cache if/when vote is stored
     hrstkaCache.invalidateOnSuccess(result)
 
     result

@@ -52,7 +52,7 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi,
         }
     }
     else
-      Future.successful()
+      Future.successful(())
   }
 
   private def ensureMetadata(): Future[Metadata] = {

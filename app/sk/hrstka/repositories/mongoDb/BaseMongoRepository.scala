@@ -116,7 +116,7 @@ abstract class BaseMongoRepository[T <: Identifiable : ClassTag](coll: MongoColl
     else
       sortResult
 
-    batch.cursor[T].collect[Seq]()
+    batch.cursor[T]().collect[Seq]()
   }
 
 

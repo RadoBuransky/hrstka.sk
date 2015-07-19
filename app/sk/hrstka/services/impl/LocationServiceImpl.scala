@@ -30,7 +30,7 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
     countries().map { allCountries =>
       allCountries.find(_.code == code) match {
         case Some(country) => country
-        case None => throw new HrstkaException(s"No country exists for the code! [$code]")
+        case None => throw new HrstkaException(s"No country exists for the code! [${code.value}]")
       }
     }
 
