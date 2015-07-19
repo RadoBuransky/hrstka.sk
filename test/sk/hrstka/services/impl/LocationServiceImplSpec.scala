@@ -2,14 +2,30 @@ package sk.hrstka.services.impl
 
 import org.mockito.Mockito._
 import sk.hrstka.models.db
-import sk.hrstka.models.domain.CitySpec
+import sk.hrstka.models.domain._
 import sk.hrstka.repositories.{CompRepository, CityRepository}
 import sk.hrstka.test.BaseSpec
 
 import scala.concurrent.Future
 
 class LocationServiceImplSpec extends BaseSpec {
-  behavior of "all"
+  behavior of "countries"
+
+  it should "return all countries ordered" in new TestScope {
+    // Execute
+    val expected = Seq(
+      Slovakia,
+      CzechRepublic,
+      Austria,
+      Hungary,
+      Poland,
+      Ukraine,
+      Germany
+    )
+    assert(locationService.countries().futureValue == expected)
+  }
+
+  behavior of "cities"
 
   it should "return all cities" in new TestScope {
     // Prepare
@@ -20,7 +36,7 @@ class LocationServiceImplSpec extends BaseSpec {
 
     // Execute
     val expected = CitySpec.all.sortBy(city => -1 * db.CompSpec.all.count(_.city == city.handle.value))
-    assert(locationService.all().futureValue == expected)
+    assert(locationService.cities().futureValue == expected)
 
     // Verify
     verify(compRepository).all(None, None)
@@ -28,7 +44,7 @@ class LocationServiceImplSpec extends BaseSpec {
     verifyNoMoreInteractions(cityRepository)
   }
 
-  behavior of "get"
+  behavior of "city"
 
   it should "return a city" in new TestScope {
     // Prepare
@@ -36,14 +52,14 @@ class LocationServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(db.CitySpec.noveZamky))
 
     // Execute
-    assert(locationService.get(CitySpec.noveZamky.handle).futureValue == CitySpec.noveZamky)
+    assert(locationService.city(CitySpec.noveZamky.handle).futureValue == CitySpec.noveZamky)
 
     // Verify
     verify(cityRepository).getByHandle(db.CitySpec.noveZamky.handle)
     verifyNoMoreInteractions(cityRepository)
   }
 
-  behavior of "getOrCreate"
+  behavior of "getOrCreateCity"
 
   it should "get a city if already exists" in new TestScope {
     // Prepare
@@ -51,7 +67,7 @@ class LocationServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(Some(db.CitySpec.kosice)))
 
     // Execute
-    assert(locationService.getOrCreateCity(CitySpec.kosice.sk).futureValue == CitySpec.kosice)
+    assert(locationService.getOrCreateCity(CitySpec.kosice.en).futureValue == CitySpec.kosice)
 
     // Verify
     verify(cityRepository).findByHandle(db.CitySpec.kosice.handle)
@@ -64,7 +80,7 @@ class LocationServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(None))
 
     // Execute
-    assert(locationService.getOrCreateCity(CitySpec.kosice.sk).futureValue == CitySpec.kosice)
+    assert(locationService.getOrCreateCity(CitySpec.kosice.en).futureValue == CitySpec.kosice)
 
     // Verify
     verify(cityRepository).findByHandle(db.CitySpec.kosice.handle)

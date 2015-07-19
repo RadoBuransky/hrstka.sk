@@ -2,13 +2,22 @@ package sk.hrstka.models.domain
 
 import sk.hrstka.models
 
+/**
+ * City.
+ *
+ * @param handle Human-friendly identifier.
+ * @param en English name of the city.
+ */
 case class City(handle: Handle,
-                sk: String)
+                en: String,
+                country: Country)
 
 object CityFactory {
   def apply(city: models.db.City): City = City(
     handle  = Handle(city.handle),
-    sk      = city.sk
+    en      = city.sk,
+    // TODO: ...
+    country = Slovakia
   )
 }
 

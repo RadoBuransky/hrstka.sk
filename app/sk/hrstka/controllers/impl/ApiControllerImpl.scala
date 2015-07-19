@@ -47,11 +47,11 @@ final class ApiControllerImpl(compService: CompService,
   }
 
   override def cities() = Action.async { implicit request =>
-    locationService.all().map { cities =>
+    locationService.cities().map { cities =>
       Ok(Json.toJson(cities.map { city =>
         Json.obj(
           "handle" -> city.handle.value,
-          "sk" -> city.sk
+          "sk" -> city.en
         )
       }))
     }

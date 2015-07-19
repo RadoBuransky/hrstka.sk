@@ -100,7 +100,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   }
 
   private def dbCompToDomain(techRatings: Seq[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
-    locationService.get(Handle(comp.city)).map { city =>
+    locationService.city(Handle(comp.city)).map { city =>
       CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
     }
   }

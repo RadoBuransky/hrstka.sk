@@ -112,7 +112,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           TechRatingSpec.akkaRating.tech.handle
         )
         val newCompId = compId.map(Id).getOrElse(Identifiable.fromBSON(BSONObjectID.generate))
-        when(locationService.getOrCreateCity(CitySpec.noveZamky.sk))
+        when(locationService.getOrCreateCity(CitySpec.noveZamky.en))
           .thenReturn(Future.successful(CitySpec.noveZamky))
         when(compService.upsert(comp, techHandles, eminentUser.id))
           .thenReturn(Future.successful(comp.businessNumber))
@@ -121,7 +121,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         val form: Map[String, String] = Map(
           "compName" -> comp.name,
           "website" -> comp.website.toString,
-          "city" -> comp.city.sk,
+          "city" -> comp.city.en,
           "businessNumber" -> comp.businessNumber.value,
           "employeeCount" -> "",
           "codersCount" -> "",
@@ -143,7 +143,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         }
 
         // Verify
-        verify(locationService).getOrCreateCity(CitySpec.noveZamky.sk)
+        verify(locationService).getOrCreateCity(CitySpec.noveZamky.en)
         verify(compService).upsert(comp, techHandles, eminentUser.id)
       }
     }

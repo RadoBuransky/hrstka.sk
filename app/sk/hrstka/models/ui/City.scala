@@ -8,6 +8,6 @@ case class City(handle: String,
 object CityFactory {
   def apply(city: models.domain.City): City = City(
     handle  = city.handle.value,
-    sk      = city.sk
+    sk      = city.en
   )
 }

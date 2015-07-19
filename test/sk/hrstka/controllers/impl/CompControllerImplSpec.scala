@@ -99,7 +99,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Prepare
     when(compService.all(city = Some(CompSpec.avitech.city.handle), None))
       .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
-    when(locationService.get(CompSpec.avitech.city.handle))
+    when(locationService.city(CompSpec.avitech.city.handle))
       .thenReturn(Future.successful(CompSpec.avitech.city))
     prepareMainModel(Some(CompSpec.avitech.city.handle))
 
@@ -110,7 +110,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Verify
     verifyMainModel(Some(CompSpec.avitech.city.handle))
-    verify(locationService).get(CompSpec.avitech.city.handle)
+    verify(locationService).city(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), None)
     verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
@@ -120,7 +120,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Prepare
     when(compService.all(city = Some(CompSpec.avitech.city.handle), tech = Some(TechRatingSpec.scalaRating.tech.handle)))
       .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
-    when(locationService.get(CompSpec.avitech.city.handle))
+    when(locationService.city(CompSpec.avitech.city.handle))
       .thenReturn(Future.successful(CompSpec.avitech.city))
     when(techService.getByHandle(TechRatingSpec.scalaRating.tech.handle))
       .thenReturn(Future.successful(TechRatingSpec.scalaRating.tech))
@@ -134,7 +134,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     // Verify
     verifyMainModel(Some(CompSpec.avitech.city.handle))
     verify(techService).getByHandle(TechRatingSpec.scalaRating.tech.handle)
-    verify(locationService).get(CompSpec.avitech.city.handle)
+    verify(locationService).city(CompSpec.avitech.city.handle)
     verify(compService).all(Some(CompSpec.avitech.city.handle), Some(TechRatingSpec.scalaRating.tech.handle))
     verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()

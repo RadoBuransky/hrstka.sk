@@ -3,8 +3,8 @@ package sk.hrstka.services.impl
 import com.google.inject.{Inject, Singleton}
 import sk.hrstka.models.db.{City, Identifiable}
 import sk.hrstka.models.domain
-import sk.hrstka.models.domain.{CityFactory, Handle, HandleFactory}
-import sk.hrstka.repositories.{CompRepository, CityRepository}
+import sk.hrstka.models.domain._
+import sk.hrstka.repositories.{CityRepository, CompRepository}
 import sk.hrstka.services.LocationService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,7 +13,9 @@ import scala.concurrent.Future
 @Singleton
 final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
                                            compRepository: CompRepository) extends LocationService {
-  override def all(): Future[Seq[domain.City]] = {
+  override def countries(): Future[Seq[Country]] = Future.successful(LocationServiceImpl.countries)
+
+  override def cities(): Future[Seq[domain.City]] = {
     cityRepository.all().flatMap { dbCities =>
       // Map to domain model
       val cities = dbCities.map(CityFactory.apply)
@@ -26,7 +28,7 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
     }
   }
 
-  override def get(handle: Handle): Future[domain.City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
+  override def city(handle: Handle): Future[domain.City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
 
   override def getOrCreateCity(humanName: String): Future[domain.City] = {
     val handle = HandleFactory.fromHumanName(humanName)
@@ -42,4 +44,16 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
         CityFactory(newCity)
     }
   }
+}
+
+private object LocationServiceImpl {
+  val countries = Seq(
+    Slovakia,
+    CzechRepublic,
+    Austria,
+    Hungary,
+    Poland,
+    Ukraine,
+    Germany
+  )
 }

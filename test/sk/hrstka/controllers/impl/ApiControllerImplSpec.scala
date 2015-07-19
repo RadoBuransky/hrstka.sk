@@ -131,19 +131,19 @@ class ApiControllerImplSpec extends BaseSpec with Results {
     def cityToJson(city: City): JsValue = {
       Json.obj(
         "handle" -> city.handle.value,
-        "sk" -> city.sk
+        "sk" -> city.en
       )
     }
 
     // Prepare
-    when(locationService.all())
+    when(locationService.cities())
       .thenReturn(Future.successful(CitySpec.all))
 
     // Execute
     assert(contentAsJson(call(apiController.cities(), FakeRequest())) == JsArray(CitySpec.all.map(cityToJson)))
 
     // Verify
-    verify(locationService).all()
+    verify(locationService).cities()
     verifyNoMore()
   }
 
