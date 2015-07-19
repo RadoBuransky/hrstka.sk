@@ -1,6 +1,6 @@
 package sk.hrstka.services.impl
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import sk.hrstka
 import sk.hrstka.common.{HrstkaException, Logging}
 import sk.hrstka.models.db
@@ -11,10 +11,17 @@ import sk.hrstka.services.TechService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+/**
+ * Marker trait.
+ */
+@ImplementedBy(classOf[TechServiceImpl])
+private[impl] trait NotCachedTechService extends TechService
+
 @Singleton
 final class TechServiceImpl @Inject() (techRepository: TechRepository,
                                        techVoteRepository: TechVoteRepository,
-                                       compRepository: CompRepository) extends TechService with Logging {
+                                       compRepository: CompRepository)
+  extends NotCachedTechService with Logging {
   import sk.hrstka.models.domain.Identifiable._
 
   override def upsert(tech: hrstka.models.domain.Tech): Future[Handle] =
