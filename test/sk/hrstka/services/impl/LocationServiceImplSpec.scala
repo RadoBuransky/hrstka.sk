@@ -74,20 +74,6 @@ class LocationServiceImplSpec extends BaseSpec {
     verifyNoMoreInteractions(cityRepository)
   }
 
-  it should "create a city if doesn't exist yet" in new TestScope {
-    // Prepare
-    when(cityRepository.findByHandle(db.CitySpec.kosice.handle))
-      .thenReturn(Future.successful(None))
-
-    // Execute
-    assert(locationService.getOrCreateCity(CitySpec.kosice.en).futureValue == CitySpec.kosice)
-
-    // Verify
-    verify(cityRepository).findByHandle(db.CitySpec.kosice.handle)
-    verify(cityRepository).insert(db.CitySpec.kosice)
-    verifyNoMoreInteractions(cityRepository)
-  }
-
   private class TestScope {
     val cityRepository = mock[CityRepository]
     val compRepository = mock[CompRepository]

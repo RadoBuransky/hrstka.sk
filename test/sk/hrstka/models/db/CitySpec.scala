@@ -1,16 +1,17 @@
 package sk.hrstka.models.db
 
-import sk.hrstka.models.domain.HandleFactory
+import sk.hrstka.models.domain.{Country, HandleFactory, Slovakia}
 
 object CitySpec {
-  val bratislava = createCity("Bratislava")
-  val kosice = createCity("Košice")
-  val noveZamky = createCity("Nové Zámky")
+  val bratislava = createCity("Bratislava", Slovakia)
+  val kosice = createCity("Košice", Slovakia)
+  val noveZamky = createCity("Nové Zámky", Slovakia)
   val all = Seq(bratislava, kosice, noveZamky)
 
-  private def createCity(sk: String) = City(
-    _id     = Identifiable.empty,
-    handle  = HandleFactory.fromHumanName(sk).value,
-    en      = sk
+  private def createCity(en: String, country: Country) = City(
+    _id         = Identifiable.empty,
+    handle      = HandleFactory.fromHumanName(en).value,
+    en          = en,
+    countryCode = country.code.value
   )
 }
