@@ -1,16 +1,14 @@
 package sk.hrstka.models.api
 
 import sk.hrstka.models.domain
-import sk.hrstka.models.domain.CompRatingFactory
 
 case class Comp(businessNumber: String,
                 name: String,
                 website: String,
                 cityHandle: String,
-                country: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
-                femaleCodersCount: Option[Int],
+                womenCodersCount: Option[Int],
                 markdown: String,
                 products: Boolean,
                 services: Boolean,
@@ -27,10 +25,9 @@ object CompFactory {
     name              = compRating.comp.name,
     website           = compRating.comp.website.toString,
     cityHandle        = compRating.comp.city.handle.value,
-    country           = "sk",
     employeeCount     = compRating.comp.employeeCount,
     codersCount       = compRating.comp.codersCount,
-    femaleCodersCount = compRating.comp.femaleCodersCount,
+    womenCodersCount  = compRating.comp.femaleCodersCount,
     markdown          = compRating.comp.markdownNote,
     products          = compRating.comp.products,
     services          = compRating.comp.services,

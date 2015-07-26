@@ -130,8 +130,9 @@ class ApiControllerImplSpec extends BaseSpec with Results {
   it should "return JSON of all cities" in new TestScope {
     def cityToJson(city: City): JsValue = {
       Json.obj(
-        "handle" -> city.handle.value,
-        "sk" -> city.name
+        "handle"  -> city.handle.value,
+        "name"    -> city.name,
+        "country" -> city.country.code.value
       )
     }
 
