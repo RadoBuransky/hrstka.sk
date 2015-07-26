@@ -24,8 +24,8 @@ final class AuthLocationControllerImpl @Inject() (protected val authService: Aut
   override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     locationService.countries().flatMap { allCountries =>
       val uiCountries = allCountries.map(CountryFactory.apply)
-      locationService.usedCities().flatMap { cities =>
-        val uiCities = cities.map(CityFactory.apply)
+      locationService.allCities().flatMap { cities =>
+        val uiCities = cities.map(CityFactory.apply).toSeq
         val citiesForCountries = uiCities.groupBy(_.country).toSeq
         withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
           Ok(sk.hrstka.views.html.auth.cities(uiCountries, citiesForCountries))

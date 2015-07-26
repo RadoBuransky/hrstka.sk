@@ -30,15 +30,8 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
 
   override def remove(handle: Handle): Future[Handle] = ???
 
-  override def countries(): Future[Seq[Country]] = Future.successful(LocationServiceImpl.countries)
-
-  override def getCountryByCode(code: Iso3166): Future[Country] =
-    countries().map { allCountries =>
-      allCountries.find(_.code == code) match {
-        case Some(country) => country
-        case None => throw new HrstkaException(s"No country exists for the code! [${code.value}]")
-      }
-    }
+  override def countries(): Future[Seq[Country]] = Future(LocationServiceImpl.countries)
+  override def getCountryByCode(code: Iso3166): Future[Country] = Future(getCountryByCodeInternal(code))
 
   override def usedCities(): Future[Seq[City]] = {
     // Get all cities
@@ -54,14 +47,20 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
     }
   }
 
-  override def allCities(): Future[Traversable[City]] = {
-    cityRepository.all().map { dbCities =>
-      // Map to domain model
-      dbCities.map(CityFactory.apply)
-    }
-  }
+  override def allCities(): Future[Traversable[City]] =
+    cityRepository.all().map(_.map(dbCityToDomain))
 
-  override def city(handle: Handle): Future[City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
+  override def city(handle: Handle): Future[City] =
+    cityRepository.getByHandle(handle.value).map(dbCityToDomain)
+
+  private def dbCityToDomain(city: db.City): City =
+    CityFactory(city, getCountryByCodeInternal(Iso3166(city.countryCode)))
+
+  private def getCountryByCodeInternal(code: Iso3166): Country =
+    LocationServiceImpl.countries.find(_.code == code) match {
+      case Some(country) => country
+      case None => throw new HrstkaException(s"No country exists for the code! [${code.value}]")
+    }
 }
 
 private object LocationServiceImpl {

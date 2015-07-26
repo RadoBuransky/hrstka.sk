@@ -14,11 +14,10 @@ case class City(handle: Handle,
                 country: Country)
 
 object CityFactory {
-  def apply(city: models.db.City): City = City(
+  def apply(city: models.db.City, country: Country): City = City(
     handle  = Handle(city.handle),
     en      = city.en,
-    // TODO: ...
-    country = Slovakia
+    country = country
   )
 }
 
