@@ -32,12 +32,15 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
       // Prepare
       when(techService.allRatings())
         .thenReturn(Future.successful(TechRatingSpec.allRatings))
+      when(locationService.allCities())
+        .thenReturn(Future.successful(CitySpec.all))
 
       assertAuthView(eminentUser, authCompController, authCompController.addForm()) { content =>
         assert(content.contains("<form action=\"/programming/company\" method=\"post\">"))
       }
 
       // Verify
+      verify(locationService).allCities()
       verify(techService).allRatings()
     }
   }
@@ -55,6 +58,8 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         .thenReturn(Future.successful(CompSpec.avitech))
       when(techService.allRatings())
         .thenReturn(Future.successful(TechRatingSpec.allRatings))
+      when(locationService.allCities())
+        .thenReturn(Future.successful(CitySpec.all))
 
       // Execute
       assertAuthView(eminentUser, authCompController, authCompController.editForm(CompSpec.avitech.businessNumber.value)) { content =>
@@ -62,6 +67,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
       }
 
       // Verify
+      verify(locationService).allCities()
       verify(techService).allRatings()
       verify(compService).get(CompSpec.avitech.businessNumber)
     }
@@ -112,7 +118,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           TechRatingSpec.akkaRating.tech.handle
         )
         val newCompId = compId.map(Id).getOrElse(Identifiable.fromBSON(BSONObjectID.generate))
-        when(locationService.getOrCreateCity(CitySpec.noveZamky.en))
+        when(locationService.city(CitySpec.noveZamky.handle))
           .thenReturn(Future.successful(CitySpec.noveZamky))
         when(compService.upsert(comp, techHandles, eminentUser.id))
           .thenReturn(Future.successful(comp.businessNumber))
@@ -121,7 +127,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         val form: Map[String, String] = Map(
           "compName" -> comp.name,
           "website" -> comp.website.toString,
-          "city" -> comp.city.en,
+          "city" -> comp.city.handle.value,
           "businessNumber" -> comp.businessNumber.value,
           "employeeCount" -> "",
           "codersCount" -> "",
@@ -143,7 +149,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         }
 
         // Verify
-        verify(locationService).getOrCreateCity(CitySpec.noveZamky.en)
+        verify(locationService).city(CitySpec.noveZamky.handle)
         verify(compService).upsert(comp, techHandles, eminentUser.id)
       }
     }

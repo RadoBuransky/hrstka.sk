@@ -20,7 +20,7 @@ final class CachedLocationServiceImpl @Inject() (hrstkaCache: HrstkaCache,
   override def remove(handle: Handle): Future[Handle] = underlying.remove(handle)
   override def countries(): Future[Seq[Country]] = hrstkaCache.cacheSuccess("CachedLocationServiceImpl.countries", underlying.countries())
   override def getCountryByCode(code: Iso3166): Future[Country] = underlying.getCountryByCode(code)
-  override def cities() = hrstkaCache.cacheSuccess("CachedLocationServiceImpl.cities", underlying.cities())
-  override def getOrCreateCity(sk: String) = underlying.getOrCreateCity(sk)
+  override def usedCities() = hrstkaCache.cacheSuccess("CachedLocationServiceImpl.cities", underlying.usedCities())
   override def city(handle: Handle) = underlying.city(handle)
+  override def allCities() = underlying.allCities()
 }

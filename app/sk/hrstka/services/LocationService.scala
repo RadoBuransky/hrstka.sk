@@ -44,11 +44,18 @@ trait LocationService {
   def getCountryByCode(code: Iso3166): Future[Country]
 
   /**
-   * Gets all cities ordered by number of companies.
+   * Gets only used cities ordered by number of companies.
    * 
-   * @return All cities ordered.
+   * @return All used cities ordered.
    */
-  def cities(): Future[Seq[City]]
+  def usedCities(): Future[Seq[City]]
+
+  /**
+   * Gets all cities unordered.
+   *
+   * @return All cities unordered.
+   */
+  def allCities(): Future[Traversable[City]]
 
   /**
    * Gets city for the handle if exists, fails otherwise.
@@ -57,13 +64,4 @@ trait LocationService {
    * @return The city.
    */
   def city(handle: Handle): Future[City]
-
-  // TODO: Change to get only.
-  /**
-   * Get city for the human name if exists or creates a new one.
-   * 
-   * @param sk Slovak name of the city.
-   * @return Existing or newly created city.
-   */
-  def getOrCreateCity(sk: String): Future[City]
 }

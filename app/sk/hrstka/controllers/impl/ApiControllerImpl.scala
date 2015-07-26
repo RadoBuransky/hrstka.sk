@@ -47,7 +47,7 @@ final class ApiControllerImpl(compService: CompService,
   }
 
   override def cities() = Action.async { implicit request =>
-    locationService.cities().map { cities =>
+    locationService.usedCities().map { cities =>
       Ok(Json.toJson(cities.map { city =>
         Json.obj(
           "handle" -> city.handle.value,

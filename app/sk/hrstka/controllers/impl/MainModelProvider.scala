@@ -23,7 +23,7 @@ trait MainModelProvider {
       }
     }
 
-    locationService.cities().flatMap { cities =>
+    locationService.usedCities().flatMap { cities =>
       techService.allUsedRatings(city.map(Handle)).map { techRatings =>
         action(MainModel(
           cities        = cities.map(CityFactory(_)),

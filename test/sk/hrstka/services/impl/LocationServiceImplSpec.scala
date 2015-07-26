@@ -4,7 +4,7 @@ import org.mockito.Mockito._
 import sk.hrstka.common.HrstkaException
 import sk.hrstka.models.db
 import sk.hrstka.models.domain._
-import sk.hrstka.repositories.{CompRepository, CityRepository}
+import sk.hrstka.repositories.{CityRepository, CompRepository}
 import sk.hrstka.test.BaseSpec
 
 import scala.concurrent.Future
@@ -60,9 +60,9 @@ class LocationServiceImplSpec extends BaseSpec {
     }
   }
 
-  behavior of "cities"
+  behavior of "usedCities"
 
-  it should "return all cities" in new TestScope {
+  it should "return ordered sequence of used cities" in new TestScope {
     // Prepare
     when(cityRepository.all())
       .thenReturn(Future.successful(db.CitySpec.all))
@@ -70,11 +70,26 @@ class LocationServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(db.CompSpec.all))
 
     // Execute
-    val expected = CitySpec.all.sortBy(city => -1 * db.CompSpec.all.count(_.city == city.handle.value))
-    assert(locationService.cities().futureValue == expected)
+    val expected = Seq(CitySpec.bratislava, CitySpec.noveZamky)
+    assert(locationService.usedCities().futureValue == expected)
 
     // Verify
     verify(compRepository).all(None, None)
+    verify(cityRepository).all()
+    verifyNoMoreInteractions(cityRepository)
+  }
+
+  behavior of "allCities"
+
+  it should "return all cities unordered" in new TestScope {
+    // Prepare
+    when(cityRepository.all())
+      .thenReturn(Future.successful(db.CitySpec.all))
+
+    // Execute
+    assert(locationService.allCities().futureValue == CitySpec.all)
+
+    // Verify
     verify(cityRepository).all()
     verifyNoMoreInteractions(cityRepository)
   }
@@ -91,21 +106,6 @@ class LocationServiceImplSpec extends BaseSpec {
 
     // Verify
     verify(cityRepository).getByHandle(db.CitySpec.noveZamky.handle)
-    verifyNoMoreInteractions(cityRepository)
-  }
-
-  behavior of "getOrCreateCity"
-
-  it should "get a city if already exists" in new TestScope {
-    // Prepare
-    when(cityRepository.findByHandle(db.CitySpec.kosice.handle))
-      .thenReturn(Future.successful(Some(db.CitySpec.kosice)))
-
-    // Execute
-    assert(locationService.getOrCreateCity(CitySpec.kosice.en).futureValue == CitySpec.kosice)
-
-    // Verify
-    verify(cityRepository).findByHandle(db.CitySpec.kosice.handle)
     verifyNoMoreInteractions(cityRepository)
   }
 

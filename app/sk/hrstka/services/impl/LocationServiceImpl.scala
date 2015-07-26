@@ -40,28 +40,28 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
       }
     }
 
-  override def cities(): Future[Seq[City]] = {
-    cityRepository.all().flatMap { dbCities =>
-      // Map to domain model
-      val cities = dbCities.map(CityFactory.apply)
-
+  override def usedCities(): Future[Seq[City]] = {
+    // Get all cities
+    allCities().flatMap { cities =>
       // Get all companies
       compRepository.all(None, None).map { dbComps =>
+        // Get number of companies for each city
+        val cityCount = cities.map { city => (city, dbComps.count(_.city == city.handle.value)) }
+
         // Oder by number of companies
-        cities.toSeq.sortBy(city => -1 * dbComps.count(_.city == city.handle.value))
+        cityCount.filter(_._2 > 0).toSeq.sortBy(-1 * _._2).map(_._1)
       }
     }
   }
 
-  override def city(handle: Handle): Future[City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
-
-  override def getOrCreateCity(humanName: String): Future[City] = {
-    val handle = HandleFactory.fromHumanName(humanName)
-    cityRepository.findByHandle(handle.value).map {
-      case Some(city) => CityFactory(city)
-      case None => ???
+  override def allCities(): Future[Traversable[City]] = {
+    cityRepository.all().map { dbCities =>
+      // Map to domain model
+      dbCities.map(CityFactory.apply)
     }
   }
+
+  override def city(handle: Handle): Future[City] = cityRepository.getByHandle(handle.value).map(CityFactory.apply)
 }
 
 private object LocationServiceImpl {

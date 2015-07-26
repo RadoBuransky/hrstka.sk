@@ -28,7 +28,7 @@ class AuthLocationControllerImplISpec(application: Application) extends BaseCont
       // Prepare
       when(locationService.countries())
         .thenReturn(Future.successful(CountrySpec.all))
-      when(locationService.cities())
+      when(locationService.usedCities())
         .thenReturn(Future.successful(CitySpec.all))
 
       // Execute
@@ -37,7 +37,7 @@ class AuthLocationControllerImplISpec(application: Application) extends BaseCont
       }
 
       // Verify
-      verify(locationService, times(2)).cities()
+      verify(locationService, times(2)).usedCities()
       verify(locationService).countries()
     }
   }

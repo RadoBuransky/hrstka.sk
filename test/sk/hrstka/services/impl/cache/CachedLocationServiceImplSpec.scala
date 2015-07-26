@@ -34,7 +34,7 @@ class CachedLocationServiceImplSpec extends BaseSpec {
   behavior of "cities"
 
   it should "cache underlying cities" in new TestScope {
-    verifyCaching(_.cities())
+    verifyCaching(_.usedCities())
   }
 
   behavior of "city"

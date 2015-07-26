@@ -12,7 +12,7 @@ import play.api.mvc._
 import sk.hrstka.controllers.auth.{AddCompForm, AuthCompController}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain._
-import sk.hrstka.models.ui.{CompFactory, Markdown}
+import sk.hrstka.models.ui
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,7 +40,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
 
   override def save(compId: Option[String]): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     withForm(addCompForm) { form =>
-      locationService.getOrCreateCity(form.city).flatMap { city =>
+      locationService.city(Handle(form.city)).flatMap { city =>
         compService.upsert(
           Comp(
             id = compId.map(Id).getOrElse(Identifiable.empty),
@@ -84,15 +84,16 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
   private def edit[A](comp: Option[Comp], action: Call)(implicit request: RequestWithAttributes[A]): Future[Result] =
     for {
       techRatings <- techService.allRatings()
+      cities <- locationService.allCities().map(_.map(ui.CityFactory.apply))
       companyTechnologies = techRatings.map { techRating =>
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
         Ok(sk.hrstka.views.html.auth.compEdit(
-          comp.map(c => CompFactory.apply(c, Markdown(c.markdownNote))),
+          comp.map(c => ui.CompFactory.apply(c, ui.Markdown(c.markdownNote))),
           companyTechnologies,
-          CompFactory.joelQuestions,
-          Seq.empty,
+          ui.CompFactory.joelQuestions,
+          cities.toSeq,
           action))
       }
     } yield result

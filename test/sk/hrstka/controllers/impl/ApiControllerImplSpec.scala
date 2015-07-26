@@ -136,14 +136,14 @@ class ApiControllerImplSpec extends BaseSpec with Results {
     }
 
     // Prepare
-    when(locationService.cities())
+    when(locationService.usedCities())
       .thenReturn(Future.successful(CitySpec.all))
 
     // Execute
     assert(contentAsJson(call(apiController.cities(), FakeRequest())) == JsArray(CitySpec.all.map(cityToJson)))
 
     // Verify
-    verify(locationService).cities()
+    verify(locationService).usedCities()
     verifyNoMore()
   }
 
