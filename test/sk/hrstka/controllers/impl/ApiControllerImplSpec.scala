@@ -131,7 +131,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
     def cityToJson(city: City): JsValue = {
       Json.obj(
         "handle" -> city.handle.value,
-        "sk" -> city.en
+        "sk" -> city.name
       )
     }
 

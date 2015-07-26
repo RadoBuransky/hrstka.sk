@@ -18,7 +18,7 @@ class LocationServiceImplSpec extends BaseSpec {
     val dbCity = db.City(
       _id         = db.Identifiable.empty,
       handle      = city.handle.value,
-      en          = city.en,
+      name          = city.name,
       countryCode = city.country.code.value
     )
     when(cityRepository.insert(dbCity)).thenReturn(Future.successful(dbCity._id))

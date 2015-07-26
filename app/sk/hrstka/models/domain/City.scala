@@ -6,17 +6,17 @@ import sk.hrstka.models
  * City.
  *
  * @param handle Human-friendly identifier.
- * @param en English name of the city.
+ * @param name Name of the city.
  * @param country Country where the city is located.
  */
 case class City(handle: Handle,
-                en: String,
+                name: String,
                 country: Country)
 
 object CityFactory {
   def apply(city: models.db.City, country: Country): City = City(
     handle  = Handle(city.handle),
-    en      = city.en,
+    name    = city.name,
     country = country
   )
 }

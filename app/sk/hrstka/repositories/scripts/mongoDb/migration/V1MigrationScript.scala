@@ -21,10 +21,11 @@ object V1MigrationScript extends BaseMigrationScript with Logging {
       val cityCollection = reactiveMongoApi.db.collection[JSONCollection](CityCollection.name)
 
       cityCollection.update(
+        multi     = true,
         selector  = Json.obj(),
         update    = Json.obj(
           // Rename city sk field to en
-          "$rename" -> Json.obj("sk" -> "en"),
+          "$rename" -> Json.obj("sk" -> "name"),
           // Set country code to Slovakia
           "$set"    -> Json.obj("countryCode" -> Slovakia.code.value)
         )

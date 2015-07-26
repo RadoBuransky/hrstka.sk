@@ -23,7 +23,7 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
     cityRepository.insert(db.City(
       _id         = db.Identifiable.empty,
       handle      = city.handle.value,
-      en          = city.en,
+      name          = city.name,
       countryCode = city.country.code.value)).map { _ =>
       city.handle
     }

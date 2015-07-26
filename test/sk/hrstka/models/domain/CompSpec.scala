@@ -29,15 +29,15 @@ class CompSpec extends BaseSpec {
     intercept[IllegalArgumentException] { avitech.copy(employeeCount = None) }
   }
 
-  it should "fail if number of all coders is lower than number of female coders" in {
+  it should "fail if number of all coders is lower than number of women coders" in {
     intercept[IllegalArgumentException] { avitech.copy(codersCount = Some(1)) }
   }
 
-  it should "fail if number of female coders is negative" in {
+  it should "fail if number of women coders is negative" in {
     intercept[IllegalArgumentException] { avitech.copy(femaleCodersCount = Some(-1)) }
   }
 
-  it should "fail if number of female coders is set but number of coders is not" in {
+  it should "fail if number of women coders is set but number of coders is not" in {
     intercept[IllegalArgumentException] { avitech.copy(codersCount = None) }
   }
 

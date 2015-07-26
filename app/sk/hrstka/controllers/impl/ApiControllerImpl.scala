@@ -50,8 +50,9 @@ final class ApiControllerImpl(compService: CompService,
     locationService.usedCities().map { cities =>
       Ok(Json.toJson(cities.map { city =>
         Json.obj(
-          "handle" -> city.handle.value,
-          "sk" -> city.en
+          "handle"  -> city.handle.value,
+          "name"    -> city.name,
+          "country" -> city.country.code.value
         )
       }))
     }

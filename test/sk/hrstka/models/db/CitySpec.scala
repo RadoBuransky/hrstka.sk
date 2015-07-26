@@ -11,7 +11,7 @@ object CitySpec {
   private def createCity(en: String, country: Country) = City(
     _id         = Identifiable.empty,
     handle      = HandleFactory.fromHumanName(en).value,
-    en          = en,
+    name          = en,
     countryCode = country.code.value
   )
 }

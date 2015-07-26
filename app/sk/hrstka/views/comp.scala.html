@@ -28,10 +28,10 @@
         <h3>Employee count</h3>
         <ol class="list-unstyled">
         @if(comp.femaleCodersCount.isDefined) {
-            <li>Female programmers <span class="hrstka-emp-count">@comp.femaleCodersCount</span></li>
+            <li>Women programmers <span class="hrstka-emp-count">@comp.femaleCodersCount</span></li>
         }
         @if(comp.maleCodersCount.isDefined) {
-            <li>Male programmers <span class="hrstka-emp-count">@comp.maleCodersCount</span></li>
+            <li>Men programmers <span class="hrstka-emp-count">@comp.maleCodersCount</span></li>
         } else {
             @if(comp.codersCount.isDefined) {
                 <li>All programmers <span class="hrstka-emp-count">@comp.codersCount</span></li>

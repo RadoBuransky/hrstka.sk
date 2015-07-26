@@ -162,7 +162,7 @@ class CompServiceImplSpec extends BaseSpec {
 
   behavior of "topWomen"
 
-  it should "return sorted list of companies with the most female programmers" in new TestScope {
+  it should "return sorted list of companies with the most women programmers" in new TestScope {
     val noCodersSetComp = db.CompSpec.avitech.copy(codersCount = None, femaleCodersCount = None)
     val noCodersComp = db.CompSpec.avitech.copy(employeeCount = None, codersCount = None, femaleCodersCount = None)
     val noFemaleCodersSetComp = db.CompSpec.avitech.copy(femaleCodersCount = None)

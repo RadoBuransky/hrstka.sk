@@ -54,7 +54,7 @@ class AuthLocationControllerImplISpec(application: Application) extends BaseCont
       val city = City(
         handle = HandleFactory.fromHumanName("Bratislava"),
         country = Slovakia,
-        en = "Bratislava"
+        name = "Bratislava"
       )
       when(locationService.getCountryByCode(Slovakia.code))
         .thenReturn(Future.successful(Slovakia))
@@ -64,7 +64,7 @@ class AuthLocationControllerImplISpec(application: Application) extends BaseCont
       // Execute
       val form: Map[String, String] = Map(
         "countryCode" -> city.country.code.value,
-        "city" -> city.en
+        "city" -> city.name
       )
       assertAuthResult(eminentUser, authLocationController, authLocationController.add(), form) { result =>
         assert(status(result) == SEE_OTHER)

@@ -42,7 +42,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
     // Execute
     assertView(compController.women()) { result =>
-      assert(result.contains("<h2>Companies with many female programmers</h2>"))
+      assert(result.contains("<h2>Companies with many women programmers</h2>"))
     }
 
     // Verify

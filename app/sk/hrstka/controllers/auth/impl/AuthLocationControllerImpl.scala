@@ -39,7 +39,7 @@ final class AuthLocationControllerImpl @Inject() (protected val authService: Aut
       locationService.getCountryByCode(Iso3166(form.countryCode)).flatMap { country =>
         locationService.upsert(City(
           handle = HandleFactory.fromHumanName(form.city),
-          en = form.city,
+          name = form.city,
           country = country
         )).map { _ =>
           Redirect(sk.hrstka.controllers.auth.routes.AuthLocationController.all())

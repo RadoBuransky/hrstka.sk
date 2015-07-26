@@ -38,9 +38,9 @@ case class Comp(id: Id,
   }
 
   femaleCodersCount match {
-    case Some(value) if value < 0 => throw new IllegalArgumentException(s"Number of female programmers cannot be negative! [$value]")
+    case Some(value) if value < 0 => throw new IllegalArgumentException(s"Number of women programmers cannot be negative! [$value]")
     case Some(f) => codersCount match {
-      case Some(c) if c < f => throw new IllegalArgumentException(s"Number of all coders is lower than number of female coders!")
+      case Some(c) if c < f => throw new IllegalArgumentException(s"Number of all coders is lower than number of women coders!")
       case None => throw new IllegalArgumentException(s"Provide number of all coders!")
       case _ =>
     }

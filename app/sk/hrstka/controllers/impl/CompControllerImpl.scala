@@ -85,7 +85,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
 
   private def headline(city: Option[City], tech: Option[Tech]): String = {
     val cityHeadline = city
-      .map(c => " in " + c.en + " city")
+      .map(c => " in " + c.name + " city")
       .getOrElse("")
     val techHeadline = tech.map(_.name).getOrElse("")
     if (city.isEmpty && tech.isEmpty)

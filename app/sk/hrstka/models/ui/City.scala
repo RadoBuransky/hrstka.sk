@@ -16,7 +16,7 @@ case class City(handle: String,
 object CityFactory {
   def apply(city: models.domain.City): City = City(
     handle  = city.handle.value,
-    en      = city.en,
+    en      = city.name,
     country = CountryFactory(city.country)
   )
 }

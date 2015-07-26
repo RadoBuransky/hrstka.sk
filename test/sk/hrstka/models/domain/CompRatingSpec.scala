@@ -65,7 +65,7 @@ class CompRatingSpec extends BaseSpec {
 
   behavior of "femaleRatio"
 
-  it should "return 0.0 if there are no female programmers" in {
+  it should "return 0.0 if there are no women programmers" in {
     assert(CompRatingFactory.femaleRatio(CompSpec.avitech.copy(femaleCodersCount = None)) == BigDecimal(0))
   }
 
@@ -73,7 +73,7 @@ class CompRatingSpec extends BaseSpec {
     assert(CompRatingFactory.femaleRatio(CompSpec.avitech.copy(codersCount = None, femaleCodersCount = None)) == BigDecimal(0))
   }
 
-  it should "return 1.0 if number of male programmers equals number of female programmers" in {
+  it should "return 1.0 if number of male programmers equals number of women programmers" in {
     assert(CompRatingFactory.femaleRatio(CompSpec.avitech.copy(codersCount = Some(60), femaleCodersCount = Some(30))) == BigDecimal(1))
   }
 
@@ -81,7 +81,7 @@ class CompRatingSpec extends BaseSpec {
     assert(CompRatingFactory.femaleRatio(CompSpec.avitech.copy(codersCount = Some(60), femaleCodersCount = Some(0))) == BigDecimal(0))
   }
 
-  it should "return 0.0 if all programmers are female" in {
+  it should "return 0.0 if all programmers are women" in {
     assert(CompRatingFactory.femaleRatio(CompSpec.avitech.copy(codersCount = Some(60), femaleCodersCount = Some(60))) == BigDecimal(0))
   }
 
@@ -107,7 +107,7 @@ class CompRatingSpec extends BaseSpec {
     assert(CompRatingFactory(zeroRatedAvitech.copy(joel = Set(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)), 0, 0).value == BigDecimal(0.1))
   }
 
-  it should "use 10% weight for female programmers ratio" in {
+  it should "use 10% weight for women programmers ratio" in {
     assert(CompRatingFactory(zeroRatedAvitech.copy(employeeCount = Some(2), codersCount = Some(2), femaleCodersCount = Some(1)), 0, 0).value == BigDecimal(0.1))
   }
 
