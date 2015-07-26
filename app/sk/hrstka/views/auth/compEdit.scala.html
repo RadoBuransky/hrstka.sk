@@ -1,3 +1,6 @@
+@import sk.hrstka.views.helpers.Selected
+@import sk.hrstka.models.ui._
+
 @(comp: Option[sk.hrstka.models.ui.Comp],
   techs: Seq[(String, Boolean)],
   joelQuestions: List[String],
@@ -20,7 +23,7 @@
             <label for="city">City</label>
             <select class="form-control" id="city" name="city" required>
                 @for(city <- cities) {
-                <option value="@city.handle">@city.en</option>
+                <option value="@city.handle" @Selected.apply[City](city, comp.map(_.city), _.handle) >@city.en</option>
                 }
             </select>
         </div>
