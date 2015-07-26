@@ -4,6 +4,18 @@ GET     /api                        sk.hrstka.controllers.AppController.api
 GET     /about                      sk.hrstka.controllers.AppController.about
 GET     /addCompany                 sk.hrstka.controllers.AppController.addCompInfo
 
+GET     /programming/companies                  sk.hrstka.controllers.CompController.all
+GET     /programming/women                      sk.hrstka.controllers.CompController.women
+GET     /programming/companies/:city            sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
+GET     /programming/companies/:city/:tech      sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
+GET     /programming/company/:businessNumber    sk.hrstka.controllers.CompController.get(businessNumber: String)
+
+GET     /api/companies                  sk.hrstka.controllers.ApiController.comps
+GET     /api/company/:businessNumber    sk.hrstka.controllers.ApiController.comp(businessNumber: String)
+GET     /api/technologies               sk.hrstka.controllers.ApiController.techs
+GET     /api/technology/:handle         sk.hrstka.controllers.ApiController.tech(handle: String)
+GET     /api/cities                     sk.hrstka.controllers.ApiController.cities
+
 GET     /login                      sk.hrstka.controllers.auth.AuthController.login
 GET     /logout                     sk.hrstka.controllers.auth.AuthController.logout
 POST    /authenticate               sk.hrstka.controllers.auth.AuthController.authenticate
@@ -19,23 +31,11 @@ GET     /technology/:handle/voteDown    sk.hrstka.controllers.auth.AuthTechContr
 GET     /cities                  sk.hrstka.controllers.auth.AuthLocationController.all
 POST    /city                    sk.hrstka.controllers.auth.AuthLocationController.add
 
-GET     /programming/companies                  sk.hrstka.controllers.CompController.all
-GET     /programming/women                      sk.hrstka.controllers.CompController.women
-GET     /programming/companies/:city            sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
-GET     /programming/companies/:city/:tech      sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
-GET     /programming/company/:businessNumber    sk.hrstka.controllers.CompController.get(businessNumber: String)
-
 GET     /programming/company/:businessNumber/edit       sk.hrstka.controllers.auth.AuthCompController.editForm(businessNumber: String)
 POST    /programming/company                            sk.hrstka.controllers.auth.AuthCompController.save(compId: Option[String])
 GET     /programming/newCompany                         sk.hrstka.controllers.auth.AuthCompController.addForm
 GET     /programming/company/:businessNumber/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(businessNumber: String)
 GET     /programming/company/:businessNumber/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(businessNumber: String)
-
-GET     /api/companies                  sk.hrstka.controllers.ApiController.comps
-GET     /api/company/:businessNumber    sk.hrstka.controllers.ApiController.comp(businessNumber: String)
-GET     /api/technologies               sk.hrstka.controllers.ApiController.techs
-GET     /api/technology/:handle         sk.hrstka.controllers.ApiController.tech(handle: String)
-GET     /api/cities                     sk.hrstka.controllers.ApiController.cities
 
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")

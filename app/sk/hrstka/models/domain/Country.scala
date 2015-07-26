@@ -13,7 +13,6 @@ sealed trait Country {
    * English name of the country.
    */
   def en: String
-
 }
 
 /**
