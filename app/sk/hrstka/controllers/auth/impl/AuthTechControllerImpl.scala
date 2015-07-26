@@ -3,7 +3,6 @@ package sk.hrstka.controllers.auth.impl
 import java.net.URI
 
 import com.google.inject.{Inject, Singleton}
-import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import play.api.Application
 import play.api.data.Form
@@ -26,7 +25,7 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
                                               protected val techService: TechService,
                                               protected val application: Application,
                                               val messagesApi: MessagesApi)
-  extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with AuthElement {
+  extends BaseController with AuthTechController with MainModelProvider with HrstkaAuthConfig with HrstkaAuthElement {
   import AuthTechControllerImpl._
 
   override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>

@@ -1,9 +1,10 @@
 package sk.hrstka.controllers.impl
 
-import play.api.Application
 import play.api.mvc._
+import play.api.{Application, Mode}
+import sk.hrstka.controllers.auth.impl.HrstkaAuthElement
 import sk.hrstka.models.domain.{Handle, User}
-import sk.hrstka.models.ui.{TechRating, CityFactory, MainModel, TechRatingFactory}
+import sk.hrstka.models.ui.{CityFactory, MainModel, TechRating, TechRatingFactory}
 import sk.hrstka.services.{LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,6 +14,15 @@ trait MainModelProvider {
   protected def withMainModel[A, R](city: Option[String] = None,
                                     tech: Option[String] = None,
                                     user: Option[User] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
+    // Faku user for convenient development
+    val devUser = user match {
+      case Some(u) => Some(u)
+      case None => application.mode match {
+        case Mode.Dev => Some(HrstkaAuthElement.devUser)
+        case _ => None
+      }
+    }
+
     locationService.cities().flatMap { cities =>
       techService.allUsedRatings(city.map(Handle)).map { techRatings =>
         action(MainModel(
@@ -20,7 +30,7 @@ trait MainModelProvider {
           techRatings   = setOpacity(techRatings.map(TechRatingFactory.apply)),
           city          = city,
           tech          = tech,
-          user          = user,
+          user          = devUser,
           mode          = application.mode
         ))
       }

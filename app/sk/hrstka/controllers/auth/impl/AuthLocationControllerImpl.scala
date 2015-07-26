@@ -1,7 +1,6 @@
 package sk.hrstka.controllers.auth.impl
 
 import com.google.inject.{Inject, Singleton}
-import jp.t2v.lab.play2.auth.{AuthElement, OptionalAuthElement}
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
@@ -21,7 +20,7 @@ final class AuthLocationControllerImpl @Inject() (protected val authService: Aut
                                                   protected val techService: TechService,
                                                   protected val application: Application,
                                                   val messagesApi: MessagesApi)
-  extends BaseController with MainModelProvider with HrstkaAuthConfig with AuthElement with AuthLocationController {
+  extends BaseController with MainModelProvider with HrstkaAuthConfig with HrstkaAuthElement with AuthLocationController {
   override def all: Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     locationService.countries().flatMap { allCountries =>
       val uiCountries = allCountries.map(CountryFactory.apply)

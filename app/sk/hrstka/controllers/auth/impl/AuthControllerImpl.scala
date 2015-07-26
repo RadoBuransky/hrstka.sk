@@ -1,7 +1,7 @@
 package sk.hrstka.controllers.auth.impl
 
 import com.google.inject.{Inject, Singleton}
-import jp.t2v.lab.play2.auth.{AuthConfig, AuthElement, LoginLogout}
+import jp.t2v.lab.play2.auth.{AuthConfig, LoginLogout}
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
@@ -21,7 +21,7 @@ final class AuthControllerImpl @Inject() (protected val authService: AuthService
                                           protected val techService: TechService,
                                           protected val application: Application,
                                           val messagesApi: MessagesApi)
-  extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with AuthElement with LoginLogout with AuthConfig {
+  extends BaseController with AuthController with MainModelProvider with HrstkaAuthConfig with HrstkaAuthElement with LoginLogout with AuthConfig {
   import AuthControllerImpl._
 
   def login = Action.async { implicit request =>

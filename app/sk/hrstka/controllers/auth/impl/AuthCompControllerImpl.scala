@@ -3,7 +3,6 @@ package sk.hrstka.controllers.auth.impl
 import java.net.URI
 
 import com.google.inject._
-import jp.t2v.lab.play2.auth.AuthElement
 import jp.t2v.lab.play2.stackc.RequestWithAttributes
 import play.api.Application
 import play.api.data.Form
@@ -26,7 +25,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
                                               protected val locationService: LocationService,
                                               protected val application: Application,
                                               val messagesApi: MessagesApi)
-  extends BaseController with AuthCompController with MainModelProvider with HrstkaAuthConfig with AuthElement {
+  extends BaseController with AuthCompController with MainModelProvider with HrstkaAuthConfig with HrstkaAuthElement {
   import AuthCompControllerImpl._
 
   override def addForm(): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
@@ -89,7 +88,12 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
         techRating.tech.handle.value -> comp.exists(_.techRatings.exists(_.tech.handle == techRating.tech.handle))
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.auth.compEdit(comp.map(c => CompFactory.apply(c, Markdown(c.markdownNote))), companyTechnologies, CompFactory.joelQuestions, action))
+        Ok(sk.hrstka.views.html.auth.compEdit(
+          comp.map(c => CompFactory.apply(c, Markdown(c.markdownNote))),
+          companyTechnologies,
+          CompFactory.joelQuestions,
+          Seq.empty,
+          action))
       }
     } yield result
 }

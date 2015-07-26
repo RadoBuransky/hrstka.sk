@@ -1,4 +1,8 @@
-@(comp: Option[sk.hrstka.models.ui.Comp], techs: Seq[(String, Boolean)], joelQuestions: List[String], action: Call)(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(comp: Option[sk.hrstka.models.ui.Comp],
+  techs: Seq[(String, Boolean)],
+  joelQuestions: List[String],
+  cities: Seq[sk.hrstka.models.ui.City],
+  action: Call)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
     Add / edit company
@@ -14,7 +18,11 @@
         </div>
         <div class="form-group">
             <label for="city">City</label>
-            <input type="text" class="form-control" id="city" name="city" value="@comp.map(_.city.en)" required />
+            <select class="form-control" id="city" name="city" required>
+                @for(city <- cities) {
+                <option value="@city.handle">@city.en</option>
+                }
+            </select>
         </div>
         <div class="form-group">
             <label for="note">Markdown profile</label>
