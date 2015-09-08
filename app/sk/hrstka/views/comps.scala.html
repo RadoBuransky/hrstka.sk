@@ -37,11 +37,19 @@
         }
     </div>
     }
+    @if(compRating.comp.employeeCount.isDefined || compRating.comp.maleCodersCount.isDefined || compRating.comp.codersCount.isDefined) {
     <div class="comp-line">
+        @if(compRating.comp.femaleCodersCount.isDefined) {
         <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.femaleCodersCount</span> women programmers</span>
+        }
+        @if(compRating.comp.maleCodersCount.isDefined) {
         <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.maleCodersCount</span> men programmers</span>
+        }
+        @if(compRating.comp.employeeCount.isDefined) {
         <span class="comp-count"><span class="hrstka-emp-count">@compRating.comp.employeeCount</span> employees</span>
+        }
     </div>
+    }
     <div id="comp-separator"></div>
 </article>
 }

@@ -28,6 +28,10 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="businessNumber">Business number</label>
+            <input type="text" class="form-control" id="businessNumber" name="businessNumber" value="@comp.map(_.businessNumber)" required />
+        </div>
+        <div class="form-group">
             <label for="note">Markdown profile</label>
             <textarea class="form-control" id="note" name="note" rows="25">@comp.map(_.note.markdown)</textarea>
         </div>
@@ -60,10 +64,6 @@
         <div class="form-group">
             <label for="femaleCodersCount">Women coders count</label>
             <input type="number" class="form-control" id="femaleCodersCount" name="femaleCodersCount" value="@comp.map(_.femaleCodersCount)" />
-        </div>
-        <div class="form-group">
-            <label for="businessNumber">Business number</label>
-            <input type="text" class="form-control" id="businessNumber" name="businessNumber" value="@comp.map(_.businessNumber)" required />
         </div>
         <div class="form-group">
             <label for="govBiz">Last year's business with government</label>
