@@ -19,6 +19,8 @@ scalaSource in integrationTest := baseDirectory.value / "itest" / "scala"
 
 routesGenerator := InjectedRoutesGenerator
 
+includeFilter in (Assets, LessKeys.less) := "main.less" || "tagmanager.less"
+
 libraryDependencies ++= Seq(
   cache,
   ws,
