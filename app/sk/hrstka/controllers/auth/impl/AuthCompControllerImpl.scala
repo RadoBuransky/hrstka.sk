@@ -59,7 +59,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
             joel = form.joel.toSet,
             govBiz = form.govBiz
           ),
-          form.techs.map(Handle.apply).toSet,
+          form.techs.split(",").map(Handle.apply).toSet,
           loggedIn.id
         ).map { businessNumber =>
           Redirect(sk.hrstka.controllers.routes.CompController.get(businessNumber.value))
@@ -114,7 +114,7 @@ object AuthCompControllerImpl {
       "products" -> boolean,
       "services" -> boolean,
       "internal" -> boolean,
-      "techs" -> list(text),
+      "hidden-techs" -> text,
       "joel" -> list(number)
     )(AddCompForm.apply)(AddCompForm.unapply)
   )

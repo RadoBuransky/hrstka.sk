@@ -16,7 +16,7 @@ case class AddCompForm(name: String,
                        products: Boolean,
                        services: Boolean,
                        internal: Boolean,
-                       techs: List[String],
+                       techs: String,
                        joel: List[Int])
 
 /**
