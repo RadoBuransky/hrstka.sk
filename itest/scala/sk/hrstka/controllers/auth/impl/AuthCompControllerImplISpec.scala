@@ -117,7 +117,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           TechRatingSpec.javaRating.tech.handle,
           TechRatingSpec.akkaRating.tech.handle
         )
-        val newCompId = compId.map(Id).getOrElse(Identifiable.fromBSON(BSONObjectID.generate))
+
         when(locationService.city(CitySpec.noveZamky.handle))
           .thenReturn(Future.successful(CitySpec.noveZamky))
         when(compService.upsert(comp, techHandles, eminentUser.id))
@@ -136,9 +136,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           "products" -> "true",
           "services" -> "true",
           "internal" -> "false",
-          "techs[0]" -> "scala",
-          "techs[1]" -> "java",
-          "techs[2]" -> "akka",
+          "hidden-techs" -> "scala,java,akka",
           "joel[0]" -> "3",
           "joel[1]" -> "5",
           "joel[2]" -> "11",
