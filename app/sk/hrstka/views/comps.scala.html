@@ -13,6 +13,13 @@
             @if(mainModel.city.isEmpty) { <div class="city">@compRating.comp.city.en</div> }
         </h3>
     </header>
+    @if(compRating.comp.tags.nonEmpty) {
+    <div class="tags">
+        @for(tag <- compRating.comp.tags) {
+            <span class="hrstka-comp-tag">@tag.name</span>
+        }
+    </div>
+    }
     @if(compRating.comp.techRatings.nonEmpty) {
     <div class="techs">
         @for(techRating <- compRating.comp.techRatings) {

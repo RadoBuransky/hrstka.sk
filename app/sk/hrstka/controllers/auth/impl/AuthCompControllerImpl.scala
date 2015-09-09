@@ -13,6 +13,7 @@ import sk.hrstka.controllers.auth.{AddCompForm, AuthCompController}
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain._
 import sk.hrstka.models.ui
+import sk.hrstka.models.ui.Tag
 import sk.hrstka.services.{AuthService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -90,7 +91,7 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
       }
       result <- withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
         Ok(sk.hrstka.views.html.auth.compEdit(
-          comp.map(c => ui.CompFactory.apply(c, ui.Markdown(c.markdownNote))),
+          comp.map(c => ui.CompFactory.apply(c, ui.Markdown(c.markdownNote), Tag(c.techRatings))),
           companyTechnologies,
           ui.CompFactory.joelQuestions,
           cities.toSeq,

@@ -37,7 +37,8 @@ case class Comp(id: String,
                 internal: Boolean,
                 techRatings: Seq[TechRating],
                 joel: Seq[(Int, String)],
-                govBiz: Option[BigDecimal]) {
+                govBiz: Option[BigDecimal],
+                tags: Seq[Tag]) {
   def maleCodersCount: Option[Int] = for {
     coders <- codersCount
     females <- femaleCodersCount
@@ -71,7 +72,7 @@ object CompFactory {
    * @param formattedNote Properly formatted note. It can be HTML or Markdown depending on usage.
    * @return
    */
-  def apply(comp: models.domain.Comp, formattedNote: FormattedText) = new Comp(
+  def apply(comp: models.domain.Comp, formattedNote: FormattedText, tags: Seq[Tag]) = new Comp(
     id                = comp.id.value,
     name              = comp.name,
     website           = comp.website.toString,
@@ -86,5 +87,6 @@ object CompFactory {
     internal          = comp.internal,
     techRatings       = comp.techRatings.map(TechRatingFactory.apply),
     joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toSeq.sortBy(_._1),
-    govBiz            = comp.govBiz)
+    govBiz            = comp.govBiz,
+    tags              = tags)
 }
