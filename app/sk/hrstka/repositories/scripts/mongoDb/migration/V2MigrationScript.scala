@@ -28,7 +28,7 @@ object V2MigrationScript extends BaseMigrationScript with Logging {
             val newCompWithCity = oldComp + ("cities" -> JsArray(Seq((oldComp \ "city").get)))
             val newComp = newCompWithCity - "city"
 
-            // Insert new company to temporary collection
+            // Insert new company
             compCollection.save(newComp)
           }
 

@@ -41,13 +41,14 @@ final class AuthCompControllerImpl @Inject() (compService: CompService,
 
   override def save(compId: Option[String]): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     withForm(addCompForm) { form =>
-      locationService.city(Handle(form.city)).flatMap { city =>
+      val cityHandles = form.cities.split(",").map(Handle.apply).toSet
+      Future.sequence(cityHandles.map(locationService.city)).flatMap { cities =>
         compService.upsert(
           Comp(
             id = compId.map(Id).getOrElse(Identifiable.empty),
             name = form.name,
             website = new URI(form.website),
-            city = city,
+            cities = cities,
             businessNumber = BusinessNumber(form.businessNumber),
             employeeCount = form.employeeCount,
             codersCount = form.codersCount,
@@ -105,7 +106,7 @@ object AuthCompControllerImpl {
     mapping(
       "compName" -> text,
       "website" -> text,
-      "city" -> text,
+      "cities" -> text,
       "businessNumber" -> text,
       "employeeCount" -> optional(number),
       "codersCount" -> optional(number),

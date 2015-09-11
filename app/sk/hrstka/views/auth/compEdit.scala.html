@@ -26,12 +26,8 @@
             <input type="url" class="form-control" id="website" name="website" value="@comp.map(_.website)" required />
         </div>
         <div class="form-group">
-            <label for="city">City</label>
-            <select class="form-control" id="city" name="city" required>
-                @for(city <- cities) {
-                <option value="@city.handle" @Selected.apply[City](city, comp.map(_.city), _.handle) >@city.en</option>
-                }
-            </select>
+            <label for="city">Cities</label>
+            @comp.map(_.cities)
         </div>
         <div class="form-group">
             <label for="businessNumber">Business number</label>

@@ -7,7 +7,7 @@ import sk.hrstka.models
 case class Comp(id: Id,
                 name: String,
                 website: URI,
-                city: City,
+                cities: Set[City],
                 businessNumber: BusinessNumber,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
@@ -60,16 +60,16 @@ case class Comp(id: Id,
 }
 
 object CompFactory {
-  def apply(comp: models.db.Comp, techRatings: Seq[TechRating], city: City): Comp = Comp(
+  def apply(comp: models.db.Comp, techRatings: Seq[TechRating], cities: Set[City]): Comp = Comp(
     id                = Identifiable.fromBSON(comp._id),
     name              = comp.name,
     website           = new URI(comp.website),
-    city              = city,
+    cities            = cities,
     businessNumber    = BusinessNumber(comp.businessNumber),
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
     femaleCodersCount = comp.femaleCodersCount,
-    markdownNote              = comp.note,
+    markdownNote      = comp.note,
     products          = comp.products,
     services          = comp.services,
     internal          = comp.internal,

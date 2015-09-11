@@ -98,7 +98,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
           id = compId.map(Id).getOrElse(Identifiable.empty),
           name = "New comp",
           website = new URI("http://www.comp.top/"),
-          city = CitySpec.noveZamky,
+          cities = CitySpec.noveZamky,
           businessNumber = BusinessNumber("35887401"),
           employeeCount = None,
           codersCount = None,
@@ -127,7 +127,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
         val form: Map[String, String] = Map(
           "compName" -> comp.name,
           "website" -> comp.website.toString,
-          "city" -> comp.city.handle.value,
+          "city" -> comp.cities.handle.value,
           "businessNumber" -> comp.businessNumber.value,
           "employeeCount" -> "",
           "codersCount" -> "",

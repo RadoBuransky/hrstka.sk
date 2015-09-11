@@ -10,7 +10,7 @@ import sk.hrstka.models
  * @param id Company identifier.
  * @param name Name.
  * @param website Website URL.
- * @param city City.
+ * @param cities Cities that this company does business in.
  * @param businessNumber Business number (natural unique identifier)
  * @param employeeCount Total number of employees.
  * @param codersCount Number of programmers.
@@ -26,7 +26,7 @@ import sk.hrstka.models
 case class Comp(id: String,
                 name: String,
                 website: String,
-                city: City,
+                cities: Set[City],
                 businessNumber: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
@@ -76,7 +76,7 @@ object CompFactory {
     id                = comp.id.value,
     name              = comp.name,
     website           = comp.website.toString,
-    city              = CityFactory(comp.city),
+    cities            = comp.cities.map(CityFactory.apply),
     businessNumber    = comp.businessNumber.value,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,

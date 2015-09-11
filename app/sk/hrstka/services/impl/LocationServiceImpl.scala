@@ -39,7 +39,7 @@ final class LocationServiceImpl @Inject() (cityRepository: CityRepository,
       // Get all companies
       compRepository.all(None, None).map { dbComps =>
         // Get number of companies for each city
-        val cityCount = cities.map { city => (city, dbComps.count(_.city == city.handle.value)) }
+        val cityCount = cities.map { city => (city, dbComps.count(_.cities.contains(city.handle.value))) }
 
         // Oder by number of companies
         cityCount.filter(_._2 > 0).toSeq.sortBy(-1 * _._2).map(_._1)

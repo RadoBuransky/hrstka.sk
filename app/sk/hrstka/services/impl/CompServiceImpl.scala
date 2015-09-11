@@ -29,7 +29,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       authorId = userId,
       name = comp.name,
       website = comp.website.toString,
-      city = comp.city.handle,
+      cities = comp.cities.map(_.handle.value),
       businessNumber = comp.businessNumber.value,
       employeeCount = comp.employeeCount,
       codersCount = comp.codersCount,
@@ -100,8 +100,8 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   }
 
   private def dbCompToDomain(techRatings: Seq[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
-    locationService.city(Handle(comp.city)).map { city =>
-      CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), city)
+    Future.sequence(comp.cities.map(Handle.apply).map(locationService.city)).map { cities =>
+      CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), cities)
     }
   }
 

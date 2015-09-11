@@ -97,45 +97,45 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
   it should "get HTML view containing companies in Bratislava" in new TestScope {
     // Prepare
-    when(compService.all(city = Some(CompSpec.avitech.city.handle), None))
+    when(compService.all(city = Some(CompSpec.avitech.cities.handle), None))
       .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
-    when(locationService.city(CompSpec.avitech.city.handle))
-      .thenReturn(Future.successful(CompSpec.avitech.city))
-    prepareMainModel(Some(CompSpec.avitech.city.handle))
+    when(locationService.city(CompSpec.avitech.cities.handle))
+      .thenReturn(Future.successful(CompSpec.avitech.cities))
+    prepareMainModel(Some(CompSpec.avitech.cities.handle))
 
     // Execute
-    assertView(compController.cityTech(CompSpec.avitech.city.handle.value, "")) { result =>
+    assertView(compController.cityTech(CompSpec.avitech.cities.handle.value, "")) { result =>
       assert(result.contains("<h2>Companies in Bratislava city</h2>"))
     }
 
     // Verify
-    verifyMainModel(Some(CompSpec.avitech.city.handle))
-    verify(locationService).city(CompSpec.avitech.city.handle)
-    verify(compService).all(Some(CompSpec.avitech.city.handle), None)
+    verifyMainModel(Some(CompSpec.avitech.cities.handle))
+    verify(locationService).city(CompSpec.avitech.cities.handle)
+    verify(compService).all(Some(CompSpec.avitech.cities.handle), None)
     verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
   it should "get HTML view containing companies in Bratislava that use Scala" in new TestScope {
     // Prepare
-    when(compService.all(city = Some(CompSpec.avitech.city.handle), tech = Some(TechRatingSpec.scalaRating.tech.handle)))
+    when(compService.all(city = Some(CompSpec.avitech.cities.handle), tech = Some(TechRatingSpec.scalaRating.tech.handle)))
       .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
-    when(locationService.city(CompSpec.avitech.city.handle))
-      .thenReturn(Future.successful(CompSpec.avitech.city))
+    when(locationService.city(CompSpec.avitech.cities.handle))
+      .thenReturn(Future.successful(CompSpec.avitech.cities))
     when(techService.getByHandle(TechRatingSpec.scalaRating.tech.handle))
       .thenReturn(Future.successful(TechRatingSpec.scalaRating.tech))
-    prepareMainModel(Some(CompSpec.avitech.city.handle))
+    prepareMainModel(Some(CompSpec.avitech.cities.handle))
 
     // Execute
-    assertView(compController.cityTech(CompSpec.avitech.city.handle.value, TechRatingSpec.scalaRating.tech.handle.value)) { result =>
+    assertView(compController.cityTech(CompSpec.avitech.cities.handle.value, TechRatingSpec.scalaRating.tech.handle.value)) { result =>
       assert(result.contains("<h2>Scala in Bratislava city</h2>"))
     }
 
     // Verify
-    verifyMainModel(Some(CompSpec.avitech.city.handle))
+    verifyMainModel(Some(CompSpec.avitech.cities.handle))
     verify(techService).getByHandle(TechRatingSpec.scalaRating.tech.handle)
-    verify(locationService).city(CompSpec.avitech.city.handle)
-    verify(compService).all(Some(CompSpec.avitech.city.handle), Some(TechRatingSpec.scalaRating.tech.handle))
+    verify(locationService).city(CompSpec.avitech.cities.handle)
+    verify(compService).all(Some(CompSpec.avitech.cities.handle), Some(TechRatingSpec.scalaRating.tech.handle))
     verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
