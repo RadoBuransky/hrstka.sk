@@ -21,7 +21,10 @@ private[mongoDb] trait MigrationScript {
 }
 
 private[mongoDb] object MigrationScript {
-  val all = Seq(V1MigrationScript)
+  val all: Seq[BaseMigrationScript] = Seq(
+    V1MigrationScript,
+    V2MigrationScript
+  )
 
   def get(dbVersion: Int): MigrationScript = all.find(_.dbVersion == dbVersion) match {
     case Some(migrationScript) => migrationScript

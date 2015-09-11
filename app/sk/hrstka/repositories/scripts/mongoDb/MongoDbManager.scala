@@ -92,7 +92,7 @@ class MongoDbManager @Inject() (reactiveMongoApi: ReactiveMongoApi,
 }
 
 private object MongoDbManager {
-  val dbVersion = 2
+  val dbVersion = MigrationScript.all.map(_.dbVersion).max + 1
 
   def allIndexes(dbName: String) = Seq(
     compNameIndex(dbName),

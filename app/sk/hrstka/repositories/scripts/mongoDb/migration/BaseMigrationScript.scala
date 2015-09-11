@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 private[migration] abstract class BaseMigrationScript extends MigrationScript {
   protected def migrate(reactiveMongoApi: ReactiveMongoApi,
-                        metadataRepository: MongoMetadataRepository)(migration: () => Future[Unit]): Future[Metadata] = {
+                        metadataRepository: MongoMetadataRepository)(migration: () => Future[Any]): Future[Metadata] = {
     // Get current metadata
     metadataRepository.get().flatMap { metadata =>
       if (metadata.dbVersion == dbVersion) {

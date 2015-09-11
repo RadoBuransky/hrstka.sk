@@ -29,7 +29,7 @@ object V1MigrationScript extends BaseMigrationScript with Logging {
           // Set country code to Slovakia
           "$set"    -> Json.obj("countryCode" -> Slovakia.code.value)
         )
-      ).map(_ => ())
+      )
     }
   }
 }
