@@ -14,8 +14,7 @@ install:
 before_script:
     - mongod --version
 script:
-   # Coveralls doesn't work - sbt ++$TRAVIS_SCALA_VERSION coverage test coveralls
-   - sbt ++$TRAVIS_SCALA_VERSION coverage test
+   - sbt ++$TRAVIS_SCALA_VERSION coverage test coveralls
    - sbt ++$TRAVIS_SCALA_VERSION it:test
 services:
    - mongodb
