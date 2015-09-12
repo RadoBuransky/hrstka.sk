@@ -3,7 +3,7 @@ package sk.hrstka.repositories
 import org.scalatest.DoNotDiscover
 import sk.hrstka.common.HrstkaException
 import sk.hrstka.itest.TestApplication
-import sk.hrstka.models.db.CompSpec
+import sk.hrstka.models.db.{CitySpec, CompSpec}
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{CompCollection, MongoCompRepository}
 
@@ -61,7 +61,7 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
 
   it should "return companies for a city" in { compRepository =>
     val result = insertComps(compRepository).flatMap { _ =>
-      compRepository.all(city = Some(avitech.city))
+      compRepository.all(city = Some(CitySpec.bratislava.handle))
     }
     assert(result.futureValue == Seq(avitech))
   }
