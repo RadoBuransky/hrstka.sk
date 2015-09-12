@@ -48,10 +48,10 @@ class CompServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(Seq(db.CompSpec.avitech, db.CompSpec.borci)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.city(Handle(db.CompSpec.avitech.city)))
-      .thenReturn(Future.successful(CompSpec.avitech.cities))
-    when(locationService.city(Handle(db.CompSpec.borci.city)))
-      .thenReturn(Future.successful(CompSpec.borci.cities))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
+    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
+      .thenReturn(Future.successful(CitySpec.noveZamky))
     when(compVoteRepository.all(None))
       .thenReturn(Future.successful(db.CompVoteSpec.all))
 
@@ -65,32 +65,32 @@ class CompServiceImplSpec extends BaseSpec {
     verify(compVoteRepository).all(None)
     verify(compRepository).all(None, None)
     verify(techService).allRatings()
-    verify(locationService).city(Handle(db.CompSpec.avitech.city))
-    verify(locationService).city(Handle(db.CompSpec.borci.city))
+    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
+    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
     verifyNoMore()
   }
 
   it should "return all companies in Bratislava" in new TestScope {
     // Prepare
-    when(compRepository.all(city = Some(avitech.cities.handle.value), None))
+    when(compRepository.all(city = Some(db.CitySpec.bratislava.handle), None))
       .thenReturn(Future.successful(Seq(db.CompSpec.avitech)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.city(Handle(db.CompSpec.avitech.city)))
-      .thenReturn(Future.successful(CompSpec.avitech.cities))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
     when(compVoteRepository.all(None))
       .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
-    val result = futureValue(compService.all(city = Some(avitech.cities.handle), None)).toSet
+    val result = futureValue(compService.all(city = Some(CitySpec.bratislava.handle), None)).toSet
     assertCompRating(CompRatingSpec.avitech, result.find(_.comp.id == avitech.id).get)
     assertResult(Set(CompRatingSpec.avitech))(result)
 
     // Verify
     verify(compVoteRepository).all(None)
-    verify(compRepository).all(city = Some(avitech.cities.handle.value), None)
+    verify(compRepository).all(city = Some(db.CitySpec.bratislava.handle), None)
     verify(techService).allRatings()
-    verify(locationService).city(Handle(db.CompSpec.avitech.city))
+    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
     verifyNoMore()
   }
 
@@ -100,8 +100,8 @@ class CompServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(Seq(db.CompSpec.borci)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.city(Handle(db.CompSpec.borci.city)))
-      .thenReturn(Future.successful(CompSpec.borci.cities))
+    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
+      .thenReturn(Future.successful(CitySpec.noveZamky))
     when(compVoteRepository.all(None))
       .thenReturn(Future.successful(db.CompVoteSpec.all))
 
@@ -114,13 +114,13 @@ class CompServiceImplSpec extends BaseSpec {
     verify(compVoteRepository).all(None)
     verify(compRepository).all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value))
     verify(techService).allRatings()
-    verify(locationService).city(Handle(db.CompSpec.borci.city))
+    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
     verifyNoMore()
   }
 
   it should "return all companies in Bratislava that use PHP" in new TestScope {
     // Prepare
-    when(compRepository.all(city = Some(avitech.cities.handle.value), tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
+    when(compRepository.all(city = Some(db.CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
       .thenReturn(Future.successful(Seq.empty))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
@@ -128,12 +128,12 @@ class CompServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(db.CompVoteSpec.all))
 
     // Execute
-    val result = futureValue(compService.all(city = Some(avitech.cities.handle), tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
+    val result = futureValue(compService.all(city = Some(CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
     assertResult(Set.empty)(result)
 
     // Verify
     verify(compVoteRepository).all(None)
-    verify(compRepository).all(city = Some(avitech.cities.handle.value), tech = Some(TechRatingSpec.phpRating.tech.handle.value))
+    verify(compRepository).all(city = Some(db.CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle.value))
     verify(techService).allRatings()
     verifyNoMore()
   }
@@ -146,8 +146,8 @@ class CompServiceImplSpec extends BaseSpec {
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(compRepository.get(db.CompSpec.avitech.businessNumber))
       .thenReturn(Future.successful(db.CompSpec.avitech))
-    when(locationService.city(Handle(db.CompSpec.avitech.city)))
-      .thenReturn(Future.successful(CompSpec.avitech.cities))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
 
     // Execute
     val result = futureValue(compService.get(avitech.businessNumber))
@@ -156,7 +156,7 @@ class CompServiceImplSpec extends BaseSpec {
     // Verify
     verify(techService).allRatings()
     verify(compRepository).get(db.CompSpec.avitech.businessNumber)
-    verify(locationService).city(Handle(db.CompSpec.avitech.city))
+    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
     verifyNoMore()
   }
 
@@ -179,10 +179,10 @@ class CompServiceImplSpec extends BaseSpec {
         noFemaleCodersComp)))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.city(Handle(db.CompSpec.avitech.city)))
-      .thenReturn(Future.successful(CompSpec.avitech.cities))
-    when(locationService.city(Handle(db.CompSpec.borci.city)))
-      .thenReturn(Future.successful(CompSpec.borci.cities))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
+    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
+      .thenReturn(Future.successful(CitySpec.noveZamky))
     when(compVoteRepository.all(None))
       .thenReturn(Future.successful(db.CompVoteSpec.all))
 
@@ -195,8 +195,8 @@ class CompServiceImplSpec extends BaseSpec {
     verify(compVoteRepository).all(None)
     verify(compRepository).all(None, None)
     verify(techService).allRatings()
-    verify(locationService, times(5)).city(Handle(db.CompSpec.avitech.city))
-    verify(locationService).city(Handle(db.CompSpec.borci.city))
+    verify(locationService, times(5)).city(Handle(db.CitySpec.bratislava.handle))
+    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
     verifyNoMore()
   }
 

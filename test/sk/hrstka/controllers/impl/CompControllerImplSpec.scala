@@ -4,7 +4,7 @@ import org.mockito.Mockito._
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results
 import sk.hrstka.controllers.test.BaseControllerSpec
-import sk.hrstka.models.domain.{CompRatingSpec, CompSpec, TechRatingSpec}
+import sk.hrstka.models.domain.{CitySpec, CompRatingSpec, CompSpec, TechRatingSpec}
 import sk.hrstka.services.{AuthService, CompService, MarkdownService}
 
 import scala.concurrent.Future
@@ -97,45 +97,45 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
 
   it should "get HTML view containing companies in Bratislava" in new TestScope {
     // Prepare
-    when(compService.all(city = Some(CompSpec.avitech.cities.handle), None))
+    when(compService.all(city = Some(CitySpec.bratislava.handle), None))
       .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
-    when(locationService.city(CompSpec.avitech.cities.handle))
-      .thenReturn(Future.successful(CompSpec.avitech.cities))
-    prepareMainModel(Some(CompSpec.avitech.cities.handle))
+    when(locationService.city(CitySpec.bratislava.handle))
+      .thenReturn(Future.successful(CitySpec.bratislava))
+    prepareMainModel(Some(CitySpec.bratislava.handle))
 
     // Execute
-    assertView(compController.cityTech(CompSpec.avitech.cities.handle.value, "")) { result =>
+    assertView(compController.cityTech(CitySpec.bratislava.handle.value, "")) { result =>
       assert(result.contains("<h2>Companies in Bratislava city</h2>"))
     }
 
     // Verify
-    verifyMainModel(Some(CompSpec.avitech.cities.handle))
-    verify(locationService).city(CompSpec.avitech.cities.handle)
-    verify(compService).all(Some(CompSpec.avitech.cities.handle), None)
+    verifyMainModel(Some(CitySpec.bratislava.handle))
+    verify(locationService).city(CitySpec.bratislava.handle)
+    verify(compService).all(Some(CitySpec.bratislava.handle), None)
     verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
 
   it should "get HTML view containing companies in Bratislava that use Scala" in new TestScope {
     // Prepare
-    when(compService.all(city = Some(CompSpec.avitech.cities.handle), tech = Some(TechRatingSpec.scalaRating.tech.handle)))
+    when(compService.all(city = Some(CitySpec.bratislava.handle), tech = Some(TechRatingSpec.scalaRating.tech.handle)))
       .thenReturn(Future.successful(Seq(CompRatingSpec.avitech)))
-    when(locationService.city(CompSpec.avitech.cities.handle))
-      .thenReturn(Future.successful(CompSpec.avitech.cities))
+    when(locationService.city(CitySpec.bratislava.handle))
+      .thenReturn(Future.successful(CitySpec.bratislava))
     when(techService.getByHandle(TechRatingSpec.scalaRating.tech.handle))
       .thenReturn(Future.successful(TechRatingSpec.scalaRating.tech))
-    prepareMainModel(Some(CompSpec.avitech.cities.handle))
+    prepareMainModel(Some(CitySpec.bratislava.handle))
 
     // Execute
-    assertView(compController.cityTech(CompSpec.avitech.cities.handle.value, TechRatingSpec.scalaRating.tech.handle.value)) { result =>
+    assertView(compController.cityTech(CitySpec.bratislava.handle.value, TechRatingSpec.scalaRating.tech.handle.value)) { result =>
       assert(result.contains("<h2>Scala in Bratislava city</h2>"))
     }
 
     // Verify
-    verifyMainModel(Some(CompSpec.avitech.cities.handle))
+    verifyMainModel(Some(CitySpec.bratislava.handle))
     verify(techService).getByHandle(TechRatingSpec.scalaRating.tech.handle)
-    verify(locationService).city(CompSpec.avitech.cities.handle)
-    verify(compService).all(Some(CompSpec.avitech.cities.handle), Some(TechRatingSpec.scalaRating.tech.handle))
+    verify(locationService).city(CitySpec.bratislava.handle)
+    verify(compService).all(Some(CitySpec.bratislava.handle), Some(TechRatingSpec.scalaRating.tech.handle))
     verify(markdownService).toHtml(CompSpec.avitech.markdownNote)
     verifyNoMore()
   }
