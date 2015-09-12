@@ -106,7 +106,7 @@ object AuthCompControllerImpl {
     mapping(
       "compName" -> text,
       "website" -> text,
-      "cities" -> text,
+      "hidden-cities" -> text,
       "businessNumber" -> text,
       "employeeCount" -> optional(number),
       "codersCount" -> optional(number),
