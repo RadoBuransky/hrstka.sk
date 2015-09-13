@@ -10,7 +10,7 @@
             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                 <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(compRating.value)%</span>
             }
-            <div class="city">@compRating.comp.cities.map(_.en).mkString(", ")</div>
+            <span class="city">@compRating.comp.cities.map(_.en).mkString(", ")</span>
         </h3>
     </header>
     @if(compRating.comp.tags.nonEmpty) {
@@ -51,6 +51,5 @@
         }
     }
     </div>
-    <div id="comp-separator"></div>
 </article>
 }
