@@ -4,7 +4,7 @@ import play.api.mvc._
 import play.api.{Application, Mode}
 import sk.hrstka.controllers.auth.impl.HrstkaAuthElement
 import sk.hrstka.models.domain.{Handle, User}
-import sk.hrstka.models.ui.{CityFactory, MainModel, TechRating, TechRatingFactory}
+import sk.hrstka.models.ui._
 import sk.hrstka.services.{LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,7 +13,9 @@ import scala.concurrent.Future
 trait MainModelProvider {
   protected def withMainModel[A, R](city: Option[String] = None,
                                     tech: Option[String] = None,
-                                    user: Option[User] = None)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
+                                    user: Option[User] = None,
+                                    title: String = MainModelSingleton.defaultTitle,
+                                    description: String = MainModelSingleton.defaultDescription)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     // Faku user for convenient development
     val devUser = user match {
       case Some(u) => Some(u)
@@ -31,7 +33,9 @@ trait MainModelProvider {
           city          = city,
           tech          = tech,
           user          = devUser,
-          mode          = application.mode
+          mode          = application.mode,
+          title         = title,
+          description   = description
         ))
       }
     }

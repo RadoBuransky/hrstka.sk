@@ -8,4 +8,11 @@ case class MainModel(cities: Seq[City],
                      city: Option[String],
                      tech: Option[String],
                      user: Option[User],
-                     mode: Mode)
+                     mode: Mode,
+                     title: String = MainModelSingleton.defaultTitle,
+                     description: String = MainModelSingleton.defaultDescription)
+
+object MainModelSingleton {
+  val defaultTitle = "Hŕstka"
+  val defaultDescription = "PROGRAMMER'S DELICATESSEN"
+}

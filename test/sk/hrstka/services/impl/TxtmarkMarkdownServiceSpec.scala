@@ -39,24 +39,14 @@ class TxtmarkMarkdownServiceSpec extends BaseSpec {
 
   it should "convert unordered lists" in new TestScope {
     test(
-      """* a
-        |* b
-      """.stripMargin,
-      """<ul>
-        |<li>a</li>
-        |<li>b</li>
-        |</ul>""".stripMargin)
+      "* a\n* b",
+      "<ul>\n<li>a</li>\n<li>b</li>\n</ul>")
   }
 
   it should "convert ordered lists" in new TestScope {
     test(
-      """1. a
-        |2. b
-      """.stripMargin,
-      """<ol>
-        |<li>a</li>
-        |<li>b</li>
-        |</ol>""".stripMargin)
+      "1. a\n2. b",
+      "<ol>\n<li>a</li>\n<li>b</li>\n</ol>")
   }
 
   private class TestScope {

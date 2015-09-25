@@ -28,9 +28,10 @@ final class CompControllerImpl @Inject() (compService: CompService,
   override def get(businessNumber: String): Action[AnyContent] = AsyncStack { implicit request =>
     for {
       comp <- compService.get(BusinessNumber(businessNumber))
+      uiComp = compToUi(comp)
       vote <- transform(loggedIn.map(userId => compService.voteFor(comp.businessNumber, userId.id)))
-      result <- withMainModel(None, None, loggedIn) { implicit mainModel =>
-        Ok(sk.hrstka.views.html.comp(compToUi(comp), vote.flatten.map(_.value)))
+      result <- withMainModel(None, None, loggedIn, title = uiComp.title, description = uiComp.description ) { implicit mainModel =>
+        Ok(sk.hrstka.views.html.comp(uiComp, vote.flatten.map(_.value)))
       }
     } yield result
   }
@@ -38,7 +39,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
   override def women = AsyncStack { implicit request =>
     for {
       topWomen <- compService.topWomen()
-      result <- withMainModel(None, None, loggedIn) { implicit mainModel =>
+      result <- withMainModel(None, None, loggedIn, title = "Women Who Code", description = "Companies with many women programmers.") { implicit mainModel =>
         Ok(sk.hrstka.views.html.women(topWomen.map(compRatingToUi)))
       }
     } yield result
@@ -51,14 +52,19 @@ final class CompControllerImpl @Inject() (compService: CompService,
   private def transform[A](o: Option[Future[A]]): Future[Option[A]] =
     o.map(f => f.map(Option(_))).getOrElse(Future.successful(None))
 
+  private def cityTechDescription(headlineText: String, compRatings: Seq[CompRating]): String =
+    "Top technology companies that use " + headlineText + ". " + compRatings.take(10).map(_.comp.name).mkString(",") + "."
+
   private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = AsyncStack { implicit request =>
       for {
         city <- cityForHandle(cityHandle)
         tech <- techForHandle(techHandle)
         compRatings <- compService.all(city.map(_.handle), tech.map(_.handle))
-        result <- withMainModel(cityHandle, techHandle, loggedIn) { implicit mainModel =>
+        headlineText = headline(city, tech)
+        result <- withMainModel(cityHandle, techHandle, loggedIn,
+          title = headlineText, description = cityTechDescription(headlineText, compRatings)) { implicit mainModel =>
           Ok(sk.hrstka.views.html.index(
-            headline(city, tech),
+            headlineText,
             compRatings.map(compRating => compRatingToUi(compRating))))
         }
       } yield result

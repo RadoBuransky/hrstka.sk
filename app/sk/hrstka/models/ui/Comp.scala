@@ -43,6 +43,9 @@ case class Comp(id: String,
     coders <- codersCount
     females <- femaleCodersCount
   } yield coders - females
+
+  def title = name
+  def description = name + " in " + cities.map(_.en).mkString(", ") + " uses " + techRatings.map(_.tech.name).mkString(",") + "."
 }
 
 object Comp {
