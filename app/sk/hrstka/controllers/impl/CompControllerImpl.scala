@@ -53,7 +53,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
     o.map(f => f.map(Option(_))).getOrElse(Future.successful(None))
 
   private def cityTechDescription(headlineText: String, compRatings: Seq[CompRating]): String =
-    "Top technology companies that use " + headlineText + ". " + compRatings.take(10).map(_.comp.name).mkString(",") + "."
+    "Top technology companies that use " + headlineText + ". " + compRatings.take(10).map(_.comp.name).mkString(", ") + "."
 
   private def cityTechAction(cityHandle: Option[String], techHandle: Option[String]) = AsyncStack { implicit request =>
       for {
@@ -62,7 +62,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
         compRatings <- compService.all(city.map(_.handle), tech.map(_.handle))
         headlineText = headline(city, tech)
         result <- withMainModel(cityHandle, techHandle, loggedIn,
-          title = headlineText, description = cityTechDescription(headlineText, compRatings)) { implicit mainModel =>
+          title = headlineText + " - Hŕstka", description = cityTechDescription(headlineText, compRatings)) { implicit mainModel =>
           Ok(sk.hrstka.views.html.index(
             headlineText,
             compRatings.map(compRating => compRatingToUi(compRating))))

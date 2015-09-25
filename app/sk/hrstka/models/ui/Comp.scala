@@ -45,7 +45,7 @@ case class Comp(id: String,
   } yield coders - females
 
   def title = name
-  def description = name + " in " + cities.map(_.en).mkString(", ") + " uses " + techRatings.map(_.tech.name).mkString(",") + "."
+  def description = name + " in " + cities.map(_.en).mkString(", ") + " uses " + techRatings.map(_.tech.name).mkString(", ") + "."
 }
 
 object Comp {
