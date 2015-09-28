@@ -7,6 +7,8 @@ import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
 import sk.hrstka.services.impl.NotCachedCompService
 import sk.hrstka.services.{CompService, LocationService, TechService}
 
+import scala.concurrent.Future
+
 @Singleton
 final class CachedCompServiceImpl @Inject() (compRepository: CompRepository,
                                              compVoteRepository: CompVoteRepository,
@@ -24,4 +26,5 @@ final class CachedCompServiceImpl @Inject() (compRepository: CompRepository,
   override def topWomen() =
     hrstkaCache.cacheSuccess(s"CachedCompServiceImpl.topWomen", underlying.topWomen())
   override def voteFor(businessNumber: BusinessNumber, userId: Id) = underlying.voteFor(businessNumber, userId)
+  override def search(compSearch: CompSearch): Future[Seq[CompRating]] = underlying.search(compSearch)
 }

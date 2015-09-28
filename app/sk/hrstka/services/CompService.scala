@@ -40,6 +40,14 @@ trait CompService {
   def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[CompRating]]
 
   /**
+   * Search for companies.
+   *
+   * @param compSearch Company search info.
+   * @return Found companies.
+   */
+  def search(compSearch: CompSearch): Future[Seq[CompRating]]
+
+  /**
    * Ordered list of top few companies with the most number of female programmers.
    *
    * @return Ordered list of companies.

@@ -63,6 +63,8 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       }
     }
 
+  override def search(compSearch: CompSearch): Future[Seq[CompRating]] = ???
+
   override def get(businessNumber: BusinessNumber): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>
       compRepository.get(businessNumber.value).flatMap(dbCompToDomain(techRatings, _))
