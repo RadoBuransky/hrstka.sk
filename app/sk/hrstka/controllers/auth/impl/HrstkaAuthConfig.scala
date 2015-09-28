@@ -62,14 +62,14 @@ trait HrstkaAuthConfig extends AuthConfig with Logging {
    * Where to redirect the user after a successful login.
    */
   def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(sk.hrstka.controllers.routes.CompController.all()))
+    Future.successful(Redirect(sk.hrstka.controllers.routes.CompController.search()))
   }
 
   /**
    * Where to redirect the user after logging out
    */
   def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(sk.hrstka.controllers.routes.CompController.all()))
+    Future.successful(Redirect(sk.hrstka.controllers.routes.CompController.search()))
   }
 
   /**

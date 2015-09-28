@@ -1,13 +1,13 @@
-GET     /                           sk.hrstka.controllers.CompController.all
+GET     /                           sk.hrstka.controllers.CompController.search
 GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
 GET     /api                        sk.hrstka.controllers.AppController.api
 GET     /about                      sk.hrstka.controllers.AppController.about
 GET     /addCompany                 sk.hrstka.controllers.AppController.addCompInfo
 
-GET     /programming/companies                  sk.hrstka.controllers.CompController.all
-GET     /programming/women                      sk.hrstka.controllers.CompController.women
+GET     /programming/companies                  sk.hrstka.controllers.CompController.search
 GET     /programming/companies/:city            sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
 GET     /programming/companies/:city/:tech      sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
+GET     /programming/women                      sk.hrstka.controllers.CompController.women
 GET     /programming/company/:businessNumber    sk.hrstka.controllers.CompController.get(businessNumber: String)
 
 GET     /api/companies                  sk.hrstka.controllers.ApiController.comps

@@ -29,7 +29,7 @@ trait CompController {
    *
    * @return HTML view.
    */
-  def all: EssentialAction
+  def search: EssentialAction
 
   /**
    * Gets HTML view containing companies for the provided city and tech handles.

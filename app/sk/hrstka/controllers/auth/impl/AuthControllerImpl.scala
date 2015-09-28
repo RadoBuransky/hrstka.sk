@@ -57,7 +57,7 @@ final class AuthControllerImpl @Inject() (protected val authService: AuthService
     form.password match {
       case form.passwordAgain =>
         authService.createUser(Email(form.email), form.password).map { _ =>
-          Redirect(sk.hrstka.controllers.routes.CompController.all())
+          Redirect(sk.hrstka.controllers.routes.CompController.search())
         }
       case _ => Future.successful(BadRequest("Passwords do not match!"))
     }

@@ -62,7 +62,7 @@ class CompControllerImplSpec extends BaseControllerSpec with Results {
     prepareMainModel()
 
     // Execute
-    assertView(compController.all()) { result =>
+    assertView(compController.search()) { result =>
       assert(result.contains("<h2>All technology companies</h2>"))
     }
 

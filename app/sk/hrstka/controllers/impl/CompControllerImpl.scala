@@ -45,7 +45,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
     } yield result
   }
 
-  override def all = cityTech("", "")
+  override def search = cityTech("", "")
   override def cityTech(cityHandle: String, techHandle: String) =
     cityTechAction(Option(cityHandle).filter(_.trim.nonEmpty), Option(techHandle).filter(_.trim.nonEmpty))
 
