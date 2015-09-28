@@ -1,9 +1,3 @@
-GET     /                           sk.hrstka.controllers.CompController.search
-GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
-GET     /api                        sk.hrstka.controllers.AppController.api
-GET     /about                      sk.hrstka.controllers.AppController.about
-GET     /addCompany                 sk.hrstka.controllers.AppController.addCompInfo
-
 GET     /programming/companies                  sk.hrstka.controllers.CompController.search
 GET     /programming/companies/:city            sk.hrstka.controllers.CompController.cityTech(city: String, tech: String = "")
 GET     /programming/companies/:city/:tech      sk.hrstka.controllers.CompController.cityTech(city: String, tech: String)
@@ -40,3 +34,9 @@ GET     /programming/company/:businessNumber/voteDown   sk.hrstka.controllers.au
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+GET     /                           sk.hrstka.controllers.CompController.search
+GET     /*path/                     sk.hrstka.controllers.AppController.untrail(path: String)
+GET     /api                        sk.hrstka.controllers.AppController.api
+GET     /about                      sk.hrstka.controllers.AppController.about
+GET     /addCompany                 sk.hrstka.controllers.AppController.addCompInfo
