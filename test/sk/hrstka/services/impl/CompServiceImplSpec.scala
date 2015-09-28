@@ -237,6 +237,33 @@ class CompServiceImplSpec extends BaseSpec {
   it should "set vote value to 0 if was 1" in new VoteTestScope { testVoteDown(Some(1), 0) }
   it should "set vote value to -1 if was 0" in new VoteTestScope { testVoteDown(Some(0), -1) }
 
+  behavior of "search"
+
+  it should "orchestrate everything" in new TestScope {
+    when(techService.allRatings()).thenReturn(Future.successful(TechRatingSpec.allRatings))
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(db.CompSpec.all))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
+    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
+      .thenReturn(Future.successful(CitySpec.noveZamky))
+    when(compSearchService.rank(any(), any()))
+      .thenReturn(MatchedRank(1.0))
+
+    val result = futureValue(compService.search(CompSearchQuery(Set.empty)))
+    assertResult(Seq(CompRatingSpec.avitech, CompRatingSpec.borci))(result)
+
+    verify(compSearchService, times(2)).rank(any(), any())
+    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
+    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
+    verify(compVoteRepository).all(None)
+    verify(compRepository).all(None, None)
+    verify(techService).allRatings()
+    verifyNoMore()
+  }
+
   behavior of "filterAndSort"
 
   it should "remove companies with no match" in new TestScope {

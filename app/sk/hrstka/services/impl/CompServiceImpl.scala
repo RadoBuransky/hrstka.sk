@@ -96,9 +96,24 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   }
 
   private[impl] def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = {
+//    techService.allRatings().flatMap { techRatings =>
+//      compRepository.all().flatMap { dbComps =>
+//        Future.sequence(dbComps.map(dbCompToDomain(techRatings, _))).flatMap { comps =>
+//          compVoteRepository.all(None).map { allCompVotes =>
+//            val compRatings = comps.map(compRating(_, allCompVotes))
+//            val compRanks = compRatings.map { compRating =>
+//              compRating -> compSearchService.rank(compSearchQuery, compRating.comp)
+//            }
+//
+//            filterAndSort(compRanks)
+//          }
+//        }
+//      }
+//    }
+
     for {
       techRatings   <- techService.allRatings()
-      dbComps       <- compRepository.all()
+      dbComps       <- compRepository.all(None, None)
       comps         <- Future.sequence(dbComps.map(dbCompToDomain(techRatings, _)))
       allCompVotes  <- compVoteRepository.all(None)
       compRatings   = comps.map(compRating(_, allCompVotes))
