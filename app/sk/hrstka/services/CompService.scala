@@ -2,7 +2,6 @@ package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.domain._
-import sk.hrstka.services.impl.CompServiceImpl
 import sk.hrstka.services.impl.cache.CachedCompServiceImpl
 
 import scala.concurrent.Future
@@ -42,10 +41,10 @@ trait CompService {
   /**
    * Search for companies.
    *
-   * @param compSearch Company search info.
+   * @param query Raw company search query.
    * @return Found companies.
    */
-  def search(compSearch: CompSearch): Future[Seq[CompRating]]
+  def search(query: String): Future[Seq[CompRating]]
 
   /**
    * Ordered list of top few companies with the most number of female programmers.

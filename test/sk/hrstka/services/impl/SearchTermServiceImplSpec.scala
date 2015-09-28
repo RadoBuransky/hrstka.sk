@@ -11,19 +11,19 @@ class SearchTermServiceImplSpec extends BaseSpec {
   behavior of "compSearch"
 
   it should "find location term" in new TestScope {
-    val result = futureValue(service.compSearch("bratislava"))
-    assert(result == CompSearch(Set(CitySearchTerm(CitySpec.bratislava.handle))))
+    val result = futureValue(service.compSearchQuery("bratislava"))
+    assert(result == CompSearchQuery(Set(CitySearchTerm(CitySpec.bratislava.handle))))
   }
 
   it should "find tech term" in new TestScope {
-    val result = futureValue(service.compSearch("scala"))
-    assert(result == CompSearch(Set(TechSearchTerm(TechRatingSpec.scalaRating.tech.handle))))
+    val result = futureValue(service.compSearchQuery("scala"))
+    assert(result == CompSearchQuery(Set(TechSearchTerm(TechRatingSpec.scalaRating.tech.handle))))
   }
 
   it should "find multiple location and tech terms" in new TestScope {
-    val result = futureValue(service.compSearch(" Scala bratislava Košice akka"))
+    val result = futureValue(service.compSearchQuery(" Scala bratislava Košice akka"))
     assert(result ==
-      CompSearch(
+      CompSearchQuery(
         Set(
           CitySearchTerm(CitySpec.bratislava.handle),
           CitySearchTerm(CitySpec.kosice.handle),
@@ -57,6 +57,6 @@ class SearchTermServiceImplSpec extends BaseSpec {
     when(techService.allRatings()).thenReturn(Future.successful(TechRatingSpec.allRatings))
     when(locationService.allCities()).thenReturn(Future.successful(CitySpec.all))
 
-    def service = new SearchTermServiceImpl(techService, locationService)
+    def service = new CompSearchServiceImpl(techService, locationService)
   }
 }

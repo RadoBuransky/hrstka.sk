@@ -2,17 +2,17 @@ package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
 import sk.hrstka.models.domain._
-import sk.hrstka.services.{LocationService, SearchTermService, TechService}
+import sk.hrstka.services.{CompSearchService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class SearchTermServiceImpl @Inject() (techService: TechService,
-                                       locationService: LocationService) extends SearchTermService {
-  import SearchTermServiceImpl._
+class CompSearchServiceImpl @Inject() (techService: TechService,
+                                       locationService: LocationService) extends CompSearchService {
+  import CompSearchServiceImpl._
 
-  override def compSearch(query: String): Future[CompSearch] = {
+  override def compSearchQuery(query: String): Future[CompSearchQuery] = {
     for {
       techs <- techService.allRatings()
       techHandles = techs.map(_.tech.handle)
@@ -21,7 +21,9 @@ class SearchTermServiceImpl @Inject() (techService: TechService,
     } yield compSearch(query, techHandles, cityHandles)
   }
 
-  private def compSearch(query: String, techHandles: Iterable[Handle], cityHandles: Traversable[Handle]): CompSearch = {
+  override def rank(query: CompSearchQuery, comp: Comp): CompSearchRank = ???
+
+  private def compSearch(query: String, techHandles: Iterable[Handle], cityHandles: Traversable[Handle]): CompSearchQuery = {
     def tokenToTerm(token: String): CompSearchTerm = {
       // Is it a tech?
       techHandles.find(_.value == token) match {
@@ -37,13 +39,13 @@ class SearchTermServiceImpl @Inject() (techService: TechService,
       }
     }
 
-    CompSearch(queryToTokens(query).map(tokenToTerm))
+    CompSearchQuery(queryToTokens(query).map(tokenToTerm))
   }
 
   private[impl] def queryToTokens(query: String): Set[String] =
     termRegex.findAllMatchIn(HandleFactory.removeDiacritics(query).toLowerCase).map(_.group(0)).toSet
 }
 
-private object SearchTermServiceImpl {
+private object CompSearchServiceImpl {
   val termRegex = """([a-z0-9\+/]+)""".r
 }

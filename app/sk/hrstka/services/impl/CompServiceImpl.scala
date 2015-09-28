@@ -5,7 +5,7 @@ import sk.hrstka
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.{Handle, _}
 import sk.hrstka.repositories.{CompRepository, CompVoteRepository}
-import sk.hrstka.services.{CompService, LocationService, TechService}
+import sk.hrstka.services.{CompSearchService, CompService, LocationService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -20,7 +20,8 @@ private[impl] trait NotCachedCompService extends CompService
 final class CompServiceImpl @Inject() (compRepository: CompRepository,
                                        compVoteRepository: CompVoteRepository,
                                        techService: TechService,
-                                       locationService: LocationService) extends NotCachedCompService {
+                                       locationService: LocationService,
+                                       compSearchService: CompSearchService) extends NotCachedCompService {
   import Identifiable._
 
   override def upsert(comp: Comp, techHandles: Set[hrstka.models.domain.Handle], userId: Id): Future[BusinessNumber] = {
@@ -44,26 +45,14 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     )).map(_ => comp.businessNumber)
   }
 
-  override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[CompRating]] =
-    // Get all technologies with ratings
-    techService.allRatings().flatMap { techRatings =>
-      // Get all companies for the city and the technology
-      compRepository.all(city.map(_.value), tech.map(_.value)).flatMap { dbComps =>
-        // Convert DB entities to domain
-        Future.sequence(dbComps.map(dbCompToDomain(techRatings, _))).flatMap { comps =>
-          // Get all votes for all companies
-          compVoteRepository.all(None).map { allCompVotes =>
-            // Convert to company ratings
-            val compRatings = comps.map(compRating(_, allCompVotes))
+  override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[CompRating]] = {
+    // Create search query from the provided city and tech
+    val terms: Set[Option[CompSearchTerm]] = Set(city.map(CitySearchTerm.apply), tech.map(TechSearchTerm.apply))
+    search(CompSearchQuery(terms.flatten))
+  }
 
-            // Sort by rating value
-            compRatings.toSeq.sortBy(-1 * _.value)
-          }
-        }
-      }
-    }
-
-  override def search(compSearch: CompSearch): Future[Seq[CompRating]] = ???
+  override def search(query: String): Future[Seq[CompRating]] =
+    compSearchService.compSearchQuery(query).flatMap(search)
 
   override def get(businessNumber: BusinessNumber): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>
@@ -95,6 +84,39 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   override def voteUp(businessNumber: BusinessNumber, userId: Id): Future[Unit] = voteDelta(businessNumber, userId, 1)
   override def voteDown(businessNumber: BusinessNumber, userId: Id): Future[Unit] = voteDelta(businessNumber, userId, -1)
 
+  private def voteDelta(businessNumber: BusinessNumber, userId: Id, delta: Int): Future[Unit] = {
+    compRepository.get(businessNumber.value).flatMap { dbComp =>
+      compVoteRepository.findValue(dbComp._id, userId).map { latestVoteOption =>
+        val newVoteValue = latestVoteOption.getOrElse(0) + delta
+        if ((newVoteValue <= CompRatingFactory.maxVoteValue) &&
+          (newVoteValue >= CompRatingFactory.minVoteValue))
+          compVoteRepository.vote(dbComp._id, userId, newVoteValue)
+      }
+    }
+  }
+
+  private[impl] def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = {
+    for {
+      techRatings   <- techService.allRatings()
+      dbComps       <- compRepository.all()
+      comps         <- Future.sequence(dbComps.map(dbCompToDomain(techRatings, _)))
+      allCompVotes  <- compVoteRepository.all(None)
+      compRatings   = comps.map(compRating(_, allCompVotes))
+      compRanks     = compRatings.map { compRating => compRating -> compSearchService.rank(compSearchQuery, compRating.comp) }
+    } yield filterAndSort(compRanks)
+  }
+
+  private[impl] def filterAndSort(compRanks: Iterable[(CompRating, CompSearchRank)]): Seq[CompRating] = {
+    // Filter only matched companies
+    val matchedComps = compRanks.flatMap {
+      case (comp, MatchedRank(rank)) => Some(comp -> rank)
+      case (_, NoMatchRank) => None
+    }
+
+    // Sort by search rank and then by rating value
+    matchedComps.toSeq.sortBy(c => (-1 * c._2, -1 * c._1.value)).map(_._1)
+  }
+
   private def compRating(comp: Comp, allCompVotes: Traversable[db.CompVote]): CompRating = {
     val upVotesValue = allCompVotes.withFilter(v => Identifiable.fromBSON(v.entityId) == comp.id && v.value > 0).map(_.value).sum
     val voteCount = allCompVotes.count(v => Identifiable.fromBSON(v.entityId) == comp.id && v.value != 0)
@@ -104,17 +126,6 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   private def dbCompToDomain(techRatings: Seq[TechRating], comp: hrstka.models.db.Comp): Future[Comp] = {
     Future.sequence(comp.cities.map(Handle.apply).map(locationService.city)).map { cities =>
       CompFactory(comp, techRatings.filter(t => comp.techs.contains(t.tech.handle.value)), cities)
-    }
-  }
-
-  private def voteDelta(businessNumber: BusinessNumber, userId: Id, delta: Int): Future[Unit] = {
-    compRepository.get(businessNumber.value).flatMap { dbComp =>
-      compVoteRepository.findValue(dbComp._id, userId).map { latestVoteOption =>
-        val newVoteValue = latestVoteOption.getOrElse(0) + delta
-        if ((newVoteValue <= CompRatingFactory.maxVoteValue) &&
-          (newVoteValue >= CompRatingFactory.minVoteValue))
-          compVoteRepository.vote(dbComp._id, userId, newVoteValue)
-      }
     }
   }
 }

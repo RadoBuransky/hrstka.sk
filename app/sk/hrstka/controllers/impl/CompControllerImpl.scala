@@ -8,7 +8,7 @@ import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
 import sk.hrstka.models.domain._
-import sk.hrstka.models.ui.{Tag, CompFactory, CompRatingFactory, Html}
+import sk.hrstka.models.ui.{CompFactory, CompRatingFactory, Html, Tag}
 import sk.hrstka.models.{domain, ui}
 import sk.hrstka.services._
 
