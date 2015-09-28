@@ -1,6 +1,6 @@
 package sk.hrstka.services.impl
 
-import org.mockito.ArgumentCaptor
+import org.mockito.{Matchers, ArgumentCaptor}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import reactivemongo.bson.BSONObjectID
@@ -42,101 +42,43 @@ class CompServiceImplSpec extends BaseSpec {
 
   behavior of "all"
 
-//  it should "return all companies sorted by rating if no city or tech is provided" in new TestScope {
-//    // Prepare
-//    when(compRepository.all(None, None))
-//      .thenReturn(Future.successful(Seq(db.CompSpec.avitech, db.CompSpec.borci)))
-//    when(techService.allRatings())
-//      .thenReturn(Future.successful(TechRatingSpec.allRatings))
-//    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
-//      .thenReturn(Future.successful(CitySpec.bratislava))
-//    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
-//      .thenReturn(Future.successful(CitySpec.noveZamky))
-//    when(compVoteRepository.all(None))
-//      .thenReturn(Future.successful(db.CompVoteSpec.all))
-//
-//    // Execute
-//    val result = compService.all(None, None).futureValue
-//    assertCompRating(CompRatingSpec.avitech, result.find(_.comp.id == avitech.id).get)
-//    assertCompRating(CompRatingSpec.borci, result.find(_.comp.id == borci.id).get)
-//    assertResult(Seq(CompRatingSpec.avitech, CompRatingSpec.borci))(result)
-//
-//    // Verify
-//    verify(compVoteRepository).all(None)
-//    verify(compRepository).all(None, None)
-//    verify(techService).allRatings()
-//    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
-//    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
-//    verifyNoMore()
-//  }
-//
-//  it should "return all companies in Bratislava" in new TestScope {
-//    // Prepare
-//    when(compRepository.all(city = Some(db.CitySpec.bratislava.handle), None))
-//      .thenReturn(Future.successful(Seq(db.CompSpec.avitech)))
-//    when(techService.allRatings())
-//      .thenReturn(Future.successful(TechRatingSpec.allRatings))
-//    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
-//      .thenReturn(Future.successful(CitySpec.bratislava))
-//    when(compVoteRepository.all(None))
-//      .thenReturn(Future.successful(db.CompVoteSpec.all))
-//
-//    // Execute
-//    val result = futureValue(compService.all(city = Some(CitySpec.bratislava.handle), None)).toSet
-//    assertCompRating(CompRatingSpec.avitech, result.find(_.comp.id == avitech.id).get)
-//    assertResult(Set(CompRatingSpec.avitech))(result)
-//
-//    // Verify
-//    verify(compVoteRepository).all(None)
-//    verify(compRepository).all(city = Some(db.CitySpec.bratislava.handle), None)
-//    verify(techService).allRatings()
-//    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
-//    verifyNoMore()
-//  }
-//
-//  it should "return all companies that use PHP" in new TestScope {
-//    // Prepare
-//    when(compRepository.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
-//      .thenReturn(Future.successful(Seq(db.CompSpec.borci)))
-//    when(techService.allRatings())
-//      .thenReturn(Future.successful(TechRatingSpec.allRatings))
-//    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
-//      .thenReturn(Future.successful(CitySpec.noveZamky))
-//    when(compVoteRepository.all(None))
-//      .thenReturn(Future.successful(db.CompVoteSpec.all))
-//
-//    // Execute
-//    val result = futureValue(compService.all(None, tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
-//    assertCompRating(CompRatingSpec.borci, result.find(_.comp.id == borci.id).get)
-//    assertResult(Set(CompRatingSpec.borci))(result)
-//
-//    // Verify
-//    verify(compVoteRepository).all(None)
-//    verify(compRepository).all(None, tech = Some(TechRatingSpec.phpRating.tech.handle.value))
-//    verify(techService).allRatings()
-//    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
-//    verifyNoMore()
-//  }
-//
-//  it should "return all companies in Bratislava that use PHP" in new TestScope {
-//    // Prepare
-//    when(compRepository.all(city = Some(db.CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle.value)))
-//      .thenReturn(Future.successful(Seq.empty))
-//    when(techService.allRatings())
-//      .thenReturn(Future.successful(TechRatingSpec.allRatings))
-//    when(compVoteRepository.all(None))
-//      .thenReturn(Future.successful(db.CompVoteSpec.all))
-//
-//    // Execute
-//    val result = futureValue(compService.all(city = Some(CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle))).toSet
-//    assertResult(Set.empty)(result)
-//
-//    // Verify
-//    verify(compVoteRepository).all(None)
-//    verify(compRepository).all(city = Some(db.CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle.value))
-//    verify(techService).allRatings()
-//    verifyNoMore()
-//  }
+  it should "return all companies in Bratislava that use PHP" in new TestScope {
+    // Prepare
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(db.CompSpec.all))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
+    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
+      .thenReturn(Future.successful(CitySpec.noveZamky))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
+    when(compSearchService.rank(Matchers.eq(
+      CompSearchQuery(Set(
+        CitySearchTerm(CitySpec.bratislava.handle),
+        TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
+      ))), any()))
+      .thenReturn(MatchedRank(1.0))
+
+    // Execute
+    val result = futureValue(compService.all(city = Some(CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle)))
+    assertResult(CompRatingSpec.avitech.comp.name)(result(0).comp.name)
+    assertResult(CompRatingSpec.borci.comp.name)(result(1).comp.name)
+
+    // Verify
+    verify(compSearchService, times(2)).rank(Matchers.eq(
+      CompSearchQuery(Set(
+        CitySearchTerm(CitySpec.bratislava.handle),
+        TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
+      ))), any())
+    verify(compVoteRepository).all(None)
+    verify(compRepository).all(None, None)
+    verify(techService).allRatings()
+    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
+    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
+    verifyNoMore()
+  }
 
   behavior of "get"
 
@@ -162,43 +104,46 @@ class CompServiceImplSpec extends BaseSpec {
 
   behavior of "topWomen"
 
-//  it should "return sorted list of companies with the most women programmers" in new TestScope {
-//    val noCodersSetComp = db.CompSpec.avitech.copy(codersCount = None, femaleCodersCount = None)
-//    val noCodersComp = db.CompSpec.avitech.copy(employeeCount = None, codersCount = None, femaleCodersCount = None)
-//    val noFemaleCodersSetComp = db.CompSpec.avitech.copy(femaleCodersCount = None)
-//    val noFemaleCodersComp = db.CompSpec.avitech.copy(femaleCodersCount = Some(0))
-//
-//    // Prepare
-//    when(compRepository.all(None, None))
-//      .thenReturn(Future.successful(Seq(
-//        db.CompSpec.borci,
-//        noCodersSetComp,
-//        noCodersComp,
-//        db.CompSpec.avitech,
-//        noFemaleCodersSetComp,
-//        noFemaleCodersComp)))
-//    when(techService.allRatings())
-//      .thenReturn(Future.successful(TechRatingSpec.allRatings))
-//    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
-//      .thenReturn(Future.successful(CitySpec.bratislava))
-//    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
-//      .thenReturn(Future.successful(CitySpec.noveZamky))
-//    when(compVoteRepository.all(None))
-//      .thenReturn(Future.successful(db.CompVoteSpec.all))
-//
-//    // Execute
-//    assertResult(Seq(CompRatingSpec.borci, CompRatingSpec.avitech)) {
-//      futureValue(compService.topWomen())
-//    }
-//
-//    // Verify
-//    verify(compVoteRepository).all(None)
-//    verify(compRepository).all(None, None)
-//    verify(techService).allRatings()
-//    verify(locationService, times(5)).city(Handle(db.CitySpec.bratislava.handle))
-//    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
-//    verifyNoMore()
-//  }
+  it should "return sorted list of companies with the most women programmers" in new TestScope {
+    val noCodersSetComp = db.CompSpec.avitech.copy(codersCount = None, femaleCodersCount = None)
+    val noCodersComp = db.CompSpec.avitech.copy(employeeCount = None, codersCount = None, femaleCodersCount = None)
+    val noFemaleCodersSetComp = db.CompSpec.avitech.copy(femaleCodersCount = None)
+    val noFemaleCodersComp = db.CompSpec.avitech.copy(femaleCodersCount = Some(0))
+
+    // Prepare
+    when(compRepository.all(None, None))
+      .thenReturn(Future.successful(Seq(
+        db.CompSpec.borci,
+        noCodersSetComp,
+        noCodersComp,
+        db.CompSpec.avitech,
+        noFemaleCodersSetComp,
+        noFemaleCodersComp)))
+    when(techService.allRatings())
+      .thenReturn(Future.successful(TechRatingSpec.allRatings))
+    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
+      .thenReturn(Future.successful(CitySpec.bratislava))
+    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
+      .thenReturn(Future.successful(CitySpec.noveZamky))
+    when(compVoteRepository.all(None))
+      .thenReturn(Future.successful(db.CompVoteSpec.all))
+    when(compSearchService.rank(any(), any()))
+      .thenReturn(MatchedRank(1.0))
+
+    // Execute
+    assertResult(Seq(CompRatingSpec.borci, CompRatingSpec.avitech)) {
+      futureValue(compService.topWomen())
+    }
+
+    // Verify
+    verify(compSearchService, times(6)).rank(any(), any())
+    verify(compVoteRepository).all(None)
+    verify(compRepository).all(None, None)
+    verify(techService).allRatings()
+    verify(locationService, times(5)).city(Handle(db.CitySpec.bratislava.handle))
+    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
+    verifyNoMore()
+  }
 
   behavior of "voteFor"
 
@@ -360,6 +305,7 @@ class CompServiceImplSpec extends BaseSpec {
       verifyNoMoreInteractions(compRepository)
       verifyNoMoreInteractions(techService)
       verifyNoMoreInteractions(locationService)
+      verifyNoMoreInteractions(compSearchService)
     }
   }
 }

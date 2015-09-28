@@ -21,7 +21,7 @@ class CompSearchServiceImpl @Inject() (techService: TechService,
     } yield compSearch(query, techHandles, cityHandles)
   }
 
-  override def rank(query: CompSearchQuery, comp: Comp): CompSearchRank = ???
+  override def rank(query: CompSearchQuery, comp: Comp): CompSearchRank = MatchedRank(1.0)
 
   private def compSearch(query: String, techHandles: Iterable[Handle], cityHandles: Traversable[Handle]): CompSearchQuery = {
     def tokenToTerm(token: String): CompSearchTerm = {

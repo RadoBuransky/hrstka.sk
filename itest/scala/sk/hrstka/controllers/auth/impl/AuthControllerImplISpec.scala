@@ -37,7 +37,7 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
   it should "not authorize anonymous user" in new TestScope {
     assertResult(authController.logout()) { result =>
       assert(status(result) == SEE_OTHER)
-      assert(redirectLocation(result).contains("/"))
+      assert(redirectLocation(result).contains("/programming/companies"))
     }
   }
 
@@ -55,7 +55,7 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
     )
     assertResult(authController.authenticate(), form) { result =>
       assert(status(result) == SEE_OTHER)
-      assert(redirectLocation(result).contains("/"))
+      assert(redirectLocation(result).contains("/programming/companies"))
     }
 
     // Verify
@@ -152,7 +152,7 @@ class AuthControllerImplISpec(application: Application) extends BaseControllerIS
       )
       assertAuthResult(adminUser, authController, authController.register(), form) { result =>
         assert(status(result) == SEE_OTHER)
-        assert(redirectLocation(result).contains("/"))
+        assert(redirectLocation(result).contains("/programming/companies"))
       }
 
       // Verify

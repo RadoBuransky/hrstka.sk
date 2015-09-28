@@ -48,7 +48,7 @@ class HrstkaAuthConfigISpec extends BaseSpec with ScalaFutures with Results {
     // Execute
     val result = controller.loginSucceeded(FakeRequest())
     assert(status(result) == SEE_OTHER)
-    assert(redirectLocation(result).contains("/"))
+    assert(redirectLocation(result).contains("/programming/companies"))
 
     // Verify
     verifyNoMore()
@@ -60,7 +60,7 @@ class HrstkaAuthConfigISpec extends BaseSpec with ScalaFutures with Results {
     // Execute
     val result = controller.logoutSucceeded(FakeRequest())
     assert(status(result) == SEE_OTHER)
-    assert(redirectLocation(result).contains("/"))
+    assert(redirectLocation(result).contains("/programming/companies"))
 
     // Verify
     verifyNoMore()
