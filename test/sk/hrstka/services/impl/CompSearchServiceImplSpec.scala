@@ -7,8 +7,54 @@ import org.mockito.Mockito._
 
 import scala.concurrent.Future
 
-class SearchTermServiceImplSpec extends BaseSpec {
-  behavior of "compSearch"
+class CompSearchServiceImplSpec extends BaseSpec {
+  behavior of "rank"
+
+  it should "return match for an empty query" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set.empty), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match a tech" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(TechSearchTerm(TechRatingSpec.scalaRating.tech.handle))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match a city" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(CitySearchTerm(CitySpec.bratislava.handle))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match a tech and a city" in new TestScope {
+    assert(service.rank(CompSearchQuery(
+      Set(
+        CitySearchTerm(CitySpec.bratislava.handle),
+        TechSearchTerm(TechRatingSpec.scalaRating.tech.handle)
+      )), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "not match a tech" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(TechSearchTerm(TechRatingSpec.phpRating.tech.handle))), CompSpec.avitech) == NoMatchRank)
+  }
+
+  it should "not match a city" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(CitySearchTerm(CitySpec.noveZamky.handle))), CompSpec.avitech) == NoMatchRank)
+  }
+
+  ignore should "not match if a city matches but tech does not" in new TestScope {
+    assert(service.rank(CompSearchQuery(
+      Set(
+        CitySearchTerm(CitySpec.bratislava.handle),
+        TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
+      )), CompSpec.avitech) == NoMatchRank)
+  }
+
+  ignore should "not match if a tech matches but city does not" in new TestScope {
+    assert(service.rank(CompSearchQuery(
+      Set(
+        CitySearchTerm(CitySpec.noveZamky.handle),
+        TechSearchTerm(TechRatingSpec.scalaRating.tech.handle)
+      )), CompSpec.avitech) == NoMatchRank)
+  }
+
+  behavior of "compSearchQuery"
 
   it should "find location term" in new TestScope {
     val result = futureValue(service.compSearchQuery("bratislava"))
