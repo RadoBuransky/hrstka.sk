@@ -2,7 +2,7 @@ package sk.hrstka.controllers.impl
 
 import com.google.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.OptionalAuthElement
-import play.api.Application
+import play.api.{Logger, Application}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.CompController
@@ -45,7 +45,19 @@ final class CompControllerImpl @Inject() (compService: CompService,
     } yield result
   }
 
-  override def search = cityTech("", "")
+  override def search = AsyncStack { implicit request =>
+    val query = request.getQueryString("q") match {
+      case Some(q) => q
+      case None => ""
+    }
+
+    for {
+      compRatings <- compService.search(query)
+      result <- withMainModel(None, None, loggedIn, title = "") { implicit mainModel =>
+        Ok(sk.hrstka.views.html.index("", compRatings.map(compRating => compRatingToUi(compRating))))
+      }
+    } yield result
+  }
   override def cityTech(cityHandle: String, techHandle: String) =
     cityTechAction(Option(cityHandle).filter(_.trim.nonEmpty), Option(techHandle).filter(_.trim.nonEmpty))
 

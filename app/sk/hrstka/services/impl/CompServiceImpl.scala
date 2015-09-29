@@ -1,6 +1,7 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
+import play.api.Logger
 import sk.hrstka
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.{Handle, _}
@@ -52,7 +53,10 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   }
 
   override def search(query: String): Future[Seq[CompRating]] =
-    compSearchService.compSearchQuery(query).flatMap(search)
+    compSearchService.compSearchQuery(query).flatMap { compSearchQuery =>
+      Logger.info(compSearchQuery.toString)
+      search(compSearchQuery)
+    }
 
   override def get(businessNumber: BusinessNumber): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>

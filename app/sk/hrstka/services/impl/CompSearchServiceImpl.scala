@@ -1,6 +1,7 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
+import play.api.Logger
 import sk.hrstka.models.domain._
 import sk.hrstka.services.{CompSearchService, LocationService, TechService}
 
@@ -21,7 +22,30 @@ class CompSearchServiceImpl @Inject() (techService: TechService,
     } yield compSearch(query, techHandles, cityHandles)
   }
 
-  override def rank(query: CompSearchQuery, comp: Comp): CompSearchRank = MatchedRank(1.0)
+  override def rank(query: CompSearchQuery, comp: Comp): CompSearchRank = {
+    if (query.terms.isEmpty)
+      // No search, trivial match
+      MatchedRank(1.0)
+    else {
+      // Count individual term types
+      val cityTerms = query.terms.collect { case cityTerm: CitySearchTerm => cityTerm }
+      val techTerms = query.terms.collect { case techTerm: TechSearchTerm => techTerm }
+      val fulltextTerms = query.terms.collect { case fulltextTerm: FulltextSearchTerm => fulltextTerm }
+
+      // Maximal possible rank
+      val maxPossibleRank = (cityTerms.size + 1) * (techTerms.size + 1) + fulltextTerms.size
+
+      // Count matches
+      val matchedCities = cityTerms.map(_.cityHandle).count(comp.cities.map(_.handle))
+      val matchedTechs = techTerms.map(_.techHandle).count(comp.techRatings.map(_.tech.handle).toSet)
+      val matchedFulltext = 0
+
+      if (matchedCities == 0 && matchedTechs == 0 && matchedFulltext == 0)
+        NoMatchRank
+      else
+        MatchedRank(((matchedCities + 1) * (matchedTechs + 1) + matchedFulltext).toDouble / maxPossibleRank.toDouble)
+    }
+  }
 
   private def compSearch(query: String, techHandles: Iterable[Handle], cityHandles: Traversable[Handle]): CompSearchQuery = {
     def tokenToTerm(token: String): CompSearchTerm = {
