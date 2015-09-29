@@ -47,7 +47,7 @@ final class AuthControllerImpl @Inject() (protected val authService: AuthService
   }
 
   override def registerView: Action[AnyContent] = AsyncStack(AuthorityKey -> Admin) { implicit request =>
-    withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
+    withMainModel(Some(loggedIn)) { implicit mainModel =>
       Ok(sk.hrstka.views.html.auth.register())
     }
   }

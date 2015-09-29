@@ -14,6 +14,6 @@ class RoutesISpec(application: Application) extends FlatSpec with Logging {
     val Some(result) = route(application, FakeRequest(GET, "/"))
     assert(status(result) == OK)
     assert(contentType(result).contains("text/html"))
-    assert(contentAsString(result).contains("<h2>All technology companies</h2>"))
+    assert(contentAsString(result).contains("<h2>All tech companies</h2>"))
   }
 }

@@ -5,12 +5,11 @@ import sk.hrstka.models.domain.User
 
 case class MainModel(cities: Seq[City],
                      techRatings: Seq[TechRating],
-                     city: Option[String],
-                     tech: Option[String],
                      user: Option[User],
                      mode: Mode,
                      title: String = MainModelSingleton.defaultTitle,
-                     description: String = MainModelSingleton.defaultDescription)
+                     description: String = MainModelSingleton.defaultDescription,
+                     searchQuery: String = "")
 
 object MainModelSingleton {
   val defaultTitle = "Hŕstka"

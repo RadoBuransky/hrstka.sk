@@ -27,7 +27,7 @@ final class AuthLocationControllerImpl @Inject() (protected val authService: Aut
       locationService.allCities().flatMap { cities =>
         val uiCities = cities.map(CityFactory.apply).toSeq
         val citiesForCountries = uiCities.groupBy(_.country).toSeq
-        withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
+        withMainModel(Some(loggedIn)) { implicit mainModel =>
           Ok(sk.hrstka.views.html.auth.cities(uiCountries, citiesForCountries))
         }
       }

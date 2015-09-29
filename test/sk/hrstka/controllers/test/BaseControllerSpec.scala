@@ -26,10 +26,10 @@ abstract class BaseControllerSpec extends BaseSpec {
     val locationService = mock[LocationService]
     private lazy val applicationIsAMock = new MockUtil().isMock(application)
 
-    def prepareMainModel(cityHandle: Option[Handle] = None): Unit = {
+    def prepareMainModel(): Unit = {
       when(locationService.usedCities())
         .thenReturn(Future.successful(CitySpec.all))
-      when(techService.allUsedRatings(cityHandle))
+      when(techService.allUsedRatings(None))
         .thenReturn(Future.successful(TechRatingSpec.allRatings))
       if (applicationIsAMock) {
         when(application.mode)
@@ -53,9 +53,9 @@ abstract class BaseControllerSpec extends BaseSpec {
       f(result)
     }
 
-    def verifyMainModel(cityHandle: Option[Handle] = None): Unit = {
+    def verifyMainModel(): Unit = {
       verify(locationService, atLeastOnce()).usedCities()
-      verify(techService, atLeastOnce()).allUsedRatings(cityHandle)
+      verify(techService, atLeastOnce()).allUsedRatings(None)
       if (applicationIsAMock) {
         verify(application, atLeastOnce).mode
       }

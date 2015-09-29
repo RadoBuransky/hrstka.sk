@@ -37,7 +37,7 @@ final class AuthTechControllerImpl @Inject() (protected val authService: AuthSer
 
     serviceResult.flatMap {
       case (techRatings, allCategories, userVotes) =>
-        withMainModel(None, None, Some(loggedIn)) { implicit mainModel =>
+        withMainModel(Some(loggedIn)) { implicit mainModel =>
           Ok(sk.hrstka.views.html.auth.techs(
             None,
             techRatings.map(hrstka.models.ui.TechRatingFactory.apply),

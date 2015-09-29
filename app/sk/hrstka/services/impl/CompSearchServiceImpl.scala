@@ -1,7 +1,6 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{Inject, Singleton}
-import play.api.Logger
 import sk.hrstka.models.domain._
 import sk.hrstka.services.{CompSearchService, LocationService, TechService}
 
@@ -28,22 +27,39 @@ class CompSearchServiceImpl @Inject() (techService: TechService,
       MatchedRank(1.0)
     else {
       // Count individual term types
-      val cityTerms = query.terms.collect { case cityTerm: CitySearchTerm => cityTerm }
-      val techTerms = query.terms.collect { case techTerm: TechSearchTerm => techTerm }
-      val fulltextTerms = query.terms.collect { case fulltextTerm: FulltextSearchTerm => fulltextTerm }
-
-      // Maximal possible rank
-      val maxPossibleRank = (cityTerms.size + 1) * (techTerms.size + 1) + fulltextTerms.size
+      val cityTerms = query.cityTerms
+      val techTerms = query.techTerms
+      val fulltextTerms = query.fulltextTerms
 
       // Count matches
       val matchedCities = cityTerms.map(_.cityHandle).count(comp.cities.map(_.handle))
       val matchedTechs = techTerms.map(_.techHandle).count(comp.techRatings.map(_.tech.handle).toSet)
-      val matchedFulltext = 0
 
-      if (matchedCities == 0 && matchedTechs == 0 && matchedFulltext == 0)
-        NoMatchRank
-      else
-        MatchedRank(((matchedCities + 1) * (matchedTechs + 1) + matchedFulltext).toDouble / maxPossibleRank.toDouble)
+      if (fulltextTerms.isEmpty) {
+        if ((matchedCities != cityTerms.size) ||
+            (matchedTechs != techTerms.size))
+          NoMatchRank
+        else
+          MatchedRank(1.0)
+      }
+      else {
+        // Match company name
+        val nameMatch = fulltextTerms.count(term => comp.name.indexOf(term.text) >= 0)
+
+        // Match company URL
+        val websiteMatch = fulltextTerms.count(term => comp.website.toString.indexOf(term.text) >= 0)
+
+        // Match company note
+        val noteMatch = fulltextTerms.count(term => comp.markdownNote.indexOf(term.text) >= 0)
+
+        // Match company business number
+        val businessNumberMatch = fulltextTerms.count(term => comp.businessNumber.value.indexOf(term.text) >= 0)
+
+        if (nameMatch + websiteMatch + noteMatch + businessNumberMatch == 0)
+          NoMatchRank
+        else
+          MatchedRank((matchedCities + matchedTechs)*10000 + nameMatch*1000 + websiteMatch*100 + noteMatch + businessNumberMatch)
+      }
     }
   }
 
@@ -71,5 +87,5 @@ class CompSearchServiceImpl @Inject() (techService: TechService,
 }
 
 private object CompSearchServiceImpl {
-  val termRegex = """([a-z0-9\+/]+)""".r
+  val termRegex = """([a-z0-9\+/#\.]+)""".r
 }

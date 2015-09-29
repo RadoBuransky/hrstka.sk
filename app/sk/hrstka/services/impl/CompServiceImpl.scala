@@ -52,11 +52,16 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     search(CompSearchQuery(terms.flatten))
   }
 
-  override def search(query: String): Future[Seq[CompRating]] =
-    compSearchService.compSearchQuery(query).flatMap { compSearchQuery =>
-      Logger.info(compSearchQuery.toString)
-      search(compSearchQuery)
-    }
+  override def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = {
+    for {
+      techRatings   <- techService.allRatings()
+      dbComps       <- compRepository.all(None, None)
+      comps         <- Future.sequence(dbComps.map(dbCompToDomain(techRatings, _)))
+      allCompVotes  <- compVoteRepository.all(None)
+      compRatings   = comps.map(compRating(_, allCompVotes))
+      compRanks     = compRatings.map { compRating => compRating -> compSearchService.rank(compSearchQuery, compRating.comp) }
+    } yield filterAndSort(compRanks)
+  }
 
   override def get(businessNumber: BusinessNumber): Future[Comp] =
     techService.allRatings().flatMap { techRatings =>
@@ -97,17 +102,6 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
           compVoteRepository.vote(dbComp._id, userId, newVoteValue)
       }
     }
-  }
-
-  private[impl] def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = {
-    for {
-      techRatings   <- techService.allRatings()
-      dbComps       <- compRepository.all(None, None)
-      comps         <- Future.sequence(dbComps.map(dbCompToDomain(techRatings, _)))
-      allCompVotes  <- compVoteRepository.all(None)
-      compRatings   = comps.map(compRating(_, allCompVotes))
-      compRanks     = compRatings.map { compRating => compRating -> compSearchService.rank(compSearchQuery, compRating.comp) }
-    } yield filterAndSort(compRanks)
   }
 
   private[impl] def filterAndSort(compRanks: Iterable[(CompRating, CompSearchRank)]): Seq[CompRating] = {

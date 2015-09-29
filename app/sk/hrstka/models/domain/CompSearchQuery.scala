@@ -5,7 +5,13 @@ package sk.hrstka.models.domain
  *
  * @param terms Ordered sequence of search terms.
  */
-case class CompSearchQuery(terms: Set[CompSearchTerm])
+case class CompSearchQuery(terms: Set[CompSearchTerm]) {
+  lazy val cityTerms: Set[CitySearchTerm] = terms.collect { case cityTerm: CitySearchTerm => cityTerm }
+  lazy val techTerms: Set[TechSearchTerm] = terms.collect { case techTerm: TechSearchTerm => techTerm }
+  lazy val fulltextTerms: Set[FulltextSearchTerm] = terms.collect { case fulltextTerm: FulltextSearchTerm => fulltextTerm }
+
+  def raw = (cityTerms.map(_.cityHandle.value) ++ techTerms.map(_.techHandle.value) ++ fulltextTerms.map(_.text)).mkString(" ")
+}
 
 /**
  * Company search term marker trait.

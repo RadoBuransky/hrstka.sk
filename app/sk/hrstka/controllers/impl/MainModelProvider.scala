@@ -11,11 +11,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait MainModelProvider {
-  protected def withMainModel[A, R](city: Option[String] = None,
-                                    tech: Option[String] = None,
-                                    user: Option[User] = None,
+  protected def withMainModel[A, R](user: Option[User] = None,
                                     title: String = MainModelSingleton.defaultTitle,
-                                    description: String = MainModelSingleton.defaultDescription)(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
+                                    description: String = MainModelSingleton.defaultDescription,
+                                    searchQuery: String = "")(action: (MainModel) => R)(implicit request: Request[A]): Future[R] = {
     // Faku user for convenient development
     val devUser = user match {
       case Some(u) => Some(u)
@@ -26,16 +25,15 @@ trait MainModelProvider {
     }
 
     locationService.usedCities().flatMap { cities =>
-      techService.allUsedRatings(city.map(Handle)).map { techRatings =>
+      techService.allUsedRatings(None).map { techRatings =>
         action(MainModel(
           cities        = cities.map(CityFactory(_)),
           techRatings   = setOpacity(techRatings.map(TechRatingFactory.apply)),
-          city          = city,
-          tech          = tech,
           user          = devUser,
           mode          = application.mode,
           title         = title,
-          description   = description
+          description   = description,
+          searchQuery   = searchQuery
         ))
       }
     }

@@ -38,7 +38,7 @@ class CompSearchServiceImplSpec extends BaseSpec {
     assert(service.rank(CompSearchQuery(Set(CitySearchTerm(CitySpec.noveZamky.handle))), CompSpec.avitech) == NoMatchRank)
   }
 
-  ignore should "not match if a city matches but tech does not" in new TestScope {
+  it should "not match if a city matches but tech does not" in new TestScope {
     assert(service.rank(CompSearchQuery(
       Set(
         CitySearchTerm(CitySpec.bratislava.handle),
@@ -46,12 +46,52 @@ class CompSearchServiceImplSpec extends BaseSpec {
       )), CompSpec.avitech) == NoMatchRank)
   }
 
-  ignore should "not match if a tech matches but city does not" in new TestScope {
+  it should "not match if a tech matches but city does not" in new TestScope {
     assert(service.rank(CompSearchQuery(
       Set(
         CitySearchTerm(CitySpec.noveZamky.handle),
         TechSearchTerm(TechRatingSpec.scalaRating.tech.handle)
       )), CompSpec.avitech) == NoMatchRank)
+  }
+
+  it should "not match if one tech matches but other tech does not" in new TestScope {
+    assert(service.rank(CompSearchQuery(
+      Set(
+        TechSearchTerm(TechRatingSpec.scalaRating.tech.handle),
+        TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
+      )), CompSpec.avitech) == NoMatchRank)
+  }
+
+  it should "match company name" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm(CompSpec.avitech.name))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match company note" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm("no"))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match company URL" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm("aero"))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match company business number" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm(CompSpec.avitech.businessNumber.value))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match if fulltext matches but a tech does not" in new TestScope {
+    assert(service.rank(CompSearchQuery(
+      Set(
+        TechSearchTerm(TechRatingSpec.phpRating.tech.handle),
+        FulltextSearchTerm(CompSpec.avitech.name)
+      )), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match if fulltext matches but a city does not" in new TestScope {
+    assert(service.rank(CompSearchQuery(
+      Set(
+        CitySearchTerm(CitySpec.noveZamky.handle),
+        FulltextSearchTerm("aero")
+      )), CompSpec.avitech) != NoMatchRank)
   }
 
   behavior of "compSearchQuery"
@@ -81,7 +121,7 @@ class CompSearchServiceImplSpec extends BaseSpec {
   behavior of "queryToTokens"
 
   it should "split raw query using regular expression" in new TestScope {
-    assert(service.queryToTokens(" Scala  Bratislava,wTF    c++;pl/sql") == Set("scala", "bratislava", "wtf", "c++", "pl/sql"))
+    assert(service.queryToTokens(" Scala  Bratislava,wTF    c++;pl/sql c#,,.NET") == Set("scala", "bratislava", "wtf", "c++", "pl/sql", "c#", ".net"))
   }
 
   it should "work for empty query" in new TestScope {

@@ -41,10 +41,10 @@ trait CompService {
   /**
    * Search for companies.
    *
-   * @param query Raw company search query.
+   * @param compSearchQuery Company search query.
    * @return Found companies.
    */
-  def search(query: String): Future[Seq[CompRating]]
+  def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]]
 
   /**
    * Ordered list of top few companies with the most number of female programmers.
