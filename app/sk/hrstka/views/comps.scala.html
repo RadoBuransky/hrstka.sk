@@ -13,19 +13,19 @@
             <span class="city">@compRating.comp.cities.map(_.en).mkString(", ")</span>
         </h3>
     </header>
-    @if(compRating.comp.tags.nonEmpty) {
-    <div class="tags">
-        @for(tag <- compRating.comp.tags) {
-            <span class="hrstka-comp-tag">@tag.name</span>
-        }
-    </div>
-    }
     @if(compRating.comp.techRatings.nonEmpty) {
-    <div class="techs">
-        @for(techRating <- compRating.comp.techRatings) {
-        <span class="hrstka-tech">@techRating.tech.name</span>
-        }
-    </div>
+        <div class="techs">
+            @for(tag <- compRating.comp.tags) {
+                <span class="hrstka-comp-tag">@tag.name</span>
+            }
+            @for(techRating <- compRating.comp.techRatings) {
+                @if(!compRating.comp.tags.exists(_.name.toLowerCase == techRating.tech.handle)) {
+                    <a href="@sk.hrstka.controllers.routes.CompController.cityTech(sk.hrstka.controllers.impl.CompControllerImpl.anywhere, techRating.tech.handle)">
+                        <span class="hrstka-tech">@techRating.tech.name</span>
+                    </a>
+                }
+            }
+        </div>
     }
     @if(compRating.comp.govBiz.getOrElse(0) != 0) {
     <div class="comp-line">
