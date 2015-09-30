@@ -63,7 +63,11 @@ class CompSearchServiceImplSpec extends BaseSpec {
   }
 
   it should "match company name" in new TestScope {
-    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm(CompSpec.avitech.name))), CompSpec.avitech) != NoMatchRank)
+    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm(CompSpec.avitech.name.toLowerCase))), CompSpec.avitech) != NoMatchRank)
+  }
+
+  it should "match company name substring" in new TestScope {
+    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm("mia"))), CompSpec.avitech.copy(name = "BOHEMIA INTERACTIVE")) != NoMatchRank)
   }
 
   it should "match company note" in new TestScope {
@@ -82,7 +86,7 @@ class CompSearchServiceImplSpec extends BaseSpec {
     assert(service.rank(CompSearchQuery(
       Set(
         TechSearchTerm(TechRatingSpec.phpRating.tech.handle),
-        FulltextSearchTerm(CompSpec.avitech.name)
+        FulltextSearchTerm(CompSpec.avitech.name.toLowerCase)
       )), CompSpec.avitech) != NoMatchRank)
   }
 

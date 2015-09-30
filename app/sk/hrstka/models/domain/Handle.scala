@@ -2,7 +2,10 @@ package sk.hrstka.models.domain
 
 import java.text.Normalizer
 
-case class Handle(value: String)
+case class Handle(value: String) {
+  if (value != value.toLowerCase)
+    throw new IllegalArgumentException(s"Not a lower-case string! [$value]")
+}
 
 object HandleFactory {
   def fromHumanName(humanName: String) = Handle(removeDiacritics(humanName).trim.replace(' ', '-').toLowerCase)

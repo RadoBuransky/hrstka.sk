@@ -37,7 +37,10 @@ case class CitySearchTerm(cityHandle: Handle) extends CompSearchTerm
  *
  * @param text Text to use in full-text searching.
  */
-case class FulltextSearchTerm(text: String) extends CompSearchTerm
+case class FulltextSearchTerm(text: String) extends CompSearchTerm {
+  if (text != text.toLowerCase)
+    throw new IllegalArgumentException(s"Not a lower-case string! [$text]")
+}
 
 /**
  * Company search rank.

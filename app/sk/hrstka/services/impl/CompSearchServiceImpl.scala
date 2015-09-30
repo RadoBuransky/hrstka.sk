@@ -44,16 +44,20 @@ class CompSearchServiceImpl @Inject() (techService: TechService,
       }
       else {
         // Match company name
-        val nameMatch = fulltextTerms.count(term => comp.name.indexOf(term.text) >= 0)
+        val compName = comp.name.toLowerCase
+        val nameMatch = fulltextTerms.count(term => compName.indexOf(term.text) >= 0)
 
         // Match company URL
-        val websiteMatch = fulltextTerms.count(term => comp.website.toString.indexOf(term.text) >= 0)
+        val compWebsite = comp.website.toString.toLowerCase
+        val websiteMatch = fulltextTerms.count(term => compWebsite.indexOf(term.text) >= 0)
 
         // Match company note
-        val noteMatch = fulltextTerms.count(term => comp.markdownNote.indexOf(term.text) >= 0)
+        val compMarkdownNote = comp.markdownNote.toLowerCase
+        val noteMatch = fulltextTerms.count(term => compMarkdownNote.indexOf(term.text) >= 0)
 
         // Match company business number
-        val businessNumberMatch = fulltextTerms.count(term => comp.businessNumber.value.indexOf(term.text) >= 0)
+        val compBusinessNumber = comp.businessNumber.value.toLowerCase
+        val businessNumberMatch = fulltextTerms.count(term => compBusinessNumber.indexOf(term.text) >= 0)
 
         if (nameMatch + websiteMatch + noteMatch + businessNumberMatch == 0)
           NoMatchRank
