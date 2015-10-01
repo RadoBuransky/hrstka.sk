@@ -4,8 +4,8 @@
 
 @main {
     @comp.name
-    <a href="@comp.website" rel="nofollow" class="comp-website">@comp.website</a>
-    <div class="city">@comp.cities.map(_.en).mkString(", ")</div>
+    <div><a href="@comp.website" rel="nofollow" class="comp-website">@comp.website</a></div>
+    @citiesToHtml(comp.cities)
 } {
 <article class="comp-details">
     @if(comp.note.html.nonEmpty) {
@@ -57,16 +57,8 @@
         </ol>
     }
     @if(comp.techRatings.nonEmpty) {
-        <ol class="list-unstyled">
-        @for(techRating <- comp.techRatings) {
-            @if(techRating == comp.techRatings.head) {
-                <h3>Technologies</h3>
-            }
-            <li>
-                <a href="@techRating.tech.website" rel="nofollow"><span class="hrstka-tech">@techRating.tech.name</span></a>
-            </li>
-        }
-        </ol>
+        <h3>Technologies</h3>
+        @techRatingsToHtml(comp.techRatings)
     }
     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
         <div id="eminence-section">

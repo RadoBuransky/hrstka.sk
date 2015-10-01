@@ -9,7 +9,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import sk.hrstka.controllers.CompController
 import sk.hrstka.controllers.auth.impl.HrstkaAuthConfig
 import sk.hrstka.models.domain._
-import sk.hrstka.models.ui.{CompFactory, CompRatingFactory, Html, Tag}
+import sk.hrstka.models.ui.{CompFactory, CompRatingFactory, Html}
 import sk.hrstka.models.{domain, ui}
 import sk.hrstka.services._
 
@@ -118,7 +118,7 @@ final class CompControllerImpl @Inject() (compService: CompService,
     CompRatingFactory(compToUi(compRating.comp), compRating.value)
 
   private def compToUi(comp: domain.Comp): ui.Comp = {
-    CompFactory(comp, Html(markdownService.toHtml(preprocessMarkdown(comp.markdownNote))), Tag(comp.techRatings))
+    CompFactory(comp, Html(markdownService.toHtml(preprocessMarkdown(comp.markdownNote))))
   }
 
   private def preprocessMarkdown(markdownNote: String): String = {

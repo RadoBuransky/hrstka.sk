@@ -72,18 +72,6 @@ h4 {
         color: @hrstka-color-grey;
         position: relative;
 
-        .city {
-            @media (min-width: @screen-md-min) {
-                float: right;
-                position: absolute;
-                bottom: 0;
-                right: 0;
-            }
-
-            color: @hrstka-color-city;
-            font-size: 14px;
-        }
-
         a {
             font-size: 14px;
 
@@ -125,19 +113,20 @@ h4 {
         clear: both;
     }
 
+    .cities {
+        color: @hrstka-color-city;
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        a {
+            color: @hrstka-color-city;
+        }
+    }
+
     article.comp {
         h3 {
             margin-bottom: 0px;
             position: relative;
-
-            .city {
-                float: right;
-                color: @hrstka-color-city;
-                font-size: 14px;
-                position: absolute;
-                bottom: 0;
-                right: 0;
-            }
         }
 
         margin-top: 20px;
@@ -146,19 +135,8 @@ h4 {
         border-bottom-style: dotted;
         border-bottom-width: 1px;
 
-        .techs {
-            margin-top: 10px;
-            margin-bottom: 10px;
-
-            .hrstka-comp-tag {
-                .label;
-                background-color: @hrstka-color-pink;
-                font-weight: 700;
-            }
-
-            .hrstka-tech {
-                margin-right: 10px;
-            }
+        .hrstka-techs li {
+            display: inline-block;
         }
 
         .joel {
@@ -325,6 +303,20 @@ h4 {
 .hrstka-tech {
     color: @hrstka-color-pink;
     font-weight: 700;
+}
+
+.hrstka-techs {
+    .list-unstyled;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    li {
+        a {
+            color: @hrstka-color-pink;
+            margin-right: 10px;
+        }
+    }
 }
 
 .hrstka-govBiz {

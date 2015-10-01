@@ -26,7 +26,7 @@ import sk.hrstka.models
 case class Comp(id: String,
                 name: String,
                 website: String,
-                cities: Set[City],
+                cities: Seq[City],
                 businessNumber: String,
                 employeeCount: Option[Int],
                 codersCount: Option[Int],
@@ -37,8 +37,7 @@ case class Comp(id: String,
                 internal: Boolean,
                 techRatings: Seq[TechRating],
                 joel: Seq[(Int, String)],
-                govBiz: Option[BigDecimal],
-                tags: Seq[Tag]) {
+                govBiz: Option[BigDecimal]) {
   def maleCodersCount: Option[Int] = for {
     coders <- codersCount
     females <- femaleCodersCount
@@ -75,11 +74,11 @@ object CompFactory {
    * @param formattedNote Properly formatted note. It can be HTML or Markdown depending on usage.
    * @return
    */
-  def apply(comp: models.domain.Comp, formattedNote: FormattedText, tags: Seq[Tag]) = new Comp(
+  def apply(comp: models.domain.Comp, formattedNote: FormattedText) = new Comp(
     id                = comp.id.value,
     name              = comp.name,
     website           = comp.website.toString,
-    cities            = comp.cities.map(CityFactory.apply),
+    cities            = comp.cities.map(CityFactory.apply).toSeq,
     businessNumber    = comp.businessNumber.value,
     employeeCount     = comp.employeeCount,
     codersCount       = comp.codersCount,
@@ -90,6 +89,5 @@ object CompFactory {
     internal          = comp.internal,
     techRatings       = comp.techRatings.map(TechRatingFactory.apply),
     joel              = comp.joel.map(j => (j + 1) -> joelQuestions(j)).toSeq.sortBy(_._1),
-    govBiz            = comp.govBiz,
-    tags              = tags)
+    govBiz            = comp.govBiz)
 }

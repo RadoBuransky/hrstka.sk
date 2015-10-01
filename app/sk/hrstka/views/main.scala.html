@@ -1,5 +1,7 @@
 @(headline: Html)(content: Html)(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
+@import sk.hrstka.views.helpers.Formatting._
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -126,22 +128,7 @@
             </section>
             <section id="section-techs">
                 <h2>TECHNOLOGIES</h2>
-                <nav>
-                    <ol>
-                    @for(techRating <- mainModel.techRatings) {
-                        <li>
-                            @if(mainModel.cities.isEmpty) {
-                                @techRating.tech.handle
-                            } else {
-                            <a href="@sk.hrstka.controllers.routes.CompController.cityTech(sk.hrstka.controllers.impl.CompControllerImpl.anywhere, techRating.tech.handle)"
-                               style="opacity: @techRating.opacity;">
-                                @techRating.tech.name
-                            </a>
-                            }
-                        </li>
-                    }
-                    </ol>
-                </nav>
+                <nav>@techRatingsToHtml(mainModel.techRatings)</nav>
             </section>
         </nav>
         <section id="content">
@@ -152,7 +139,6 @@
             @content
         </section>
     </div>
-
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

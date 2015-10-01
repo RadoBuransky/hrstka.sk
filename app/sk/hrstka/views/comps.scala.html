@@ -10,23 +10,10 @@
             @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
                 <span class="hrstka-comp-rating">@sk.hrstka.models.ui.Comp.format.format(compRating.value)%</span>
             }
-            <span class="city">@compRating.comp.cities.map(_.en).mkString(", ")</span>
         </h3>
     </header>
-    @if(compRating.comp.techRatings.nonEmpty) {
-        <div class="techs">
-            @for(tag <- compRating.comp.tags) {
-                <span class="hrstka-comp-tag">@tag.name</span>
-            }
-            @for(techRating <- compRating.comp.techRatings) {
-                @if(!compRating.comp.tags.exists(_.name.toLowerCase == techRating.tech.handle)) {
-                    <a href="@sk.hrstka.controllers.routes.CompController.cityTech(sk.hrstka.controllers.impl.CompControllerImpl.anywhere, techRating.tech.handle)">
-                        <span class="hrstka-tech">@techRating.tech.name</span>
-                    </a>
-                }
-            }
-        </div>
-    }
+    @citiesToHtml(compRating.comp.cities)
+    @techRatingsToHtml(compRating.comp.techRatings)
     @if(compRating.comp.govBiz.getOrElse(0) != 0) {
     <div class="comp-line">
         Business with government <span class="hrstka-govBiz">@govBizToString(compRating.comp.govBiz)</span> of last year's income
