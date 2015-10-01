@@ -47,7 +47,7 @@
     <![endif]-->
 </head>
 <body>
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -66,6 +66,7 @@
                     <li><a href="https://github.com/RadoBuransky/hrstka.sk" rel="nofollow"><i class="fa fa-github"></i> GitHub</a></li>
                     <li><a href="@sk.hrstka.controllers.routes.AppController.about">About</a></li>
                 </ul>
+
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="@sk.hrstka.controllers.routes.AppController.addCompInfo">+ Add company</a></li>
                     @if(mainModel.user.isDefined && mainModel.user.get.role.isA(sk.hrstka.models.domain.Eminent)) {
@@ -97,22 +98,26 @@
     <div class="container">
         <nav id="sidebar">
             <header>
+                <img src="https://s3-eu-west-1.amazonaws.com/hrstka.sk/assets/he.png" alt="Hŕstka">
                 <a href="/">
                     <h1>Hŕstka</h1>
-                    <img src="https://s3-eu-west-1.amazonaws.com/hrstka.sk/assets/he.png" alt="Hŕstka" class="hidden-xs">
                 </a>
-                <p class="hidden-xs hidden-sm">PROGRAMMER'S DELICATESSEN</p>
+                <p>PROGRAMMER'S DELICATESSEN</p>
             </header>
             <section id="section-search">
                 <h2>SEARCH</h2>
                 <form action="@sk.hrstka.controllers.routes.CompController.search" method="get" class="form-inline">
-                    <input class="form-control" type="text" name="q" id="q" style="width:181px" value="@mainModel.searchQuery" />
-                    <button class="btn btn-default" type="submit">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="q" id="q" value="@mainModel.searchQuery" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
                 </form>
             </section>
-            <section id="section-cities">
+            <section id="section-cities" class="hidden-xs">
                 <h2>CITIES</h2>
                 <nav>
                     <ol>
@@ -126,7 +131,7 @@
                     </ol>
                 </nav>
             </section>
-            <section id="section-techs">
+            <section id="section-techs" class="hidden-xs">
                 <h2>TECHNOLOGIES</h2>
                 <nav>@techRatingsToHtml(mainModel.techRatings)</nav>
             </section>
