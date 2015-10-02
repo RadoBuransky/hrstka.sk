@@ -3,15 +3,14 @@ package sk.hrstka.repositories
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.db.Comp
 import sk.hrstka.models.db.Identifiable._
-import sk.hrstka.models.domain.BusinessNumber
-import sk.hrstka.repositories.mongoDb.MongoCompRepository
+import sk.hrstka.repositories.mongoDb.cache.CachedMongoCompRepository
 
 import scala.concurrent.Future
 
 /**
  * Repository for companies.
  */
-@ImplementedBy(classOf[MongoCompRepository])
+@ImplementedBy(classOf[CachedMongoCompRepository])
 trait CompRepository {
   /**
    * Inserts or updates a company.

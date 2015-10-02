@@ -1,6 +1,6 @@
 package sk.hrstka.repositories.mongoDb
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
 import sk.hrstka.common.{HrstkaCache, HrstkaException, Logging}
@@ -12,10 +12,16 @@ import sk.hrstka.repositories.CompRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+/**
+ * Marker trait.
+ */
+@ImplementedBy(classOf[MongoCompRepository])
+private[mongoDb] trait NotCachedCompRepository extends CompRepository
+
 @Singleton
 final class MongoCompRepository @Inject() (hrstkaCache: HrstkaCache,
                                            protected val reactiveMongoApi: ReactiveMongoApi)
-  extends BaseMongoRepository[Comp](CompCollection) with CompRepository with Logging {
+  extends BaseMongoRepository[Comp](CompCollection) with NotCachedCompRepository with Logging {
 
   override def upsert(comp: Comp): Future[Id] = hrstkaCache.invalidateOnSuccess(super.upsert(comp))
 

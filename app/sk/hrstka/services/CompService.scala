@@ -2,14 +2,14 @@ package sk.hrstka.services
 
 import com.google.inject.ImplementedBy
 import sk.hrstka.models.domain._
-import sk.hrstka.services.impl.cache.CachedCompServiceImpl
+import sk.hrstka.services.impl.CompServiceImpl
 
 import scala.concurrent.Future
 
 /**
  * Company service.
  */
-@ImplementedBy(classOf[CachedCompServiceImpl])
+@ImplementedBy(classOf[CompServiceImpl])
 trait CompService {
   /**
    * Inserts or updates a company.
