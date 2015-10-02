@@ -62,26 +62,6 @@ class CompSearchServiceImplSpec extends BaseSpec {
       )), CompSpec.avitech) == NoMatchRank)
   }
 
-  it should "match company name" in new TestScope {
-    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm(CompSpec.avitech.name.toLowerCase))), CompSpec.avitech) != NoMatchRank)
-  }
-
-  it should "match company name substring" in new TestScope {
-    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm("mia"))), CompSpec.avitech.copy(name = "BOHEMIA INTERACTIVE")) != NoMatchRank)
-  }
-
-  it should "match company note" in new TestScope {
-    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm("no"))), CompSpec.avitech) != NoMatchRank)
-  }
-
-  it should "match company URL" in new TestScope {
-    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm("aero"))), CompSpec.avitech) != NoMatchRank)
-  }
-
-  it should "match company business number" in new TestScope {
-    assert(service.rank(CompSearchQuery(Set(FulltextSearchTerm(CompSpec.avitech.businessNumber.value))), CompSpec.avitech) != NoMatchRank)
-  }
-
   it should "match if fulltext matches but a tech does not" in new TestScope {
     assert(service.rank(CompSearchQuery(
       Set(
@@ -120,6 +100,36 @@ class CompSearchServiceImplSpec extends BaseSpec {
           TechSearchTerm(TechRatingSpec.scalaRating.tech.handle),
           TechSearchTerm(TechRatingSpec.akkaRating.tech.handle)
         )))
+  }
+
+  behavior of "fulltextMatch"
+
+  it should "match city name" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm("bra")), CompSpec.avitech, 0) != NoMatchRank)
+  }
+
+  it should "match tech name" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm("al")), CompSpec.avitech, 0) != NoMatchRank)
+  }
+
+  it should "match company name" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm(CompSpec.avitech.name.toLowerCase)), CompSpec.avitech, 0) != NoMatchRank)
+  }
+
+  it should "match company name substring" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm("mia")), CompSpec.avitech.copy(name = "BOHEMIA INTERACTIVE"), 0) != NoMatchRank)
+  }
+
+  it should "match company note" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm("no")), CompSpec.avitech, 0) != NoMatchRank)
+  }
+
+  it should "match company URL" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm("aero")), CompSpec.avitech, 0) != NoMatchRank)
+  }
+
+  it should "match company business number" in new TestScope {
+    assert(service.fulltextMatch(Set(FulltextSearchTerm(CompSpec.avitech.businessNumber.value)), CompSpec.avitech, 0) != NoMatchRank)
   }
 
   behavior of "queryToTokens"

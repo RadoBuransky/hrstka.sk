@@ -42,29 +42,40 @@ class CompSearchServiceImpl @Inject() (techService: TechService,
         else
           MatchedRank(1.0)
       }
-      else {
-        // Match company name
-        val compName = comp.name.toLowerCase
-        val nameMatch = fulltextTerms.count(term => compName.indexOf(term.text) >= 0)
-
-        // Match company URL
-        val compWebsite = comp.website.toString.toLowerCase
-        val websiteMatch = fulltextTerms.count(term => compWebsite.indexOf(term.text) >= 0)
-
-        // Match company note
-        val compMarkdownNote = comp.markdownNote.toLowerCase
-        val noteMatch = fulltextTerms.count(term => compMarkdownNote.indexOf(term.text) >= 0)
-
-        // Match company business number
-        val compBusinessNumber = comp.businessNumber.value.toLowerCase
-        val businessNumberMatch = fulltextTerms.count(term => compBusinessNumber.indexOf(term.text) >= 0)
-
-        if (nameMatch + websiteMatch + noteMatch + businessNumberMatch == 0)
-          NoMatchRank
-        else
-          MatchedRank((matchedCities + matchedTechs)*10000 + nameMatch*1000 + websiteMatch*100 + noteMatch + businessNumberMatch)
-      }
+      else
+        fulltextMatch(fulltextTerms, comp, (matchedCities + matchedTechs)*10000)
     }
+  }
+
+  private[impl] def fulltextMatch(fulltextTerms: Set[FulltextSearchTerm], comp: Comp, initialRank: Int): CompSearchRank = {
+    // Match company city name
+    val compCityNames = comp.cities.map(_.name.toLowerCase)
+    val citiesMatch = fulltextTerms.count(term => compCityNames.exists(_.indexOf(term.text) >= 0))
+
+    // Match company tech name
+    val compTechNames = comp.techRatings.map(_.tech.name.toLowerCase)
+    val techsMatch = fulltextTerms.count(term => compTechNames.exists(_.indexOf(term.text) >= 0))
+
+    // Match company name
+    val compName = comp.name.toLowerCase
+    val nameMatch = fulltextTerms.count(term => compName.indexOf(term.text) >= 0)
+
+    // Match company URL
+    val compWebsite = comp.website.toString.toLowerCase
+    val websiteMatch = fulltextTerms.count(term => compWebsite.indexOf(term.text) >= 0)
+
+    // Match company note
+    val compMarkdownNote = comp.markdownNote.toLowerCase
+    val noteMatch = fulltextTerms.count(term => compMarkdownNote.indexOf(term.text) >= 0)
+
+    // Match company business number
+    val compBusinessNumber = comp.businessNumber.value.toLowerCase
+    val businessNumberMatch = fulltextTerms.count(term => compBusinessNumber.indexOf(term.text) >= 0)
+
+    if (citiesMatch + techsMatch + nameMatch + websiteMatch + noteMatch + businessNumberMatch == 0)
+      NoMatchRank
+    else
+      MatchedRank(initialRank + nameMatch*1000 + websiteMatch*100 + noteMatch + businessNumberMatch + citiesMatch + techsMatch)
   }
 
   private def compSearch(query: String, techHandles: Iterable[Handle], cityHandles: Traversable[Handle]): CompSearchQuery = {
