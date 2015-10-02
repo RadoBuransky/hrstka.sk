@@ -21,8 +21,7 @@ final class CachedCompServiceImpl @Inject() (compRepository: CompRepository,
   override def voteUp(businessNumber: BusinessNumber, userId: Id) = underlying.voteUp(businessNumber, userId)
   override def get(businessNumber: BusinessNumber) = underlying.get(businessNumber)
   override def voteDown(businessNumber: BusinessNumber, userId: Id) = underlying.voteDown(businessNumber, userId)
-  override def all(city: Option[Handle], tech: Option[Handle]) =
-    hrstkaCache.cacheSuccess(s"CachedCompServiceImpl.all($city, $tech)", underlying.all(city, tech))
+  override def all() = hrstkaCache.cacheSuccess("CachedCompServiceImpl.all()", underlying.all())
   override def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = underlying.search(compSearchQuery)
   override def topWomen() =
     hrstkaCache.cacheSuccess(s"CachedCompServiceImpl.topWomen", underlying.topWomen())

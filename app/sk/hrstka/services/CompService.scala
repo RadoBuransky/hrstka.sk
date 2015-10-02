@@ -30,13 +30,11 @@ trait CompService {
   def get(businessNumber: BusinessNumber): Future[Comp]
 
   /**
-   * Gets all company ratings for the provided city AND tech ordered by their rating.
+   * Gets all company ratings ordered by their rating.
    *
-   * @param city Filter companies for the city.
-   * @param tech Filter companies for the technology.
    * @return Found companies.
    */
-  def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Seq[CompRating]]
+  def all(): Future[Seq[CompRating]]
 
   /**
    * Search for companies.

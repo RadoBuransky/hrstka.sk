@@ -34,7 +34,7 @@ class CachedCompServiceImplSpec extends BaseSpec {
   behavior of "all"
 
   it should "cache underlying all" in new TestScope {
-    verifyCaching(_.all(None, None))
+    verifyCaching(_.all())
   }
 
   private class TestScope extends CacheTestScope[CompService] {

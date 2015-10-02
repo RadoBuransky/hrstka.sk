@@ -17,13 +17,13 @@ final class ApiControllerImpl(compService: CompService,
   import JsonFormats._
 
   override def comps() = Action.async { implicit request =>
-    compService.all(None, None).map { compRatings =>
+    compService.all().map { compRatings =>
       Ok(Json.toJson(compRatings.map(convertCompRating)))
     }
   }
 
   override def comp(businessNumber: String) = Action.async { implicit request =>
-    compService.all(None, None).map { compRatings =>
+    compService.all().map { compRatings =>
       compRatings.find(_.comp.businessNumber.value == businessNumber) match {
         case Some(compRating) => Ok(Json.toJson(convertCompRating(compRating)))
         case None => NotFound(s"Company with business number [$businessNumber] does not exist!")

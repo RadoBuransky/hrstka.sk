@@ -18,7 +18,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
 
   it should "return JSON of all companies" in new TestScope {
     // Prepare
-    when(compService.all(None, None))
+    when(compService.all())
       .thenReturn(Future.successful(CompRatingSpec.all))
 
     // Execute
@@ -30,7 +30,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
     }))
 
     // Verify
-    verify(compService).all(None, None)
+    verify(compService).all()
     verifyNoMore()
   }
 
@@ -38,7 +38,7 @@ class ApiControllerImplSpec extends BaseSpec with Results {
 
   it should "return JSON of company for the business number" in new TestScope {
     // Prepare
-    when(compService.all(None, None))
+    when(compService.all())
       .thenReturn(Future.successful(CompRatingSpec.all))
 
     // Execute
@@ -51,20 +51,20 @@ class ApiControllerImplSpec extends BaseSpec with Results {
     ))
 
     // Verify
-    verify(compService).all(None, None)
+    verify(compService).all()
     verifyNoMore()
   }
 
   it should "return 404 if the company does not exist" in new TestScope {
     // Prepare
-    when(compService.all(None, None))
+    when(compService.all())
       .thenReturn(Future.successful(CompRatingSpec.all))
 
     // Execute
     assert(status(apiController.comp("123").apply(FakeRequest())) == NOT_FOUND)
 
     // Verify
-    verify(compService).all(None, None)
+    verify(compService).all()
     verifyNoMore()
   }
 

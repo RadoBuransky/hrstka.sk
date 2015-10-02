@@ -45,11 +45,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
     )).map(_ => comp.businessNumber)
   }
 
-  override def all(city: Option[hrstka.models.domain.Handle], tech: Option[hrstka.models.domain.Handle]): Future[Seq[CompRating]] = {
-    // Create search query from the provided city and tech
-    val terms: Set[Option[CompSearchTerm]] = Set(city.map(CitySearchTerm.apply), tech.map(TechSearchTerm.apply))
-    search(CompSearchQuery(terms.flatten))
-  }
+  override def all(): Future[Seq[CompRating]] = search(CompSearchQuery(Set.empty))
 
   override def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = {
     for {
@@ -76,7 +72,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
       }
     }
 
-    all(None, None).map { compRatings =>
+    all().map { compRatings =>
       // Compute rank, filter only those with known emplyee/women count, sort and take top few
       compRatings.map(compRating => (compRating, womenRank(compRating.comp))).filter(_._2.isDefined).sortBy(-1 * _._2.get).map(_._1).take(42)
     }

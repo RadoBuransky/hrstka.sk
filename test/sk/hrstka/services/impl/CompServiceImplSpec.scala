@@ -40,46 +40,6 @@ class CompServiceImplSpec extends BaseSpec {
     assert(comp == db.CompSpec.avitech)
   }
 
-  behavior of "all"
-
-  it should "return all companies in Bratislava that use PHP" in new TestScope {
-    // Prepare
-    when(compRepository.all())
-      .thenReturn(Future.successful(db.CompSpec.all))
-    when(techService.allRatings())
-      .thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(locationService.city(Handle(db.CitySpec.bratislava.handle)))
-      .thenReturn(Future.successful(CitySpec.bratislava))
-    when(locationService.city(Handle(db.CitySpec.noveZamky.handle)))
-      .thenReturn(Future.successful(CitySpec.noveZamky))
-    when(compVoteRepository.all(None))
-      .thenReturn(Future.successful(db.CompVoteSpec.all))
-    when(compSearchService.rank(Matchers.eq(
-      CompSearchQuery(Set(
-        CitySearchTerm(CitySpec.bratislava.handle),
-        TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
-      ))), any()))
-      .thenReturn(MatchedRank(1.0))
-
-    // Execute
-    val result = futureValue(compService.all(city = Some(CitySpec.bratislava.handle), tech = Some(TechRatingSpec.phpRating.tech.handle)))
-    assertResult(CompRatingSpec.avitech.comp.name)(result(0).comp.name)
-    assertResult(CompRatingSpec.borci.comp.name)(result(1).comp.name)
-
-    // Verify
-    verify(compSearchService, times(2)).rank(Matchers.eq(
-      CompSearchQuery(Set(
-        CitySearchTerm(CitySpec.bratislava.handle),
-        TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
-      ))), any())
-    verify(compVoteRepository).all(None)
-    verify(compRepository).all()
-    verify(techService).allRatings()
-    verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
-    verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
-    verifyNoMore()
-  }
-
   behavior of "get"
 
   it should "return a company" in new TestScope {
