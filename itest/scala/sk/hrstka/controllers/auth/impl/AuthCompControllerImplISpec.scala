@@ -41,7 +41,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
 
       // Verify
       verify(locationService).allCities()
-      verify(techService).allRatings()
+      verify(techService, times(2)).allRatings()
     }
   }
 
@@ -68,7 +68,7 @@ class AuthCompControllerImplISpec(application: Application) extends BaseControll
 
       // Verify
       verify(locationService).allCities()
-      verify(techService).allRatings()
+      verify(techService, times(2)).allRatings()
       verify(compService).get(CompSpec.avitech.businessNumber)
     }
   }

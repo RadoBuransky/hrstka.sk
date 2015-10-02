@@ -43,13 +43,6 @@ trait TechService {
   def allRatings(): Future[Seq[TechRating]]
 
   /**
-   * Gets all used technologies with ratings in the city ordered by rating value.
-   *
-   * @return All used technologies.
-   */
-  def allUsedRatings(cityHandle: Option[Handle]): Future[Seq[TechRating]]
-
-  /**
    * Gets all technology votes for the user unordered.
    *
    * @param userId User identifier.

@@ -38,7 +38,7 @@ class TechServiceImplSpec extends BaseSpec {
 
   it should "not allow to remove a technology if it is being used" in new TestScope {
     // Prepare
-    when(compRepository.all(None, Some(db.TechSpec.scala.handle)))
+    when(compRepository.all())
       .thenReturn(Future.successful(Iterable(db.CompSpec.avitech)))
 
     // Execute
@@ -47,12 +47,12 @@ class TechServiceImplSpec extends BaseSpec {
     }
 
     // Verify
-    verify(compRepository).all(None, Some(db.TechSpec.scala.handle))
+    verify(compRepository).all()
   }
 
   it should "remove a technology if it not being used" in new TestScope {
     // Prepare
-    when(compRepository.all(None, Some(db.TechSpec.scala.handle)))
+    when(compRepository.all())
       .thenReturn(Future.successful(Iterable.empty))
     when(techRepository.remove(db.TechSpec.scala.handle))
       .thenReturn(Future.successful(db.TechSpec.scala.handle))
@@ -62,7 +62,7 @@ class TechServiceImplSpec extends BaseSpec {
 
     // Verify
     verify(techRepository).remove(db.TechSpec.scala.handle)
-    verify(compRepository).all(None, Some(db.TechSpec.scala.handle))
+    verify(compRepository).all()
   }
 
   behavior of "getByHandle"
@@ -95,54 +95,6 @@ class TechServiceImplSpec extends BaseSpec {
     // Verify
     verify(techVoteRepository).all(None)
     verify(techRepository).all()
-    verifyNoMore()
-  }
-
-  behavior of "allUsed"
-
-  it should "get all technology ratings and filter the ones used in any city" in new TestScope {
-    // Prepare
-    when(compRepository.all(None, None))
-      .thenReturn(Future.successful(db.CompSpec.all))
-    when(techVoteRepository.all(None))
-      .thenReturn(Future.successful(db.TechVoteSpec.all))
-    when(techRepository.all())
-      .thenReturn(Future.successful(db.TechSpec.all))
-
-    // Execute
-    val expected = Seq(
-      TechRatingSpec.scalaRating,
-      TechRatingSpec.javaRating,
-      TechRatingSpec.apacheRating,
-      TechRatingSpec.phpRating)
-    assertSeq(expected, techService.allUsedRatings(None).futureValue)
-
-    // Verify
-    verify(techVoteRepository).all(None)
-    verify(techRepository).all()
-    verify(compRepository).all(None, None)
-    verifyNoMore()
-  }
-
-  it should "get all technology ratings and filter the ones used by a company in a specific city" in new TestScope {
-    // Prepare
-    when(compRepository.all(Some(CitySpec.noveZamky.handle), None))
-      .thenReturn(Future.successful(Iterable(db.CompSpec.borci)))
-    when(techVoteRepository.all(None))
-      .thenReturn(Future.successful(db.TechVoteSpec.all))
-    when(techRepository.all())
-      .thenReturn(Future.successful(db.TechSpec.all))
-
-    // Execute
-    val expected = Seq(
-      TechRatingSpec.apacheRating,
-      TechRatingSpec.phpRating)
-    assertSeq(expected, techService.allUsedRatings(Some(CitySpec.noveZamky.handle)).futureValue)
-
-    // Verify
-    verify(techVoteRepository).all(None)
-    verify(techRepository).all()
-    verify(compRepository).all(Some(CitySpec.noveZamky.handle), None)
     verifyNoMore()
   }
 

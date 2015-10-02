@@ -1,7 +1,6 @@
 package sk.hrstka.services.impl
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import play.api.Logger
 import sk.hrstka
 import sk.hrstka.models.db
 import sk.hrstka.models.domain.{Handle, _}
@@ -55,7 +54,7 @@ final class CompServiceImpl @Inject() (compRepository: CompRepository,
   override def search(compSearchQuery: CompSearchQuery): Future[Seq[CompRating]] = {
     for {
       techRatings   <- techService.allRatings()
-      dbComps       <- compRepository.all(None, None)
+      dbComps       <- compRepository.all()
       comps         <- Future.sequence(dbComps.map(dbCompToDomain(techRatings, _)))
       allCompVotes  <- compVoteRepository.all(None)
       compRatings   = comps.map(compRating(_, allCompVotes))

@@ -1,8 +1,8 @@
 package sk.hrstka.services.impl
 
-import org.mockito.{Matchers, ArgumentCaptor}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.mockito.{ArgumentCaptor, Matchers}
 import reactivemongo.bson.BSONObjectID
 import sk.hrstka.models.domain._
 import sk.hrstka.models.{db, domain}
@@ -44,7 +44,7 @@ class CompServiceImplSpec extends BaseSpec {
 
   it should "return all companies in Bratislava that use PHP" in new TestScope {
     // Prepare
-    when(compRepository.all(None, None))
+    when(compRepository.all())
       .thenReturn(Future.successful(db.CompSpec.all))
     when(techService.allRatings())
       .thenReturn(Future.successful(TechRatingSpec.allRatings))
@@ -73,7 +73,7 @@ class CompServiceImplSpec extends BaseSpec {
         TechSearchTerm(TechRatingSpec.phpRating.tech.handle)
       ))), any())
     verify(compVoteRepository).all(None)
-    verify(compRepository).all(None, None)
+    verify(compRepository).all()
     verify(techService).allRatings()
     verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
     verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
@@ -111,7 +111,7 @@ class CompServiceImplSpec extends BaseSpec {
     val noFemaleCodersComp = db.CompSpec.avitech.copy(femaleCodersCount = Some(0))
 
     // Prepare
-    when(compRepository.all(None, None))
+    when(compRepository.all())
       .thenReturn(Future.successful(Seq(
         db.CompSpec.borci,
         noCodersSetComp,
@@ -138,7 +138,7 @@ class CompServiceImplSpec extends BaseSpec {
     // Verify
     verify(compSearchService, times(6)).rank(any(), any())
     verify(compVoteRepository).all(None)
-    verify(compRepository).all(None, None)
+    verify(compRepository).all()
     verify(techService).allRatings()
     verify(locationService, times(5)).city(Handle(db.CitySpec.bratislava.handle))
     verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
@@ -186,7 +186,7 @@ class CompServiceImplSpec extends BaseSpec {
 
   it should "orchestrate everything" in new TestScope {
     when(techService.allRatings()).thenReturn(Future.successful(TechRatingSpec.allRatings))
-    when(compRepository.all(None, None))
+    when(compRepository.all())
       .thenReturn(Future.successful(db.CompSpec.all))
     when(compVoteRepository.all(None))
       .thenReturn(Future.successful(db.CompVoteSpec.all))
@@ -204,7 +204,7 @@ class CompServiceImplSpec extends BaseSpec {
     verify(locationService).city(Handle(db.CitySpec.noveZamky.handle))
     verify(locationService).city(Handle(db.CitySpec.bratislava.handle))
     verify(compVoteRepository).all(None)
-    verify(compRepository).all(None, None)
+    verify(compRepository).all()
     verify(techService).allRatings()
     verifyNoMore()
   }

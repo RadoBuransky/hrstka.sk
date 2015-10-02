@@ -44,7 +44,7 @@ class AuthTechControllerImplISpec(application: Application) extends BaseControll
       }
 
       // Verify
-      verify(techService).allRatings()
+      verify(techService, times(2)).allRatings()
       verify(techService).votesFor(eminentUser.id)
       verify(techService).allCategories()
     }

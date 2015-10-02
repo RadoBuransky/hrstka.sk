@@ -66,7 +66,7 @@ class LocationServiceImplSpec extends BaseSpec {
     // Prepare
     when(cityRepository.all())
       .thenReturn(Future.successful(db.CitySpec.all))
-    when(compRepository.all(None, None))
+    when(compRepository.all())
       .thenReturn(Future.successful(db.CompSpec.all))
 
     // Execute
@@ -74,7 +74,7 @@ class LocationServiceImplSpec extends BaseSpec {
     assert(locationService.usedCities().futureValue == expected)
 
     // Verify
-    verify(compRepository).all(None, None)
+    verify(compRepository).all()
     verify(cityRepository).all()
     verifyNoMoreInteractions(cityRepository)
   }

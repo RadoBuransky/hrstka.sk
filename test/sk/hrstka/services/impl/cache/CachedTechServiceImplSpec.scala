@@ -1,6 +1,6 @@
 package sk.hrstka.services.impl.cache
 
-import sk.hrstka.models.domain.{CitySpec, UserSpec, TechRatingSpec}
+import sk.hrstka.models.domain.{TechRatingSpec, UserSpec}
 import sk.hrstka.repositories.{CompRepository, TechRepository, TechVoteRepository}
 import sk.hrstka.services.TechService
 import sk.hrstka.services.impl.NotCachedTechService
@@ -47,12 +47,6 @@ class CachedTechServiceImplSpec extends BaseSpec {
 
   it should "not cache underlying remove" in new TestScope {
     verifyNoCaching(_.remove(TechRatingSpec.akkaRating.tech.handle))
-  }
-
-  behavior of "allUsedRatings"
-
-  it should "cache underlying allUsedRatings" in new TestScope {
-    verifyCaching(_.allUsedRatings(Some(CitySpec.bratislava.handle)))
   }
 
   behavior of "votesFor"

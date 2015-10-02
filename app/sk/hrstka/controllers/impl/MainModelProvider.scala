@@ -3,7 +3,7 @@ package sk.hrstka.controllers.impl
 import play.api.mvc._
 import play.api.{Application, Mode}
 import sk.hrstka.controllers.auth.impl.HrstkaAuthElement
-import sk.hrstka.models.domain.{Handle, User}
+import sk.hrstka.models.domain.User
 import sk.hrstka.models.ui._
 import sk.hrstka.services.{LocationService, TechService}
 
@@ -25,7 +25,7 @@ trait MainModelProvider {
     }
 
     locationService.usedCities().flatMap { cities =>
-      techService.allUsedRatings(None).map { techRatings =>
+      techService.allRatings().map { techRatings =>
         action(MainModel(
           cities        = cities.map(CityFactory(_)),
           techRatings   = setOpacity(techRatings.map(TechRatingFactory.apply)),

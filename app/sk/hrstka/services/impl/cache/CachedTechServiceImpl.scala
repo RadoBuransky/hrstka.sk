@@ -20,7 +20,5 @@ final class CachedTechServiceImpl @Inject() (hrstkaCache: HrstkaCache,
   override def allCategories() = hrstkaCache.cacheSuccess("CachedTechServiceImpl.allCategories", underlying.allCategories())
   override def allRatings() = hrstkaCache.cacheSuccess("CachedTechServiceImpl.allRatings", underlying.allRatings())
   override def remove(handle: Handle) = underlying.remove(handle)
-  override def allUsedRatings(cityHandle: Option[Handle]) =
-    hrstkaCache.cacheSuccess(s"CachedTechServiceImpl.allUsedRatings($cityHandle)", underlying.allUsedRatings(cityHandle))
   override def votesFor(userId: Id) = underlying.votesFor(userId)
 }

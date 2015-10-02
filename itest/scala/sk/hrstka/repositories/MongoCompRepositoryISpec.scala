@@ -3,12 +3,11 @@ package sk.hrstka.repositories
 import org.scalatest.DoNotDiscover
 import sk.hrstka.common.HrstkaException
 import sk.hrstka.itest.TestApplication
-import sk.hrstka.models.db.{CitySpec, CompSpec}
+import sk.hrstka.models.db.CompSpec
 import sk.hrstka.repositories.itest.BaseRepositoryISpec
 import sk.hrstka.repositories.mongoDb.{CompCollection, MongoCompRepository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 @DoNotDiscover
 class MongoCompRepositoryISpec(testApplication: TestApplication)
@@ -48,35 +47,5 @@ class MongoCompRepositoryISpec(testApplication: TestApplication)
     whenReady(result.failed) { ex =>
       assert(ex.isInstanceOf[HrstkaException])
     }
-  }
-
-  behavior of "all"
-
-  it should "return everything if no filtering is used" in { compRepository =>
-    val result = insertComps(compRepository).flatMap { _ =>
-      compRepository.all()
-    }
-    assert(result.futureValue.toSet == Set(avitech, borci))
-  }
-
-  it should "return companies for a city" in { compRepository =>
-    val result = insertComps(compRepository).flatMap { _ =>
-      compRepository.all(city = Some(CitySpec.bratislava.handle))
-    }
-    assert(result.futureValue == Seq(avitech))
-  }
-
-  it should "return companies for a tech" in { compRepository =>
-    val result = insertComps(compRepository).flatMap { _ =>
-      compRepository.all(tech = borci.techs.headOption)
-    }
-    assert(result.futureValue == Seq(borci))
-  }
-
-  private def insertComps(compRepository: CompRepository): Future[_] = {
-    for {
-      avitechFuture <- compRepository.upsert(avitech)
-      rescoFuture <- compRepository.upsert(borci)
-    } yield ()
   }
 }

@@ -24,19 +24,4 @@ final class MongoCompRepository @Inject() (hrstkaCache: HrstkaCache,
       throw new HrstkaException(s"No company exists for the business number! [$businessNumber]")
     comps.head
   }
-
-  override def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Iterable[Comp]] = {
-    logger.debug(s"all [$city, $tech]")
-    val cityQuery = city match {
-      case Some(cityHandle) => Json.obj("cities" -> Json.obj("$in" -> Json.arr(cityHandle)))
-      case None => Json.obj()
-    }
-
-    val techQuery = tech match {
-      case Some(techHandle) => Json.obj("techs" -> Json.obj("$in" -> Json.arr(techHandle)))
-      case None => Json.obj()
-    }
-
-    find(cityQuery ++ techQuery)
-  }
 }

@@ -35,10 +35,10 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
 
   override def remove(handle: Handle): Future[Handle] = {
     // Get all companies for the technology
-    compRepository.all(None, Some(handle)).flatMap { comps =>
-      if (comps.nonEmpty)
+    compRepository.all().flatMap { comps =>
+      if (comps.exists(_.techs.contains(handle.value)))
         throw new HrstkaException(s"Cannot remove technology while it's used! [$comps]")
-      techRepository.remove(handle).map(Handle)
+      techRepository.remove(handle.value).map(Handle)
     }
   }
 
@@ -58,18 +58,6 @@ final class TechServiceImpl @Inject() (techRepository: TechRepository,
         unordered.toSeq.sortBy(-1 * _.value)
       }
     }
-
-  override def allUsedRatings(cityHandle: Option[Handle]): Future[Seq[TechRating]] = {
-    // Get all companies
-    compRepository.all(cityHandle.map(_.value), None).flatMap { dbComps =>
-      // Get all technology ratings
-      allRatings().map { techRatings =>
-        // Filter those which are used by a company
-        techRatings
-          .filter(techRating => dbComps.exists(_.techs.contains(techRating.tech.handle.value)))
-      }
-    }
-  }
 
   override def voteUp(handle: Handle, userId: Id) = voteDelta(handle, userId, 1)
   override def voteDown(handle: Handle, userId: Id) = voteDelta(handle, userId, -1)

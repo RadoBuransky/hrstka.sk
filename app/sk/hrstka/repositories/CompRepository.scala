@@ -30,11 +30,9 @@ trait CompRepository {
   def get(businessNumber: String): Future[Comp]
 
   /**
-   * Gets all companies for the provided city AND tech unordered.
+   * Gets all companies unordered.
    *
-   * @param city Filter companies for the city.
-   * @param tech Filter companies for the technology.
    * @return Found companies.
    */
-  def all(city: Option[Handle] = None, tech: Option[Handle] = None): Future[Iterable[Comp]]
+  def all(): Future[Iterable[Comp]]
 }
