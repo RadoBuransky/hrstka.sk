@@ -302,7 +302,15 @@ h4 {
     li {
         a {
             color: @hrstka-color-pink;
-            margin-right: 10px;
+
+            @media (min-width: @screen-sm-min) {
+                margin-right: 10px;
+            }
+
+            @media (max-width: @screen-sm-min) {
+                line-height: 30px;
+                margin-right: 15px;
+            }
         }
     }
 }
