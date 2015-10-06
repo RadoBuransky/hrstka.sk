@@ -1,7 +1,11 @@
-@()(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(comps: Seq[String])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
 Scraping results
 } {
-    <h3>Profesia</h3>
+    <ol>
+    @for(comp <- comps) {
+        <li>@comp</li>
+    }
+    </ol>
 }
