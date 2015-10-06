@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
   "jp.t2v"              %%  "play2-auth"            % "0.13.2",
   "com.github.t3hnar"   %%  "scala-bcrypt"          % "2.4",
   "com.github.rjeschke" %   "txtmark"               % "0.13",
+  "org.jsoup"           %   "jsoup"                 % "1.8.3",
   "com.typesafe.play"   %%  "play-test"             % "2.4.2"             % "it",
   "org.scalatest"       %%  "scalatest"             % "2.2.4"             % "it,test",
   "org.mockito"         %   "mockito-all"           % "1.10.19"           % "it,test",

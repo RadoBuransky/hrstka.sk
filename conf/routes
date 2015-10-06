@@ -31,6 +31,8 @@ GET     /programming/newCompany                         sk.hrstka.controllers.au
 GET     /programming/company/:businessNumber/voteUp     sk.hrstka.controllers.auth.AuthCompController.voteUp(businessNumber: String)
 GET     /programming/company/:businessNumber/voteDown   sk.hrstka.controllers.auth.AuthCompController.voteDown(businessNumber: String)
 
+GET     /scrape                     sk.hrstka.controllers.auth.AuthScraperController.scrape
+
 GET     /robots.txt 				controllers.Assets.at(path="/public", file="robots.txt")
 GET     /sitemap.xml 				controllers.Assets.at(path="/public", file="sitemap.xml")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
