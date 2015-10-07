@@ -18,24 +18,47 @@ import scala.concurrent.Future
 
 @Singleton
 class ProfesiaScrapingService @Inject() (compRepository: CompRepository) extends ScrapingService {
-  import ProfesiaScrapingService._
+  import sk.hrstka.services.impl.ProfesiaScrapingService._
 
   override def scrape: Future[ScrapingResult] = compRepository.all().map { dbComps =>
-    val doc = Jsoup.connect(ProfesiaScrapingService.url.toString).get()
-
-    // Scrape company names and make them distinct
-    val compNames = scrapeCompNames(doc).distinct
+    // Scrape company heads
+    val compHeads = scrapeCompHeadsFromAllPages(1, Nil)
 
     // Do we already have this company?
-    val scrapedCompanies = compNames.map { compName =>
+    val scrapedCompanies = compHeads.map { compHead =>
       val isNew = !dbComps.exists { dbComp =>
-        StringUtils.getJaroWinklerDistance(dbComp.name.toLowerCase, compName.toLowerCase) > 0.8
+        StringUtils.getJaroWinklerDistance(dbComp.name.toLowerCase, compHead.name.toLowerCase) > 0.8
       }
 
-      ScrapedComp(compName, isNew)
+      ScrapedComp(compHead.name, isNew)
     }
 
     ScrapingResult(scrapedCompanies.sortBy(!_.isNew))
+  }
+
+  @tailrec
+  private def scrapeCompHeadsFromAllPages(pageNum: Int, acc: List[ScrapedCompHead]): List[ScrapedCompHead] = {
+    // Scape HTML page
+    val doc = Jsoup.connect(ProfesiaScrapingService.url(pageNum).toString).get()
+
+    // Scrape company names and make them distinct
+    scrapeCompHeadsFromSingleDoc(doc) match {
+      case Nil => acc
+      case other => scrapeCompHeadsFromAllPages(pageNum + 1, acc ::: other)
+    }
+  }
+
+  private def scrapeCompHeadsFromSingleDoc(doc: Document): List[ScrapedCompHead] = {
+    doc.select("#agentMatchedListWrapperForm li.list-row > div.row").toList.map { divRow =>
+      val uri = new URI(hostName + divRow.select("a.title").attr("href"))
+
+      val name = divRow.html() match {
+        case compNamePattern(rawCompanyName) => stripSuffixes(rawCompanyName, compNameStripSuffixes)
+        case other => "Raw HTML: " + other
+      }
+
+      ScrapedCompHead(name, uri)
+    }
   }
 
   @tailrec
@@ -45,19 +68,12 @@ class ProfesiaScrapingService @Inject() (compRepository: CompRepository) extends
       case None => s.trim
     }
 
-  private def scrapeCompNames(doc: Document): Seq[String] = {
-    doc.select("#agentMatchedListWrapperForm li.list-row > div.row").toList.map(_.html()).flatMap {
-      case divRowPattern(rawCompanyName) => Some(stripSuffixes(rawCompanyName, companyNameSuffixes))
-      case other => {
-        Logger.info(other)
-        None
-      }
-    }
-  }
+  private case class ScrapedCompHead(name: String, url: URI)
 }
 
 private object ProfesiaScrapingService {
-  val url = new URI("http://www.profesia.sk/offer_agent_details.php?no_limit=1&rulogin=55efbaaf0fad02142a562bc5ec5d3455")
-  val divRowPattern = """(?s).*<br>(.*)<br>.*""".r
-  val companyNameSuffixes = List(", s.r.o.", ", spol. s r.o.", ", s. r. o.", ", a. s.", ", a.s.", "s.r.o.")
+  private val hostName = """www.profesia.sk"""
+  def url(pageNum: Int = 1) = new URI(s"""http://www.profesia.sk/offer_agent_details.php?no_limit=1&rulogin=55efbaaf0fad02142a562bc5ec5d3455&page_num=$pageNum""")
+  val compNamePattern = """(?s).*<br>(.*)<br>.*""".r
+  val compNameStripSuffixes = List(", s.r.o.", ", spol. s r.o.", ", s. r. o.", ", a. s.", ", a.s.", "s.r.o.")
 }
