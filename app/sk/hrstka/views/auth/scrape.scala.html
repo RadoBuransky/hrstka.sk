@@ -1,11 +1,13 @@
-@(comps: Seq[String])(implicit mainModel: sk.hrstka.models.ui.MainModel)
+@(comps: Seq[sk.hrstka.models.ui.ScrapedComp])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
 @sk.hrstka.views.html.main {
 Scraping results
 } {
-    <ol>
+    <ol class="list-unstyled">
     @for(comp <- comps) {
-        <li>@comp</li>
+        <li>
+            <h3>@comp.name @if(comp.isNew) {<span class="label label-danger">New</span>}</h3>
+        </li>
     }
     </ol>
 }

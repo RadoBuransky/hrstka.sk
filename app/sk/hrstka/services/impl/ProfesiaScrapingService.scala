@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Logger
-import sk.hrstka.models.domain.{ScrapedCompany, ScrapingResult}
+import sk.hrstka.models.domain.{ScrapedComp, ScrapingResult}
 import sk.hrstka.repositories.CompRepository
 import sk.hrstka.services.ScrapingService
 
@@ -23,7 +23,8 @@ class ProfesiaScrapingService @Inject() (compRepository: CompRepository) extends
   override def scrape: Future[ScrapingResult] = compRepository.all().map { dbComps =>
     val doc = Jsoup.connect(ProfesiaScrapingService.url.toString).get()
 
-    val compNames = scrapeCompNames(doc)
+    // Scrape company names and make them distinct
+    val compNames = scrapeCompNames(doc).distinct
 
     // Do we already have this company?
     val scrapedCompanies = compNames.map { compName =>
@@ -31,10 +32,10 @@ class ProfesiaScrapingService @Inject() (compRepository: CompRepository) extends
         StringUtils.getJaroWinklerDistance(dbComp.name.toLowerCase, compName.toLowerCase) > 0.8
       }
 
-      ScrapedCompany(compName, isNew)
+      ScrapedComp(compName, isNew)
     }
 
-    ScrapingResult(scrapedCompanies)
+    ScrapingResult(scrapedCompanies.sortBy(!_.isNew))
   }
 
   @tailrec

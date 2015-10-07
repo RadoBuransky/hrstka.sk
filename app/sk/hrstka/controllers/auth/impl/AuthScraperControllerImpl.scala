@@ -8,6 +8,7 @@ import play.api.mvc.{Action, AnyContent}
 import sk.hrstka.controllers.auth.AuthScraperController
 import sk.hrstka.controllers.impl.{BaseController, MainModelProvider}
 import sk.hrstka.models.domain.Eminent
+import sk.hrstka.models.ui.ScrapedCompFactory
 import sk.hrstka.services.{AuthService, LocationService, ScrapingService, TechService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,10 +25,8 @@ class AuthScraperControllerImpl @Inject() (protected val authService: AuthServic
   override def scrape(): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     scrapingService.scrape.flatMap { scrapingResult =>
       withMainModel(Some(loggedIn)) { implicit mainModel =>
-        val text = scrapingResult.companies.map { c =>
-          c.name + " " + c.isNew
-        }
-        Ok(sk.hrstka.views.html.auth.scrape(text))
+        val scrapedComps = scrapingResult.companies.map(ScrapedCompFactory.apply)
+        Ok(sk.hrstka.views.html.auth.scrape(scrapedComps))
       }
     }
   }
