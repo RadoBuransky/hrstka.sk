@@ -1,7 +1,46 @@
 package sk.hrstka.services.impl.scraping
 
 object StackoverflowTags {
-  val all: List[String] = List(
+  def meaningful = all.diff(blacklist)
+
+  private val blacklist: Set[String] = Set(
+    "refactoring",
+    "sed",
+    "this",
+    "design",
+    "workflow",
+    "base64",
+    "map",
+    "methods",
+    "image",
+    "project",
+    "process",
+    "interface",
+    "adobe",
+    "service",
+    "testing",
+    "web-applications",
+    "numbers",
+    "grid",
+    "web",
+    "fork",
+    "colors",
+    "focus",
+    "date",
+    "locking",
+    "client",
+    "resources",
+    "position",
+    "prototype",
+    "types",
+    "mobile",
+    "call",
+    "width",
+    "user",
+    "dynamic"
+  )
+
+  private val all: Set[String] = Set(
     "javascript",
     "java",
     "c#",

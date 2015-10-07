@@ -26,23 +26,24 @@ abstract class BaseStaticCompScraper {
     val website = new URI(doc.select(websiteSelector).attr("href"))
 
     // Scrape posting main contents
-    val soTags = findSoTags(doc.select("div.maintextearea").text())
+    val soTags = findSoTags(doc.select(mainSelector).text())
 
     StaticCompScraperResult(name, website, soTags)
   }
 
   protected def nameSelector: String
   protected def websiteSelector: String
+  protected def mainSelector: String
 
   private def findSoTags(text: String): Set[String] = {
     Console.out.println(text)
 
     val foundTags = text.split("\\s+").flatMap { word =>
-      val distances = StackoverflowTags.all.map { tag =>
+      val distances = StackoverflowTags.meaningful.map { tag =>
         tag -> StringUtils.getJaroWinklerDistance(tag, word)
       }
 
-      val (bestTag, bestDistance) = distances.sortBy(-1 * _._2).head
+      val (bestTag, bestDistance) = distances.toList.sortBy(-1 * _._2).head
       if (bestDistance > 0.91)
         Some(bestTag)
       else
