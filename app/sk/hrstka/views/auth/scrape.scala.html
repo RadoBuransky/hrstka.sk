@@ -7,6 +7,9 @@ Scraping results
     @for(comp <- comps) {
         <li>
             <h3>@comp.name @if(comp.isNew) {<span class="label label-danger">New</span>}</h3>
+            <div>@comp.tags.mkString(",")</div>
+            <div>@comp.employeeCount</div>
+            <div><a href="@comp.postingUrl" rel="nofollow">@comp.postingUrl</a></div>
         </li>
     }
     </ol>

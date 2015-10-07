@@ -23,10 +23,14 @@ abstract class BaseStaticCompScraper {
     val doc = Jsoup.parse(html)
 
     // Scrape company name
-    val name = stripSuffixes(doc.select(nameSelector).text(), compNameStripSuffixes)
+    val name = trySelectors(nameSelectors) { selector =>
+      stripSuffixes(doc.select(selector).text(), compNameStripSuffixes)
+    }
 
     // Scrape company website
-    val website = new URI(doc.select(websiteSelector).attr("href"))
+    val website = new URI(trySelectors(websiteSelectors) { selector =>
+      doc.select(selector).attr("href")
+    })
 
     // Scrape posting main contents
     val soTags = findSoTags(doc.select(mainSelector).text())
@@ -40,9 +44,22 @@ abstract class BaseStaticCompScraper {
     StaticCompScraperResult(name, website, soTags, employeeCount)
   }
 
-  protected def nameSelector: String
-  protected def websiteSelector: String
+  protected def nameSelectors: List[String]
+  protected def websiteSelectors: List[String]
   protected def mainSelector: String
+
+  @tailrec
+  private def trySelectors(selectors: List[String])(action: (String) => String): String = {
+    selectors match {
+      case selector :: tail =>
+        val result = action(selector).trim
+        if (result.isEmpty)
+          trySelectors(tail)(action)
+        else
+          result
+      case Nil => ""
+    }
+  }
 
   private def findSoTags(text: String): Set[String] = {
     val foundTags = text.split("\\s+").flatMap { word =>
@@ -69,6 +86,6 @@ abstract class BaseStaticCompScraper {
 }
 
 private object BaseStaticCompScraper {
-  val compNameStripSuffixes = List(", s.r.o.", ", spol. s r.o.", ", s. r. o.", ", a. s.", ", a.s.", "s.r.o.")
+  val compNameStripSuffixes = List(", s.r.o.", ", spol. s r.o.", ", s. r. o.", ", a. s.", ", a.s.", "s.r.o.", " a. s.")
   val employeesPattern = """(\d+(-\d+)?)\s+(employees|zamestnancov)""".r
 }

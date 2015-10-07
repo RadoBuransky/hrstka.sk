@@ -1,5 +1,11 @@
 package sk.hrstka.models.domain
 
-case class ScrapedComp(name: String, isNew: Boolean)
+import java.net.URI
+
+case class ScrapedComp(name: String,
+                       isNew: Boolean,
+                       tags: Set[String],
+                       postingUrl: URI,
+                       employeeCount: Option[String])
 
 case class ScrapingResult(companies: Seq[ScrapedComp])

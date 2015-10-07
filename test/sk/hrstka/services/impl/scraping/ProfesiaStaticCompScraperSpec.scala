@@ -28,4 +28,12 @@ class ProfesiaStaticCompScraperSpec extends BaseSpec {
     assertResult(Set.empty)(scrapedComp.soTags)
     assertResult(Some("115"))(scrapedComp.employeeCount)
   }
+
+  it should "work for yet yet another standard Profesia.sk page" in {
+    val scrapedComp = ProfesiaStaticCompScraper(ProfesiaStaticCompScraperDataSpec.html4)
+    assertResult("Miba Sinter Slovakia")(scrapedComp.name)
+    assertResult("http://www.miba.com/")(scrapedComp.website.toString)
+    assertResult(Set("soap"))(scrapedComp.soTags)
+    assertResult(None)(scrapedComp.employeeCount)
+  }
 }
