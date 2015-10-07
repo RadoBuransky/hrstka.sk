@@ -37,7 +37,10 @@ object StackoverflowTags {
     "call",
     "width",
     "user",
-    "dynamic"
+    "dynamic",
+    "system",
+    "excel",
+    "powerpoint"
   )
 
   private val all: Set[String] = Set(

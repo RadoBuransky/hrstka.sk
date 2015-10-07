@@ -7,7 +7,10 @@ import org.jsoup.Jsoup
 
 import scala.annotation.tailrec
 
-case class StaticCompScraperResult(name: String, website: URI, soTags: Set[String])
+case class StaticCompScraperResult(name: String,
+                                   website: URI,
+                                   soTags: Set[String],
+                                   employeeCount: Option[String])
 
 /**
  * Generic HTML company info scraper.
@@ -28,7 +31,13 @@ abstract class BaseStaticCompScraper {
     // Scrape posting main contents
     val soTags = findSoTags(doc.select(mainSelector).text())
 
-    StaticCompScraperResult(name, website, soTags)
+    // Employee count
+    val employeeCount = employeesPattern.findFirstMatchIn(doc.select(mainSelector).text()) match {
+      case Some(numMatch) => Some(numMatch.subgroups(0))
+      case _ => None
+    }
+
+    StaticCompScraperResult(name, website, soTags, employeeCount)
   }
 
   protected def nameSelector: String
@@ -36,8 +45,6 @@ abstract class BaseStaticCompScraper {
   protected def mainSelector: String
 
   private def findSoTags(text: String): Set[String] = {
-    Console.out.println(text)
-
     val foundTags = text.split("\\s+").flatMap { word =>
       val distances = StackoverflowTags.meaningful.map { tag =>
         tag -> StringUtils.getJaroWinklerDistance(tag, word)
@@ -63,4 +70,5 @@ abstract class BaseStaticCompScraper {
 
 private object BaseStaticCompScraper {
   val compNameStripSuffixes = List(", s.r.o.", ", spol. s r.o.", ", s. r. o.", ", a. s.", ", a.s.", "s.r.o.")
+  val employeesPattern = """(\d+(-\d+)?)\s+(employees|zamestnancov)""".r
 }
