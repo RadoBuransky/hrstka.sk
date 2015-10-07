@@ -1,7 +1,5 @@
 package sk.hrstka.services.impl.scraping
 
-import java.net.URI
-
 import sk.hrstka.test.BaseSpec
 
 class ProfesiaStaticCompScraperSpec extends BaseSpec {
@@ -11,5 +9,6 @@ class ProfesiaStaticCompScraperSpec extends BaseSpec {
     val scrapedComp = ProfesiaStaticCompScraper(ProfesiaStaticCompScraperDataSpec.html)
     assertResult("Scheidt & Bachmann Slovensko")(scrapedComp.name)
     assertResult("http://www.scheidt-bachmann.sk")(scrapedComp.website.toString)
+    assertResult(Set("java", "sql", "map"))(scrapedComp.soTags)
   }
 }

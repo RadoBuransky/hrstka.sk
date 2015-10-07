@@ -1,7 +1,7 @@
 package sk.hrstka.services.impl.scraping
 
 object StackoverflowTags {
-  val all = List(
+  val all: List[String] = List(
     "javascript",
     "java",
     "c#",
