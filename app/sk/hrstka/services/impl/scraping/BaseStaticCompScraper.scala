@@ -3,7 +3,6 @@ package sk.hrstka.services.impl.scraping
 import java.net.URI
 
 import org.jsoup.Jsoup
-import play.api.Logger
 
 import scala.annotation.tailrec
 
