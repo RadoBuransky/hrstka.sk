@@ -1,10 +1,13 @@
 package sk.hrstka.services.impl.scraping
 
+import java.net.URI
+
 import org.jsoup.Jsoup
+import play.api.Logger
 
 import scala.annotation.tailrec
 
-case class StaticCompScraperResult(name: String)
+case class StaticCompScraperResult(name: String, website: URI)
 
 /**
  * Generic HTML company info scraper.
@@ -13,12 +16,20 @@ abstract class BaseStaticCompScraper {
   import sk.hrstka.services.impl.scraping.BaseStaticCompScraper._
 
   def scrape(html: String): StaticCompScraperResult = {
+    // Parse HTML
     val doc = Jsoup.parse(html)
-    val name = stripSuffixes(doc.select(compNameSelector).text(), compNameStripSuffixes)
-    StaticCompScraperResult(name)
+
+    // Scrape company name
+    val name = stripSuffixes(doc.select(nameSelector).text(), compNameStripSuffixes)
+
+    // Scrape company website
+    val website = new URI(doc.select(websiteSelector).attr("href"))
+
+    StaticCompScraperResult(name, website)
   }
 
-  protected def compNameSelector: String
+  protected def nameSelector: String
+  protected def websiteSelector: String
 
   @tailrec
   private def stripSuffixes(s: String, suffixes: List[String]): String =
