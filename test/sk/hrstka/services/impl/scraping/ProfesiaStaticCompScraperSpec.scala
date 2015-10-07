@@ -17,7 +17,7 @@ class ProfesiaStaticCompScraperSpec extends BaseSpec {
     val scrapedComp = ProfesiaStaticCompScraper(ProfesiaStaticCompScraperDataSpec.html2)
     assertResult("NESS KDC")(scrapedComp.name)
     assertResult("http://www.nesskdc.sk")(scrapedComp.website.toString)
-    assertResult(Set("oracle", "css", "directx", "testng", "processing", "beautifulsoup", "openid", "prototypejs", "requirejs", "jquery", "html", "hbase", "maps", "javascript", "visual-c++"))(scrapedComp.soTags)
+    assertResult(Set("css", "directx", "beautifulsoup", "openid", "prototypejs", "requirejs", "jquery", "html", "hbase", "javascript", "visual-c++"))(scrapedComp.soTags)
     assertResult(Some("250-499"))(scrapedComp.employeeCount)
   }
 

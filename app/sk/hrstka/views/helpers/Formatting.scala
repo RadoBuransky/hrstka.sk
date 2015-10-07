@@ -1,7 +1,7 @@
 package sk.hrstka.views.helpers
 
 import play.twirl.api.Html
-import sk.hrstka.models.ui.{TechRating, City}
+import sk.hrstka.models.ui.{ScrapedTag, TechRating, City}
 
 object Formatting {
   def govBizToString(govBiz: Option[BigDecimal]): String = govBiz.map("%1.0f%%".format(_)).getOrElse("")
@@ -33,5 +33,23 @@ object Formatting {
     sb.append("""</div>""")
 
     Html(sb.toString())
+  }
+
+  def scrapedTagsToHtml(scrapedTags: Seq[ScrapedTag]) = {
+    val htmlFragments = scrapedTags.map { scrapedTag =>
+      val labelFlavour =  if (scrapedTag.newTech)
+        "label-danger"
+      else {
+        if (scrapedTag.newForComp) {
+          "label-success"
+        }
+        else {
+          "label-default"
+        }
+      }
+
+      s"""<span class="label $labelFlavour">${scrapedTag.name}</span>"""
+    }
+    Html(htmlFragments.mkString(" "))
   }
 }

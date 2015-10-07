@@ -1,15 +1,21 @@
 @(comps: Seq[sk.hrstka.models.ui.ScrapedComp])(implicit mainModel: sk.hrstka.models.ui.MainModel)
 
+@import sk.hrstka.views.helpers.Formatting._
+
 @sk.hrstka.views.html.main {
 Scraping results
 } {
     <ol class="list-unstyled">
     @for(comp <- comps) {
         <li>
-            <h3>@comp.name @if(comp.isNew) {<span class="label label-danger">New</span>}</h3>
-            <div>@comp.tags.mkString(",")</div>
+            <h3><a href="@comp.hrstkaUrl">@comp.name @if(comp.businessNumber.isEmpty) {<span class="label label-danger">New</span>}</a></h3>
+            <div>@scrapedTagsToHtml(comp.tags)</div>
             <div>@comp.employeeCount</div>
-            <div><a href="@comp.postingUrl" rel="nofollow">@comp.postingUrl</a></div>
+            <ul>
+                @for(postingUrl <- comp.postingUrls) {
+                    <li><a href="@postingUrl" rel="nofollow">@postingUrl</a></li>
+                }
+            </ul>
         </li>
     }
     </ol>

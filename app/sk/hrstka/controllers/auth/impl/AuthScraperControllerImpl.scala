@@ -1,5 +1,6 @@
 package sk.hrstka.controllers.auth.impl
 
+import java.net.URI
 import javax.inject.{Inject, Singleton}
 
 import play.api.Application
@@ -25,7 +26,14 @@ class AuthScraperControllerImpl @Inject() (protected val authService: AuthServic
   override def scrape(): Action[AnyContent] = AsyncStack(AuthorityKey -> Eminent) { implicit request =>
     scrapingService.scrape.flatMap { scrapingResult =>
       withMainModel(Some(loggedIn)) { implicit mainModel =>
-        val scrapedComps = scrapingResult.companies.map(ScrapedCompFactory.apply)
+        val scrapedComps = scrapingResult.companies.map { scrapedComp =>
+          val hrstkaUrl = scrapedComp.businessNumber match {
+            case Some(businessNumber) => sk.hrstka.controllers.auth.routes.AuthCompController.editForm(businessNumber.value)
+            case None => sk.hrstka.controllers.auth.routes.AuthCompController.addForm()
+          }
+
+          ScrapedCompFactory(scrapedComp, new URI(hrstkaUrl.url))
+        }
         Ok(sk.hrstka.views.html.auth.scrape(scrapedComps))
       }
     }

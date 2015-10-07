@@ -6,8 +6,8 @@ import javax.inject.{Inject, Singleton}
 import org.apache.commons.lang3.StringUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import sk.hrstka.models.domain.{ScrapedComp, ScrapingResult}
-import sk.hrstka.repositories.CompRepository
+import sk.hrstka.models.domain.{BusinessNumber, ScrapedComp, ScrapedTag, ScrapingResult}
+import sk.hrstka.repositories.{CompRepository, TechRepository}
 import sk.hrstka.services.ScrapingService
 import sk.hrstka.services.impl.scraping.ProfesiaStaticCompScraper
 
@@ -17,28 +17,55 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ProfesiaScrapingService @Inject() (compRepository: CompRepository) extends ScrapingService {
+class ProfesiaScrapingService @Inject() (compRepository: CompRepository,
+                                         techRepository: TechRepository) extends ScrapingService {
   import sk.hrstka.services.impl.ProfesiaScrapingService._
 
-  override def scrape: Future[ScrapingResult] = compRepository.all().map { dbComps =>
-    // Scrape posting URLs
-    val scrapedComps = scrapeAllPostingUrls(1, Nil).map { postingUrl =>
-      val staticCompScraperResult = ProfesiaStaticCompScraper(postingUrl)
+  override def scrape: Future[ScrapingResult] = compRepository.all().flatMap { dbComps =>
+    techRepository.all().map { dbTechs =>
+      // Scrape posting URLs
+      val scrapedComps = scrapeAllPostingUrls(1, Nil).map { postingUrl =>
+        // Scrape it
+        val staticCompScraperResult = ProfesiaStaticCompScraper(postingUrl)
 
-      val isNew = !dbComps.exists { dbComp =>
-        StringUtils.getJaroWinklerDistance(dbComp.name.toLowerCase, staticCompScraperResult.name.toLowerCase) > 0.8
+        // Do we already have this company?
+        val existingComp = dbComps.find { dbComp =>
+          StringUtils.getJaroWinklerDistance(dbComp.name.toLowerCase, staticCompScraperResult.name.toLowerCase) > 0.8
+        }
+
+        val scrapedTags = staticCompScraperResult.soTags.map { soTag =>
+          // Is this SO tag new for this company<
+          val newForComp = existingComp.isEmpty || existingComp.get.techs.contains(soTag)
+
+          ScrapedTag(
+            name        = soTag,
+            newTech     = !dbTechs.exists(_.handle == soTag),
+            newForComp  = newForComp)
+        }
+
+        ScrapedComp(
+          name = staticCompScraperResult.name,
+          businessNumber = existingComp.map(c => BusinessNumber(c.businessNumber)),
+          tags = scrapedTags.toSeq,
+          postingUrls = Seq(postingUrl),
+          employeeCount = staticCompScraperResult.employeeCount
+        )
       }
 
-      ScrapedComp(
-        name          = staticCompScraperResult.name,
-        isNew         = isNew,
-        tags          = staticCompScraperResult.soTags,
-        postingUrl    = postingUrl,
-        employeeCount = staticCompScraperResult.employeeCount
-      )
-    }
+      // Group comps by name and merge
+      val mergedComps = scrapedComps.groupBy(_.name).map { groupedComps =>
+        ScrapedComp(
+          name = groupedComps._1,
+          businessNumber = groupedComps._2.head.businessNumber,
+          tags = groupedComps._2.flatMap(_.tags).distinct.sortBy(st => (!st.newTech, !st.newForComp)),
+          postingUrls = groupedComps._2.flatMap(_.postingUrls),
+          employeeCount = groupedComps._2.flatMap(_.employeeCount).headOption
+        )
 
-    ScrapingResult(scrapedComps.sortBy(!_.isNew))
+      }
+
+      ScrapingResult(mergedComps.toSeq.sortBy(_.businessNumber.isDefined))
+    }
   }
 
   @tailrec
